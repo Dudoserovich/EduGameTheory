@@ -1,0 +1,91 @@
+version: "3.7"
+
+services:
+  balancer:
+    image: nginx:1.19.7-alpine
+    depends_on:
+      - nginx
+      #- frontend
+    ports:
+      - "80:8080"
+#      - "8090:8080"
+    restart: always
+    volumes:
+      - ./deployments/nginx.conf:/etc/nginx/nginx.conf:delegated
+
+#  frontend:
+#    build:
+#      context: Client
+#      dockerfile: docker/nginx/Dockerfile
+#      target: builder
+#      args:
+#        APP_VERSION: dev
+#    working_dir: /app
+#    volumes:
+#      - ./Client:/app:delegated
+#    command: npm run dev
+
+  php-fpm:
+    image: edu-game-theory/server-php-fpm
+    pull_policy: build
+    build:
+      context: server
+      dockerfile: docker/php/Dockerfile
+      args:
+        ENV: dev
+        XDEBUG_ENABLED: 1
+    working_dir: /app
+    restart: on-failure
+    volumes:
+      - ./server:/app:delegated
+    depends_on:
+      - 'mysql'
+    environment:
+      APP_DEBUG: "true"
+      DATABASE_URL: "mysql://user:password@mysql:3306/edu_game_theory?serverVersion=5.7.27&charset=utf8"
+      XDEBUG_MODE: "debug"
+      XDEBUG_CONFIG: "start_with_request=yes client_port=9007 client_host=host.docker.internal"
+      #      XDEBUG_CONFIG: "start_with_request=yes client_port=9007 client_host=172.18.0.1"
+      XDEBUG_SESSION: "PHPSTORM"
+      PHP_IDE_CONFIG: "serverName=edu-game-theory"
+      ROUTER_HOST: "localhost"
+      ROUTER_SCHEME: 'http'
+      ROUTER_BASE_URL: ''
+
+  nginx:
+    build:
+      context: server
+      dockerfile: docker/nginx/Dockerfile
+      args:
+        PHP_IMAGE: edu-game-theory/server-php-fpm
+    working_dir: /app
+    restart: on-failure
+    volumes:
+      - ./server:/app:delegated
+    depends_on:
+      - 'php-fpm'
+    ports:
+      - "8080"
+    environment:
+      NGINX_HOST: "localhost"
+      NGINX_HTTP_PORT: "80"
+      NGINX_HTTPS: "off"
+
+  mysql:
+    image: mysql:5.7.27
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    expose:
+      - '3306'
+    ports:
+      - '8092:3306'
+    environment:
+      MYSQL_DATABASE: "edu_game_theory"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+      MYSQL_ROOT_PASSWORD: "password"
+    volumes:
+      - mysql-data:/var/lib/mysql:delegated
+
+volumes:
+  mysql-data: {}

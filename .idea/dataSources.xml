@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="edu_game_theory@localhost" uuid="4a2e0371-b360-44c0-b0d3-bf3b132b584b">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:8092/edu_game_theory</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+      <driver-properties>
+        <property name="requireSSL" value="FALSE" />
+        <property name="sslMode" value="DISABLED" />
+      </driver-properties>
+    </data-source>
+  </component>
+</project>

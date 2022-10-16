@@ -1,0 +1,33 @@
+nelmio_api_doc:
+    models:
+        names:
+            - { alias: User,                  type: App\Entity\User,                  groups: [ "default" ] }
+
+            - alias: UserView1
+              type: App\Schema\UserView
+              groups: [ "id", "fio" ]
+            - alias: UserView
+              type: App\Schema\UserView
+              groups: [ "default" ]
+    documentation:
+        info:
+            title: EduGameTheory
+            description: Здесь описан контракт между фронтом и бэком
+            version: 1.0.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+                    description: |
+                        #### Может быть получен при помощи команды:
+                        ## `php bin/console lexik:jwt:generate-token -c App\\Entity\\User -t <seconds> <login>`
+                        #### Пример команды:
+                        ## `php bin/console lexik:jwt:generate-token -c App\\Entity\\User -t 86400 admin`
+        security:
+            - Bearer: [ ]
+    areas: # to filter documented areas
+        disable_default_routes: true
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
