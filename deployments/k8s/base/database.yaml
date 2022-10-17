@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/component: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mysql
+      app.kubernetes.io/component: database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mysql
+        app.kubernetes.io/component: database
+    spec:
+      containers:
+        - args:
+            - --default-authentication-plugin=mysql_native_password
+          envFrom:
+            - configMapRef:
+                name: mysql-config
+          image: mysql:5.7.27
+          name: mysql
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-data
+              subPath: mysql
+            - mountPath: /etc/mysql/mysql.conf.d
+              name: mysqld-config
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50Mi"
+              ephemeral-storage: "10Mi"
+            limits:
+              cpu: "500m"
+              memory: "250Mi"
+              ephemeral-storage: "100Mi"
+      restartPolicy: Always
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: drom-upgrade-mysql-pv-claim
+        - name: mysqld-config
+          configMap:
+            name: mysql-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: drom-upgrade-mysql-pv-claim
+spec:
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/component: database
+  clusterIP: None

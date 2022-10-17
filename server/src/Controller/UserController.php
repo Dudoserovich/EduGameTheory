@@ -52,8 +52,8 @@ class UserController extends ApiController
     #[Route(name: 'get', methods: ['GET'])]
     public function getUsers(UserPreviewer $userPreviewer): JsonResponse
     {
-        $users = $this->userRepository->findNotUser($this->getUserEntity()->getId());
-        $this->setSoftDeleteable(false);
+        $users = $this->userRepository->findNotUser($this->getUserEntity($this->userRepository)->getId());
+//        $this->setSoftDeleteable($this->em, false);
 
         $userPreviews = array_map(
             fn(User $user): array => $userPreviewer->preview($user),
@@ -210,7 +210,7 @@ class UserController extends ApiController
             return $this->respondNotFound("User not found");
         }
 
-        $this->setSoftDeleteable(false);
+//        $this->setSoftDeleteable($this->em, false);
 
         return $this->response($userPreviewer->preview($user));
     }
@@ -355,8 +355,8 @@ class UserController extends ApiController
     #[Route('/self', name: 'get_info', methods: ['GET'])]
     public function getSelf(UserPreviewer $userPreviewer): JsonResponse
     {
-        $this->setSoftDeleteable(false);
-        return $this->response($userPreviewer->preview($this->getUserEntity()));
+//        $this->setSoftDeleteable($this->em, false);
+        return $this->response($userPreviewer->preview($this->getUserEntity($this->userRepository)));
     }
 
     /**
@@ -389,7 +389,7 @@ class UserController extends ApiController
     #[Route('/self', name: 'self_put', methods: ['PUT'])]
     public function upSelf(Request $request, UserPasswordHasherInterface $passwordEncoder): JsonResponse
     {
-        $user = $this->getUserEntity();
+        $user = $this->getUserEntity($this->userRepository);
         $request = $request->request->all();
         try {
             if (isset($request['login'])) {

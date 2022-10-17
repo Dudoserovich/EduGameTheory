@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,17 +54,17 @@ class ApiController extends AbstractController
         return $this->respondWithErrors($message, Response::HTTP_NOT_FOUND);
     }
 
-    protected function getUserEntity(): User
+    protected function getUserEntity(UserRepository $userRepository): User
     {
-        return $this->getDoctrine()->getRepository(User::class)
+        return $userRepository
             ->findOneBy(['login' => parent::getUser()->getUserIdentifier()]);
     }
 
-    protected function setSoftDeleteable(bool $enabled = true): void
+    protected function setSoftDeleteable(EntityManagerInterface $em, bool $enabled = true): void
     {
         $set = $enabled
-            ? fn(string $filter) => $this->getDoctrine()->getManager()->getFilters()->enable($filter)
-            : fn(string $filter) => $this->getDoctrine()->getManager()->getFilters()->disable($filter);
+            ? fn(string $filter) => $em->getFilters()->enable($filter)
+            : fn(string $filter) => $em->getFilters()->disable($filter);
         $set("softdeleteable");
     }
 }
