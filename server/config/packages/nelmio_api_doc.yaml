@@ -2,12 +2,48 @@ nelmio_api_doc:
     models:
         names:
             - { alias: User,                  type: App\Entity\User,                  groups: [ "default" ] }
+            - { alias: Term,                  type: App\Entity\Term,                  groups: [ "default" ] }
+            - { alias: Task,                  type: App\Entity\Task,                  groups: [ "default" ] }
+            - { alias: Achievement,           type: App\Entity\Achievement,           groups: [ "default" ] }
+            - { alias: Topic,                 type: App\Entity\Topic,                 groups: [ "default" ] }
+            - { alias: TaskMark,              type: App\Entity\TaskMark,              groups: [ "default" ] }
+            - { alias: Education,             type: App\Entity\Education,             groups: [ "default" ] }
+            - { alias: EducationTasks,        type: App\Entity\EducationTasks,        groups: [ "default" ] }
+            - { alias: UserAchievement,       type: App\Entity\UserAchievement,       groups: [ "default" ] }
+            - { alias: UserEducation,         type: App\Entity\UserEducation,         groups: [ "default" ] }
 
             - alias: UserView1
               type: App\Schema\UserView
               groups: [ "id", "fio" ]
             - alias: UserView
               type: App\Schema\UserView
+              groups: [ "default" ]
+            - alias: TermView
+              type: App\Schema\TermView
+              groups: [ "default" ]
+            - alias: TaskView
+              type: App\Schema\TaskView
+              groups: [ "default" ]
+            - alias: AchievementView
+              type: App\Schema\AchievementView
+              groups: [ "default" ]
+            - alias: TopicView
+              type: App\Schema\TopicView
+              groups: [ "default" ]
+            - alias: TaskMarkView
+              type: App\Schema\TaskMarkView
+              groups: [ "default" ]
+            - alias: EducationView
+              type: App\Schema\EducationView
+              groups: [ "default" ]
+            - alias: EducationTasksView
+              type: App\Schema\EducationTasksView
+              groups: [ "default" ]
+            - alias: UserAchievementView
+              type: App\Schema\UserAchievementView
+              groups: [ "default" ]
+            - alias: UserEducationView
+              type: App\Schema\UserEducationView
               groups: [ "default" ]
     documentation:
         info:
