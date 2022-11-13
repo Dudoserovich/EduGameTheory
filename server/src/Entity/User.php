@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -30,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @OA\Property()
      * @Groups({"default"})
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=32, unique=true)
@@ -56,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="json")
      * @OA\Property(
      *     type="array",
-     *     @OA\Items(type="string", minItems=1, maxItems=3, enum={"ROLE_USER", "ROLE_LEAD", "ROLE_ADMIN"})
+     *     @OA\Items(type="string", minItems=1, maxItems=3, enum={"ROLE_USER", "ROLE_TEACHER", "ROLE_ADMIN"})
      * )
      * @Groups({"default"})
      */

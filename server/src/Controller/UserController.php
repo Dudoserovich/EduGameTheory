@@ -98,7 +98,17 @@ class UserController extends ApiController
         $user = new User();
 
         try {
-            if ($this->userRepository->findOneBy(['login' => $request['login']])) {
+//            $this->setSoftDeleteable(false);
+            $user = $this->userRepository->findOneBy(['login' => $request['login']]);
+            if ($user) {
+//                if ($user->getDeletedAt()) {
+//                    $user->setDeletedAt(null);
+//                    $this->em->persist($user);
+//                    $this->em->flush();
+//                    $this->setSoftDeleteable();
+//                    return $this->respondWithSuccess("User added successfully");
+//                }
+
                 return $this->respondValidationError('User with this login is already exist');
             }
             $user->setUsername($request['login']);
