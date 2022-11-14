@@ -39,13 +39,11 @@ final class Version20221113065623 extends AbstractMigration
         $this->addSql('ALTER TABLE user_achievement ADD CONSTRAINT FK_3F68B664A76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE user_education ADD CONSTRAINT FK_DBEAD336A76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE user_education ADD CONSTRAINT FK_DBEAD33640A8A24B FOREIGN KEY (edu_id) REFERENCES education (id) ON DELETE SET NULL');
-        $this->addSql('DROP TABLE refresh_tokens');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE refresh_tokens (id INT AUTO_INCREMENT NOT NULL, refresh_token VARCHAR(128) CHARACTER SET utf8 NOT NULL COLLATE `utf8_unicode_ci`, username VARCHAR(255) CHARACTER SET utf8 NOT NULL COLLATE `utf8_unicode_ci`, valid DATETIME NOT NULL, UNIQUE INDEX UNIQ_9BACE7E1C74F2195 (refresh_token), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB COMMENT = \'\' ');
         $this->addSql('ALTER TABLE education DROP FOREIGN KEY FK_DB0A5ED21F55203D');
         $this->addSql('ALTER TABLE education_tasks DROP FOREIGN KEY FK_ECD47F3040A8A24B');
         $this->addSql('ALTER TABLE education_tasks DROP FOREIGN KEY FK_ECD47F308DB60186');
