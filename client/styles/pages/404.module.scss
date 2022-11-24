@@ -1,0 +1,33 @@
+.ctn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100vw;
+    height: 100vh;
+    background: var(--dark-shades);
+
+    .logo {
+        position: absolute;
+        width: 56px;
+        left: 0;
+        top: 0;
+    }
+
+    .numbers {
+        font-size: 128px;
+        font-weight: bold;
+        color: var(--main-brand-color);
+        margin-top: 128px;
+    }
+
+    .title {
+        font-size: 36px;
+        color: var(--light-shades);
+    }
+
+    .button {
+        width: 256px;
+        margin: 48px;
+    }
+}

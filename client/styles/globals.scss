@@ -1,0 +1,93 @@
+@import "reset";
+@import "mixins";
+@import "../public/font/stylesheet.scss";
+
+:root {  
+    --light-shades: #ffffff;
+    --light-accent: #F6BFC6;
+    --main-brand-color: #DB001B;
+    --dark-accent: #D9D9D9;
+    --dark-shades: #000000;
+    --light-accent-2: #f8dfe3;
+    --fail-color: #DB001B;
+    --fail-light-color: #ffccd1;
+    --success-color: #4aaf51;
+    --success-light-color: #c8e7c8;
+    --active-color: #4a79af;
+    --active-light-color: #c8d7e7;
+    --wait-color: #af724a;
+    --wait-light-color: #e7d9c8;
+
+
+    --content-width: #{$xlContent};
+
+    --somePoints: '......................................................................................................................................................................................................................................................................................................................................................................................................................................';
+    @include lg {
+        --content-width: #{$lgContent};
+        --swiper-navigation-size: 26px !important;
+    }
+    @include md {
+        --content-width: #{$mdContent};
+    }
+    @include sm {
+        --content-width: #{$smContent};
+    }
+
+    --navigation-opacity: 1;
+}
+
+html {
+    scroll-behavior: auto;
+}
+
+body {
+    color: var(--dark-shades);
+    font-family:  Roboto, Arial, "Segoe UI", Helvetica, sans-serif;
+    font-weight: normal;
+    font-style: normal;
+
+
+    *::selection {
+      background-color: var(--main-brand-color);
+      color: var(--light-shades);
+      //filter: none;
+    }
+
+    *::-webkit-scrollbar {
+        width: 13px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: var(--main-brand-color);
+        border-radius: 6px;
+        border: 3px solid transparent;
+        background-clip: content-box;
+    }
+}
+
+.content {
+    @include content;
+}
+
+.wrapper {
+    width: 100%;
+}
+
+.InovuaReactDataGrid__row-hover-target:hover {
+    background: var(--light-accent) !important;
+    color: var(--dark-shades) !important;
+}
+
+.InovuaReactDataGrid__row--active {
+    border-color: var(--main-brand-color) !important;
+    color: var(--dark-shades) !important;
+}
+
+.InovuaReactDataGrid__row-active-borders {
+    border: none !important;
+    outline: none !important;
+}

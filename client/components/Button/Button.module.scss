@@ -1,0 +1,21 @@
+.button {
+    width: fit-content;
+    height: 45px;
+    background-color: var(--main-brand-color);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--light-shades);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 0 16px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    text-align: center;
+
+    &:disabled {
+        background: var(--dark-accent);
+        cursor: not-allowed;
+    }
+}

@@ -1,0 +1,29 @@
+.content {
+  position: relative;
+  width: 100%;
+
+  .label {
+    display: block;
+    font-size: 14px;
+    margin: 8px 8px;
+    color: black;
+  }
+
+  .field {
+    width: 100%;
+    height: 38px;
+    padding: 5px 10px;
+    background: var(--light-accent-2);
+    outline: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--dark-shades);
+    box-sizing: border-box;
+    border: 1px solid #fff;
+
+    &:focus {
+      border: 1px solid var(--main-brand-color);
+      box-shadow: 0 0 0 1px var(--main-brand-color);
+    }
+  }
+}

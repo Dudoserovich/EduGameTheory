@@ -1,0 +1,34 @@
+%label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    width: fit-content;
+    padding: 0 12px;
+    font-size: 14px;
+    border-radius: 16px;
+}
+
+.correct {
+    @extend %label;
+    color: var(--success-color);
+    background-color: var(--success-light-color);
+}
+
+.wrong {
+    @extend %label;
+    color: var(--fail-color);
+    background-color: var(--fail-light-color);
+}
+
+.verification {
+    @extend %label;
+    color: var(--active-color);
+    background-color: var(--active-light-color);
+}
+
+.waiting {
+    @extend %label;
+    color: var(--wait-color);
+    background-color: var(--wait-light-color);
+}

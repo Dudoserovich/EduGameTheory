@@ -1,0 +1,20 @@
+.Page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  header {
+    flex: none;
+    position: relative;
+    z-index: 125;
+  }
+
+  main {
+    margin-top: 64px;
+    flex: 1 0 auto;
+  }
+
+  footer {
+    flex: none;
+  }
+}

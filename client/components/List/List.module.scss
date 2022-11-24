@@ -1,0 +1,109 @@
+.content {
+  width: 100%;
+  height: fit-content;
+  overflow-y: auto;
+  border: 1px solid var(--dark-accent);
+  border-radius: 6px;
+
+  .head {
+    position: sticky;
+    min-width: 100%;
+    width: fit-content;
+    top: 0;
+    padding: 12px 24px;
+    display: grid;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background: var(--light-shades);
+    border-bottom: 1px solid var(--dark-accent);
+
+    .name {
+      box-sizing: border-box;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+      width: 100%;
+      max-height: 40px;
+      color: var(--dark-shades);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 12px;
+
+      &:not(:last-of-type) {
+        border-right: 1px solid var(--dark-accent);
+      }
+
+      &:not(:first-of-type) {
+        padding-left: 22px;
+      }
+    }
+  }
+
+  .body {
+    min-width: 100%;
+    width: fit-content;
+    // border: 1px solid var(--dark-accent);
+    overflow: hidden;
+
+    .li {
+      padding: 0 24px;
+      height: 64px;
+      display: grid;
+      align-items: center;
+      cursor: pointer;
+
+      &_selected {
+        background: var(--light-accent);
+      }
+
+      &:hover {
+        background: var(--light-accent);
+      }
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid var(--dark-accent);
+      }
+
+      .date {
+        display: flex;
+        justify-content: center;
+      }
+
+      .item {
+        font-size: 14px;
+        line-height: 20px;
+        width: 100%;
+        max-height: 40px;
+        color: var(--dark-shades);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 12px;
+
+        &:not(:first-of-type) {
+          padding-left: 22px;
+        }
+      }
+    }
+
+    .empty {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: auto;
+      margin: 64px 0;
+
+      .empty__icon {
+        width: 12em;
+        height: 12em;
+        fill: var(--dark-accent);
+      }
+
+      .empty__text {
+        font-size: 3em;
+        color: var(--dark-accent);
+      }
+    }
+  }
+}

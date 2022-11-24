@@ -1,6 +1,33 @@
 version: "3.7"
 
 services:
+  balancer:
+    image: nginx:1.19.7-alpine
+    depends_on:
+      - web
+      - frontend
+    ports:
+      - "80:8080"
+    restart: always
+    volumes:
+      - ./deployments/docker/balancer/nginx.conf:/etc/nginx/nginx.conf:delegated
+
+  frontend:
+    build:
+      context: client
+      dockerfile: docker/nginx/Dockerfile
+      target: node-builder
+    working_dir: /app
+    volumes:
+      - ./client:/app:delegated
+    command: npm start
+
+  restarter:
+    image: docker
+    volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
+    command: [ "/bin/sh", "-c", "while true; do sleep 600; docker restart edugametheory-frontend-1; done" ]
+    restart: unless-stopped
+
   php-fpm:
     image: edu-game-theory/server-php-fpm
     pull_policy: build
@@ -41,8 +68,8 @@ services:
     depends_on:
       - 'php-fpm'
     ports:
-      - "80:8080"
-#      - "8080"
+#      - "80:8080"
+      - "8080:8080"
     environment:
       NGINX_HOST: "localhost"
       NGINX_HTTP_PORT: "80"
