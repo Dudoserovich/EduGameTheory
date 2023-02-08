@@ -33,7 +33,7 @@ jobs:
         ENV: dev
       run: |
         echo "Building php-fpm"
-        docker build --build-arg ENV=$ENV --file docker/php/Dockerfile --target=statless --tag ${{ env.PHP_IMAGE }}:latest .
+        docker build --file docker/php/Dockerfile --tag ${{ env.PHP_IMAGE }}:latest .
         echo "Building nginx"
         docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }}:latest .
         
