@@ -10,8 +10,8 @@ on:
 
 env:
   NAMESPACE: edu-game-theory
-  PHP_IMAGE: dudoserovichy/server-php-fpm
-  NGINX_IMAGE: dudoserovich/server-nginx
+  PHP_IMAGE: edu-game-theory/server-php-fpm
+  NGINX_IMAGE: edu-game-theory/server-nginx
 
 jobs:
 
