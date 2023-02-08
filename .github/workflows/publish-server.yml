@@ -42,5 +42,7 @@ jobs:
         
     - name: Docker push
       run: |
+        docker tag server-php-fpm ${{ env.PHP_IMAGE }}:latest
         docker push ${{ env.PHP_IMAGE }}:latest
+        docker tag server-nginx ${{ env.NGINX_IMAGE }}:latest
         docker push ${{ env.NGINX_IMAGE }}:latest
