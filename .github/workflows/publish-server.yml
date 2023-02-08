@@ -37,6 +37,9 @@ jobs:
         echo "Building nginx"
         docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }}:latest .
         
+    - name: docker ps
+      run: docker ps
+        
     - name: Docker push
       run: |
         docker push ${{ env.PHP_IMAGE }}:latest
