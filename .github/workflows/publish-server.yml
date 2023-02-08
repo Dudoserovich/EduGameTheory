@@ -25,7 +25,7 @@ jobs:
         DOCKER_USER: dudoserovich
         DOCKER_PASSWORD: ${{ secrets.REGISTRY_TOKEN }}
       run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
     
     - name: Build server images
       working-directory: ./server
@@ -37,8 +37,8 @@ jobs:
         echo "Building nginx"
         docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }}:latest .
         
-    - name: docker ps
-      run: docker ps
+    - name: docker images
+      run: docker images
         
     - name: Docker push
       run: |
