@@ -22,11 +22,11 @@ jobs:
     - name: Build server images
       working-directory: ./server
       run: |
-        docker compose build
-#        echo "Building php-fpm"
-#        docker build --file docker/php/Dockerfile --tag ${{ env.PHP_IMAGE }} .
-#        echo "Building nginx"
-#        docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }} .
+        echo "Building php-fpm"
+        docker build --file docker/php/Dockerfile --tag ${{ env.PHP_IMAGE }} .
+        echo "Building nginx"
+        docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }} .
+#        docker compose build
         
     - name: docker images
       run: docker images
@@ -40,6 +40,6 @@ jobs:
         
     - name: Docker push
       run: |
-        docker compose push
-#        docker push ${{ env.PHP_IMAGE }}
-#        docker push ${{ env.NGINX_IMAGE }}
+        docker push ${{ env.PHP_IMAGE }}
+        docker push ${{ env.NGINX_IMAGE }}
+#        docker compose push
