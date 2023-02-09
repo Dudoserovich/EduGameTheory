@@ -19,27 +19,34 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Build server images
-      working-directory: ./server
-      run: |
-        echo "Building php-fpm"
-        docker build --file docker/php/Dockerfile --tag ${{ env.PHP_IMAGE }} .
-        echo "Building nginx"
-        docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }} .
+    - name: publish
+      uses: pennsignals/publish_docker-compose@v0.1.0
+      with:
+        version: 'latest' # optional
+        docker_compose: 'docker-compose.yml' # required
+        repo_token: "${{ secrets.GITHUB_REGISTRY }}"
+    
+#    - name: Build server images
+#      working-directory: ./server
+#      run: |
+#        echo "Building php-fpm"
+#        docker build --file docker/php/Dockerfile --tag ${{ env.PHP_IMAGE }} .
+#        echo "Building nginx"
+#        docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }} .
 #        docker compose build
         
-    - name: docker images
-      run: docker images
+#    - name: docker images
+#      run: docker images
         
-    - name: Docker login
-      env:
-        DOCKER_USER: dudoserovich
-        DOCKER_PASSWORD: ${{ secrets.REGISTRY_TOKEN }}
-      run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+#    - name: Docker login
+#      env:
+#        DOCKER_USER: dudoserovich
+#        DOCKER_PASSWORD: ${{ secrets.REGISTRY_TOKEN }}
+#      run: |
+#        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
         
-    - name: Docker push
-      run: |
-        docker push ${{ env.PHP_IMAGE }}
-        docker push ${{ env.NGINX_IMAGE }}
+#    - name: Docker push
+#      run: |
+#        docker push ${{ env.PHP_IMAGE }}
+#        docker push ${{ env.NGINX_IMAGE }}
 #        docker compose push
