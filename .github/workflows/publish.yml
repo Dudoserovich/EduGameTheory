@@ -69,5 +69,5 @@ jobs:
         with:
           push: true
           context: ./server
-          file: ./Dockerfile
+          file: Dockerfile
           tags: dudoserovich/edugametheory:${{ github.run_number }}
