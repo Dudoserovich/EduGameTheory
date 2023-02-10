@@ -57,18 +57,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Log in to Container Registry
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.PACKAGES_TOKEN }}
+      - name: Build backend
+        working-directory: ./server
+        run: |
+          echo "Building backend"
+          docker build --file Dockerfile --tag $BACKEND_IMAGE .
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: ./server
-          file: Dockerfile
-          push: true
-          tags: latest
-          labels: ${{ steps.meta.outputs.labels }}
+      - name: Declare nginx IMAGE_ID:VERSION
+        working-directory: ./scripts
+        env:
+          IMAGE_NAME: ${{ env.$BACKEND_IMAGE }}
+        run: ./declare_image_id_and_version.sh
+
+      - name: Push backend image
+        run: |
+          docker tag $BACKEND_IMAGE $IMAGE_ID:latest
+          docker tag $BACKEND_IMAGE $IMAGE_ID:$VERSION
+          echo "${{ secrets.PACKAGES_TOKEN }}" | docker login $REGISTRY -u dudoserovich --password-stdin
+          docker push $IMAGE_ID:latest
+          docker push $IMAGE_ID:$VERSION
