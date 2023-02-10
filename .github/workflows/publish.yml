@@ -70,7 +70,7 @@ jobs:
           context: server/
           push: true
           tags: |
-            dudoserovich/app:latest
-            dudoserovich/app:1.0.0
-            ghcr.io/dudoserovich/app:latest
-            ghcr.io/dudoserovich/app:1.0.0
+            ${{ github.actor }}/app:latest
+            ${{ github.actor }}/app:1.0.0
+            ghcr.io/${{ github.actor }}/app:latest
+            ghcr.io/${{ github.actor }}/app:1.0.0
