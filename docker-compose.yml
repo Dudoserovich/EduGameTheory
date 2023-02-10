@@ -1,88 +1,46 @@
 version: "3.7"
 
 services:
-  balancer:
-    image: nginx:1.19.7-alpine
-    depends_on:
-      - web
-      - frontend
+  nginx:
+    image: nginx
     ports:
-      - "80:8080"
-    restart: always
+      - "80:80"
+    environment:
+      FRONTEND_URI: '_'
     volumes:
-      - ./deployments/docker/balancer/nginx.conf:/etc/nginx/nginx.conf:delegated
+      - ./deployments/default.conf:/etc/nginx/conf.d/default.conf:delegated
+    command: [nginx-debug, '-g', 'daemon off;']
 
   frontend:
-    build:
-      context: client
-      dockerfile: docker/nginx/Dockerfile
-      target: node-builder
-    working_dir: /app
+    ports:
+      - "8090:8090"
+    image: the_dudoser/egt_frontend
     volumes:
       - ./client:/app:delegated
     command: npm start
 
-  restarter:
-    image: docker
-    volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
-    command: [ "/bin/sh", "-c", "while true; do sleep 600; docker restart edugametheory-frontend-1; done" ]
-    restart: unless-stopped
-
-  php-fpm:
-    image: edu-game-theory/server-php-fpm
-    pull_policy: build
-    build:
-      context: server
-      dockerfile: docker/php/Dockerfile
-      args:
-        ENV: dev
-        XDEBUG_ENABLED: 0
-    working_dir: /app
-    restart: on-failure
-    volumes:
-      - ./server:/app:delegated
-    depends_on:
-      - 'mysql'
-    environment:
-      APP_DEBUG: "true"
-      DATABASE_URL: "mysql://user:password@mysql:3306/edu_game_theory?serverVersion=5.7.27&charset=utf8"
-#      XDEBUG_MODE: "debug"
-      #XDEBUG_CONFIG: "start_with_request=yes client_port=9007 client_host=host.docker.internal"
-#      XDEBUG_CONFIG: "start_with_request=yes client_port=9007 client_host=172.18.0.1"
-#      XDEBUG_SESSION: "PHPSTORM"
-      PHP_IDE_CONFIG: "serverName=edu_game_theory"
-      ROUTER_HOST: "localhost"
-      ROUTER_SCHEME: 'http'
-      ROUTER_BASE_URL: ''
-
-  web:
-    build:
-      context: server
-      dockerfile: docker/nginx/Dockerfile
-      args:
-        PHP_IMAGE: edu-game-theory/server-php-fpm
-    working_dir: /app
-    restart: on-failure
-    volumes:
-      - ./server:/app:delegated
-    depends_on:
-      - 'php-fpm'
+  backend:
     ports:
-#      - "80:8080"
       - "8080:8080"
+    image: the_dudoser/egt_backend
+    restart: on-failure
+    volumes:
+      - ./server:/app:delegated
     environment:
-      NGINX_HOST: "localhost"
-      NGINX_HTTP_PORT: "80"
-      NGINX_HTTPS: "off"
+      WEB_DOCUMENT_ROOT: '/app/public'
+      DATABASE_URL: "mysql://user:password@db:3306/edu_game_theory?serverVersion=5.7.27&charset=utf8"
+      APP_DEBUG: "true"
+      XDEBUG_MODE: "debug"
+      XDEBUG_CONFIG: "start_with_request=yes client_port=9007 client_host=172.18.0.1"
+      XDEBUG_SESSION: "PHPSTORM"
+      PHP_IDE_CONFIG: "serverName=backend"
 
-  mysql:
+  db:
     image: mysql:5.7.27
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    expose:
-      - '3306'
     ports:
-      - '8092:3306'
+      - "3306:3306"
     environment:
       MYSQL_DATABASE: "edu_game_theory"
       MYSQL_USER: "user"
@@ -93,3 +51,4 @@ services:
 
 volumes:
   mysql-data: {}
+
