@@ -1,0 +1,107 @@
+name: Publish server
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  BACKEND_IMAGE: dudoserovich/egt_backend
+  FRONTEND_IMAGE: dudoserovich/egt_frontend
+
+jobs:
+
+  check:
+    name: Check changed files
+    outputs:
+      backend_service: ${{ steps.check_files.outputs.backend_service }}
+      frontend_service: ${{ steps.check_files.outputs.frontend_service }}
+
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+    - uses: actions/checkout@v3
+
+    - name: check modified files
+      id: check_files
+      run: |
+        echo "=============== list modified files ==============="
+        git diff --name-only HEAD^ HEAD
+        echo "========== check paths of modified files =========="
+        git diff --name-only HEAD^ HEAD > files.txt
+        while IFS= read -r file; do
+          echo $file
+          if [[ $file == client/* ]]; then
+            echo "::set-output name=frontend_service::true"
+          elif [[ $file == server/* ]]; then
+            echo "::set-output name=backend_service::true"
+          else
+            echo "file does not belong to any service"
+          fi
+        done < files.txt
+
+  backend_service:
+    needs: check
+    if: needs.check.outputs.backend_service == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to Registry
+        uses: docker/build-push-action@v2
+        with:
+          context: server/
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}
+
+#      - name: Deploy APIService
+#        uses: dawidd6/action-ansible-playbook@v2
+#        with:
+#          playbook: deploy.yml
+#          directory: api_service/
+#          key: ${{secrets.KART_SSH_PRIV_KEY}}
+#          inventory: |
+#            [all]
+#            kartservices.com ansible_ssh_port=${{secrets.KART_SSH_PORT}} ansible_ssh_user=${{secrets.KART_SSH_USER}} ansible_become_user=${{secrets.KART_ANSIBLE_BECOME_USER}} ansible_become_password=${{secrets.KART_ANSIBLE_BECOME_PASSWORD}}
+#          options: |
+#            --verbose
+
+#      - name: Build images
+#          #      working-directory: ./server
+#          #      run: |
+#          #        echo "Building php-fpm"
+#          #        docker build --file docker/php/Dockerfile --tag ${{ env.PHP_IMAGE }} .
+#          #        echo "Building nginx"
+#          #        docker build --build-arg PHP_IMAGE=${{ env.PHP_IMAGE }} --file docker/nginx/Dockerfile --tag ${{ env.NGINX_IMAGE }} .
+#          #        docker compose build
+#
+#      - name: docker images
+#        run: docker images
+#
+#      - name: Docker login
+#        env:
+#          DOCKER_USER: dudoserovich
+#          DOCKER_PASSWORD: ${{ secrets.REGISTRY_TOKEN }}
+#        run: |
+#          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+#
+#      - name: Docker push
+#        run: |
+#          docker push ${{ env.PHP_IMAGE }}
+#          docker push ${{ env.NGINX_IMAGE }}
+#          docker composeose push
