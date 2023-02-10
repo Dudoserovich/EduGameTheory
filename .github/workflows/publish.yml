@@ -64,8 +64,13 @@ jobs:
           password: ${{ secrets.PACKAGES_TOKEN }}
 
       - name: Publish to Registry
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
+
           context: server/
           push: true
-          tags: ${{ env.BACKEND_IMAGE }}
+          tags: |
+            dudoserovich/app:latest
+            dudoserovich/app:1.0.0
+            ghcr.io/dudoserovich/app:latest
+            ghcr.io/dudoserovich/app:1.0.0
