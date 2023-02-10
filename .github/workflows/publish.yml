@@ -10,8 +10,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE: dudoserovich/edugametheory/backend
-  FRONTEND_IMAGE: dudoserovich/edugametheory/frontend
+  BACKEND_IMAGE: dudoserovich/egt_backend
+  FRONTEND_IMAGE: dudoserovich/egt_frontend
   IMAGE_NAME: app
 
 jobs:
@@ -57,13 +57,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Build backend
-        working-directory: ./server
-        run: |
-          echo "Building backend"
-          docker build --file Dockerfile --tag $BACKEND_IMAGE:latest .
+      - name: Log in to Container Registry
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.PACKAGES_TOKEN }}
 
-      - name: Push backend image
-        run: |
-          echo "${{ secrets.PACKAGES_TOKEN }}" | docker login $REGISTRY -u dudoserovich --password-stdin
-          docker push $BACKEND_IMAGE:latest
+      - name: Build And Push Docker Images
+        uses: docker/build-push-action@v3.1.1
+        with:
+          push: true
+          file: ./server/Dockerfile
+          tags: dudoserovich/edugametheory:${{ github.run_number }}
