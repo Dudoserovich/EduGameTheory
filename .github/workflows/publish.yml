@@ -68,5 +68,6 @@ jobs:
         uses: docker/build-push-action@v3.1.1
         with:
           push: true
-          file: ./server/Dockerfile
+          context: ./server
+          file: ./Dockerfile
           tags: dudoserovich/edugametheory:${{ github.run_number }}
