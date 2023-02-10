@@ -94,5 +94,5 @@ jobs:
         with:
           context: ./server
           push: true
-          tags: ${GITHUB_SHA::7}
+          tags: latest
           labels: ${{ steps.meta.outputs.labels }}
