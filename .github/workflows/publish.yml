@@ -3,16 +3,25 @@ name: Publish server
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - 'backup/**'
+      - 'docs/**'
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - 'backup/**'
+      - 'docs/**'
 
   workflow_dispatch:
+    paths-ignore:
+      - 'README.md'
+      - 'backup/**'
+      - 'docs/**'
 
 env:
-  REGISTRY: ghcr.io
-  BACKEND_IMAGE: dudoserovich/egt_backend
-  FRONTEND_IMAGE: dudoserovich/egt_frontend
-  IMAGE_NAME: app
+  PREFIX: ghcr.io/dudoserovich
 
 jobs:
 
@@ -48,7 +57,7 @@ jobs:
           done < files.txt
 
   backend_service:
-    needs: check
+    needs: [check]
     if: needs.check.outputs.backend_service == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -58,41 +67,39 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-#      - name: Build Docker image
-#        run: sudo docker build ./server -t egt_backend
-#
-#      - name: Login to GitHub container Registry
-#        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-#
-#      - name: Post image to github packages
-#        run: |
-#          IMAGE_ID=ghcr.io/dudoserovich/egt_backend
-#          VERSION=${GITHUB_SHA::7}
-#          docker tag egt_backend $IMAGE_ID:$VERSION
-#          docker push $IMAGE_ID:$VERSION
+      - name: Build Docker image
+        run: sudo docker build ./server -t egt_backend
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/dudoserovich/egt_backend
-          flavor: latest=true
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
+      - name: Login to GitHub container Registry
+        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Login to image repository
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: dudoserovich
-          password: ${{ secrets.PACKAGES_TOKEN }}
+      - name: Post image to github packages
+        run: |
+          IMAGE_ID=$PREFIX/egt_backend
+          VERSION=${GITHUB_SHA::7}
+          docker tag egt_backend $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
 
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: ./server
-          push: true
-          tags: egt_backend
-          labels: ${{ steps.meta.outputs.labels }}
+  frontend_service:
+    needs: [check]
+    if: needs.check.outputs.frontend_service == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: sudo docker build ./client -t egt_frontend
+
+      - name: Login to GitHub container Registry
+        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Post image to github packages
+        run: |
+          IMAGE_ID=$PREFIX/egt_frontend
+          VERSION=${GITHUB_SHA::7}
+          docker tag egt_frontend $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
