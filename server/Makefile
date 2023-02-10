@@ -6,4 +6,3 @@ token:
 init_db:
 	php bin/console doctrine:migrations:migrate
 	php bin/console doctrine:fixtures:load
-
