@@ -57,20 +57,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Log in to Container Registry
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.PACKAGES_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-#          push: true
-          context: ./server
-          tags: dudoserovich/edugametheory:${{ github.run_number }}
+      - name: Build Docker image
+        run: sudo docker build . -t $IMAGE_NAME
 
-      - name: Docker images
+      - name: Login to GitHub container Registry
+        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Post image to github packages
         run: |
-          docker images
+          IMAGE_ID=ghcr.io/dudoserovich/egt_backend
+          VERSION=${GITHUB_SHA::7}
+          docker tag egt_backend $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
