@@ -1,4 +1,4 @@
-set -xe
+sudo set -xe
 
 IMAGE_ID=$REGISTRY/$IMAGE_NAME
 
