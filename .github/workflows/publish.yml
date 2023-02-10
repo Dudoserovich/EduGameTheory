@@ -21,53 +21,53 @@ jobs:
       backend_service: ${{ steps.check_files.outputs.backend_service }}
       frontend_service: ${{ steps.check_files.outputs.frontend_service }}
 
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout code
-    - uses: actions/checkout@v3
-
-    - name: check modified files
-      id: check_files
-      run: |
-        echo "=============== list modified files ==============="
-        git diff --name-only HEAD^ HEAD
-        echo "========== check paths of modified files =========="
-        git diff --name-only HEAD^ HEAD > files.txt
-        while IFS= read -r file; do
-          echo $file
-          if [[ $file == client/* ]]; then
-            echo "::set-output name=frontend_service::true"
-          elif [[ $file == server/* ]]; then
-            echo "::set-output name=backend_service::true"
-          else
-            echo "file does not belong to any service"
-          fi
-        done < files.txt
-
-  backend_service:
-    needs: check
-    if: needs.check.outputs.backend_service == 'true'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
     steps:
+      - name: Checkout code
       - uses: actions/checkout@v3
 
-      - name: Log in to Container Registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: check modified files
+        id: check_files
+        run: |
+          echo "=============== list modified files ==============="
+          git diff --name-only HEAD^ HEAD
+          echo "========== check paths of modified files =========="
+          git diff --name-only HEAD^ HEAD > files.txt
+          while IFS= read -r file; do
+            echo $file
+            if [[ $file == client/* ]]; then
+              echo "::set-output name=frontend_service::true"
+            elif [[ $file == server/* ]]; then
+              echo "::set-output name=backend_service::true"
+            else
+              echo "file does not belong to any service"
+            fi
+          done < files.txt
 
-      - name: Publish to Registry
-        uses: docker/build-push-action@v2
-        with:
-          context: server/
-          push: true
-          tags: ${{ env.BACKEND_IMAGE }}
+    backend_service:
+      needs: check
+      if: needs.check.outputs.backend_service == 'true'
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        packages: write
+
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Log in to Container Registry
+          uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+          with:
+            registry: ${{ env.REGISTRY }}
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Publish to Registry
+          uses: docker/build-push-action@v2
+          with:
+            context: server/
+            push: true
+            tags: ${{ env.BACKEND_IMAGE }}
 
 #      - name: Deploy APIService
 #        uses: dawidd6/action-ansible-playbook@v2
