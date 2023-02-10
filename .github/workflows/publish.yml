@@ -67,6 +67,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-          push: true
+#          push: true
           context: ./server
           tags: dudoserovich/edugametheory:${{ github.run_number }}
+
+      - name: Docker images
+        run: |
+          docker images
