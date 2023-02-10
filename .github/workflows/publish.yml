@@ -94,5 +94,5 @@ jobs:
         with:
           context: ./server
           push: true
-          tags: latest
+          tags: egt_backend
           labels: ${{ steps.meta.outputs.labels }}
