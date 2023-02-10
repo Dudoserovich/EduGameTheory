@@ -10,8 +10,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE: dudoserovich/egt_backend
-  FRONTEND_IMAGE: dudoserovich/egt_frontend
+  BACKEND_IMAGE: dudoserovich/edugametheory/backend
+  FRONTEND_IMAGE: dudoserovich/edugametheory/frontend
   IMAGE_NAME: app
 
 jobs:
@@ -63,16 +63,10 @@ jobs:
           echo "Building backend"
           docker build --file Dockerfile --tag $BACKEND_IMAGE .
 
-      - name: Declare nginx IMAGE_ID:VERSION
-        working-directory: ./scripts
-        env:
-          IMAGE_NAME: ${{ env.BACKEND_IMAGE }}
-        run: ./declare_image_id_and_version.sh
-
       - name: Push backend image
         run: |
-          docker tag $BACKEND_IMAGE $IMAGE_ID:latest
-          docker tag $BACKEND_IMAGE $IMAGE_ID:$VERSION
+          docker tag $BACKEND_IMAGE:latest
+          docker tag $BACKEND_IMAGE:1.0
           echo "${{ secrets.PACKAGES_TOKEN }}" | docker login $REGISTRY -u dudoserovich --password-stdin
-          docker push $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
+          docker push $BACKEND_IMAGE:latest
+          docker push $BACKEND_IMAGE:1.0
