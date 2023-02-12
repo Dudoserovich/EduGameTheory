@@ -128,7 +128,7 @@ jobs:
             *Репозиторий:* `${{ github.repository }}`
             *Активизатор:* `${{ github.actor }}`
             
-            ~Отработал процесс публикации со статусами сервисов:~ 
+            Отработал процесс публикации со статусами сервисов:
             - `backend`: ${{ needs.backend_service.result }}
             - `frontend`: ${{ needs.frontend_service.result }}
             
