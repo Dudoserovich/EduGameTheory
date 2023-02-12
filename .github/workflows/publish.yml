@@ -111,27 +111,21 @@ jobs:
           echo ${{ job.backend_service.status }}
           echo ${{ job.frontend_service.status }}
       
-      - name: Send error status message
-        if: ${{ needs.backend_service.result == 'failure' || needs.frontend_service.result == 'failure' }}
+      - name: Send status message
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: 'html'
           message: |
-            Во время сборки контейнеров что-то сломалось (активизатор сборки ${{ github.actor }}):            
+            <strong>Репозиторий:</strong> ${{ github.repository }}
+            <strong>Активизатор:</strong> ${{ github.actor }}
             
-            Action: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            <i>Отработал процесс публикации со статусами:</i>
+            - backend_service: ${{ needs.backend_service.result }}
+            - frontend_service: ${{ needs.frontend_service.result }}
             
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            <strong>Action:</strong> <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">Action link </a>
             
-      - name: Send success status message
-        if: ${{ needs.backend_service.result != 'failure' && needs.frontend_service.result != 'failure' }}
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            Ура, контейнеры удачно собрались или не было затрагивающих их изменений (активизатор сборки ${{ github.actor }}):            
-            Repository: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            <strong>Посмотреть изменения:<strong> <a href="https://github.com/${{ github.repository }}/commit/${{github.sha}}">Изменения </a>
             
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
