@@ -11,6 +11,5 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: 'markdown'
-          message: gg
           photo: https://cataas.com/cat
+          document: https://cataas.com/cat
