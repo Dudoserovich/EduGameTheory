@@ -123,14 +123,14 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: 'html'
+          format: 'markdown'
           message: |
-            <strong>Репозиторий:</strong> ${{ github.repository }}
-            <strong>Активизатор:</strong> ${{ github.actor }}
+            *Репозиторий:* `${{ github.repository }}`
+            *Активизатор:* `${{ github.actor }}`
             
-            <i>Отработал процесс публикации со статусами сервисов:</i>
-            - <pre>backend_service</pre>: ${{ needs.backend_service.result }}
-            - <pre>frontend_service</pre>: ${{ needs.frontend_service.result }}
+            __Отработал процесс публикации со статусами сервисов:__
+            - `backend\_service`: ${{ needs.backend_service.result }}
+            - `frontend\_service`: ${{ needs.frontend_service.result }}
             
-            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">Action</a>
-            <a href="https://github.com/${{ github.repository }}/commit/${{github.sha}}">Посмотреть изменения</a>
+            [Action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Посмотреть изменения](https://github.com/${{ github.repository }}/commit/${{github.sha}})
