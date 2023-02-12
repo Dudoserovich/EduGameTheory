@@ -12,4 +12,4 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: "dd"
-          photo: "https://cataas.com/cat"
+          photo: https://cataas.com/cat
