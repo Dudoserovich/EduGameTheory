@@ -11,5 +11,5 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          photo: https://cataas.com/cat
-          document: https://cataas.com/cat
+          photo: 'https://cataas.com/cat'
+          sticker: "https://github.com/TelegramBots/book/raw/master/src/docs/sticker-fred.webp"
