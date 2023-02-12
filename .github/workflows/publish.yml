@@ -127,5 +127,5 @@ jobs:
             
             <strong>Action:</strong> <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">Action link </a>
             
-            <strong>Посмотреть изменения:<strong> <a href="https://github.com/${{ github.repository }}/commit/${{github.sha}}">Изменения </a>
+            <strong>Посмотреть изменения:</strong> <a href="https://github.com/${{ github.repository }}/commit/${{github.sha}}">Изменения </a>
             
