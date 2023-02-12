@@ -12,15 +12,5 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: 'markdown'
-          message: |
-            *Репозиторий:* ${{ github.repository }}
-            *Активизатор:* ${{ github.actor }}
-            
-            _Отработал процесс публикации со статусами сервисов:_
-            - `backend_service`: gg
-            - `frontend_service`: gg
-            
-            [Action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            [Посмотреть изменения](https://github.com/${{ github.repository }}/commit/${{github.sha}})
-
+          message: "gg"
           photo: https://cataas.com/cat
