@@ -56,6 +56,8 @@ jobs:
     needs: [check]
     if: needs.check.outputs.backend_service == 'true'
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: egt_backend
     permissions:
       contents: read
       packages: write
@@ -64,22 +66,24 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: sudo docker build ./server -t egt_backend
+        run: sudo docker build ./server -t $IMAGE_NAME
 
       - name: Login to GitHub container Registry
-        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
       - name: Post image to github packages
         run: |
-          IMAGE_ID=$PREFIX/egt_backend
+          IMAGE_ID=$PREFIX/$IMAGE_NAME
           VERSION=${GITHUB_SHA::7}
-          docker tag egt_backend $IMAGE_ID:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
   frontend_service:
     needs: [check]
     if: needs.check.outputs.frontend_service == 'true'
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: egt_frontend
     permissions:
       contents: read
       packages: write
@@ -88,30 +92,26 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: sudo docker build ./client -t egt_frontend
+        run: sudo docker build ./client -t $IMAGE_NAME
 
       - name: Login to GitHub container Registry
-        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
       - name: Post image to github packages
         run: |
-          IMAGE_ID=$PREFIX/egt_frontend
+          IMAGE_ID=$PREFIX/$IMAGE_NAME
           VERSION=${GITHUB_SHA::7}
-          docker tag egt_frontend $IMAGE_ID:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
           
+  # Пока отправка сообщений настроена только на владельца репозитория :D
   send_telegram:
       needs: [backend_service, frontend_service]
       if: ${{ !cancelled() && (success() || failure() || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped') }}
       runs-on: ubuntu-latest
       steps:
       
-      - name: Test statuses
-        run: |
-          echo ${{ job.backend_service.status }}
-          echo ${{ job.frontend_service.status }}
-      
-      - name: Send status message
+      - name: Send message with status backend_service and frontend_service
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -121,11 +121,9 @@ jobs:
             <strong>Репозиторий:</strong> ${{ github.repository }}
             <strong>Активизатор:</strong> ${{ github.actor }}
             
-            <i>Отработал процесс публикации со статусами:</i>
-            - backend_service: ${{ needs.backend_service.result }}
-            - frontend_service: ${{ needs.frontend_service.result }}
+            <i>Отработал процесс публикации со статусами сервисов:</i>
+            - <pre>backend_service</pre>: ${{ needs.backend_service.result }}
+            - <pre>frontend_service</pre>: ${{ needs.frontend_service.result }}
             
-            <strong>Action:</strong> <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">Action link </a>
-            
-            <strong>Посмотреть изменения:</strong> <a href="https://github.com/${{ github.repository }}/commit/${{github.sha}}">Изменения </a>
-            
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">Action</a>
+            <a href="https://github.com/${{ github.repository }}/commit/${{github.sha}}">Посмотреть изменения</a>
