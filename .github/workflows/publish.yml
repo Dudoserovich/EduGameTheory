@@ -119,13 +119,13 @@ jobs:
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
             
       - name: Send success status message
-        if: ${{ job.backend_service.status == 'success' && job.frontend_service.status == 'success' }}
+        if: ${{ job.backend_service.status != 'failure' && job.frontend_service.status != 'failure' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            Ура, контейнеры удачно собрались (активизатор сборки ${{ github.actor }}):            
+            Ура, контейнеры удачно собрались или не было затрагивающих их изменений (активизатор сборки ${{ github.actor }}):            
             Repository: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
             
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
