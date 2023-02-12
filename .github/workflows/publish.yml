@@ -102,6 +102,7 @@ jobs:
           
   send_telegram:
       needs: [backend_service, frontend_service]
+      if: ${{ !cancelled() && (success() || failure() || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped') }}
       runs-on: ubuntu-latest
       steps:
       
@@ -111,7 +112,7 @@ jobs:
           echo ${{ job.frontend_service.status }}
       
       - name: Send error status message
-        if: ${{ job.backend_service.status == 'failure' || job.frontend_service.status == 'failure' }}
+        if: ${{ needs.backend_service.result == 'failure' || needs.frontend_service.result == 'failure' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -124,7 +125,7 @@ jobs:
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
             
       - name: Send success status message
-        if: ${{ job.backend_service.status != 'failure' && job.frontend_service.status != 'failure' }}
+        if: ${{ needs.backend_service.result != 'failure' && needs.frontend_service.result != 'failure' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
