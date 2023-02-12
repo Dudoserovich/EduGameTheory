@@ -113,8 +113,8 @@ jobs:
       # Оставшаяся часть условия говорит о том, что не нужно ничего отправлять если оба образа не билдились
       if: ${{ 
         !cancelled() 
-        && (success() || failure() || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped') 
-        && needs.check.outputs.frontend_service == 'true' && needs.check.outputs.backend_service == 'true'
+        && (success() || failure()) 
+        && (needs.check.outputs.frontend_service == 'true' || needs.check.outputs.backend_service == 'true')
         }}
       runs-on: ubuntu-latest
       steps:
