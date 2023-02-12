@@ -105,6 +105,11 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       
+      - name: Test statuses
+        run: |
+          echo ${{ job.backend_service.status }}
+          echo ${{ job.frontend_service.status }}
+      
       - name: Send error status message
         if: ${{ job.backend_service.status == 'failure' || job.frontend_service.status == 'failure' }}
         uses: appleboy/telegram-action@master
