@@ -6,21 +6,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: wget
+        uses: wei/wget@v1
+        with:
+          args: -O cat.png https://cataas.com/cat
       - name: send default message
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: 'markdown'
-          message: |
-            *Репозиторий:* ${{ github.repository }}
-            *Активизатор:* ${{ github.actor }}
-            
-            _Отработал процесс публикации со статусами сервисов:_
-            - `backend_service`: gg
-            - `frontend_service`: gg
-            
-            [Action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            [Посмотреть изменения](https://github.com/${{ github.repository }}/commit/${{github.sha}})
-
-          photo: https://cataas.com/cat
+          photo: cat.png
