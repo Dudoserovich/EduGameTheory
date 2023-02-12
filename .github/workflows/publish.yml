@@ -106,7 +106,7 @@ jobs:
       steps:
       
       - name: Send error status message
-        if: ${{ jobs.backend_service.result == 'failure' || jobs.frontend_service.result == 'failure' }}
+        if: ${{ job.backend_service.status == 'failure' || job.frontend_service.status == 'failure' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -119,7 +119,7 @@ jobs:
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
             
       - name: Send success status message
-        if: ${{ jobs.backend_service.result == 'success' && jobs.frontend_service.result == 'success' }}
+        if: ${{ job.backend_service.status == 'success' && job.frontend_service.status == 'success' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
