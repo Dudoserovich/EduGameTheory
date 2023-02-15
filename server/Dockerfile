@@ -1,6 +1,6 @@
 FROM webdevops/php-nginx:8.1
 COPY ./ /app
-RUN composer install -d /app
+RUN composer install --no-dev --optimize-autoloader -d /app
 
 # install xdebug
 RUN pecl install xdebug \
