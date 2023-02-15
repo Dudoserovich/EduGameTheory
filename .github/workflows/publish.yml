@@ -99,7 +99,6 @@ jobs:
             95.154.71.35 ansible_ssh_user=${{ secrets.SSH_USER }} ansible_ssh_port=${{ secrets.SSH_PORT }} ansible_become_user=${{ secrets.ANSIBLE_BECOME_USER }} ansible_become_password=${{ secrets.ANSIBLE_BECOME_PASSWORD }}
           options: |
             --verbose
-            --ask-vault-pass
             -e @vault.yaml
 
   # Собираем и публикуем образ frontend части сайта
