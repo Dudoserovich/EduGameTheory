@@ -1,0 +1,62 @@
+---
+- hosts: all
+  gather_facts: true
+#  vars:
+#    service_path: /opt/egt/server
+#    app_path: /opt/egt
+  tasks:
+    - name: "create {{ APP_PATH }}/"
+      file:
+        path: "{{ APP_PATH }}/server/"
+        state: "directory"
+        owner: "{{ USER }}"
+        group: "{{ GROUP }}"
+        mode: 0775
+      become: yes
+      become_method: sudo
+
+    - name: "copy docker-compose.yml"
+      copy:
+        src: "../deployments/docker-compose-prod.yml"
+        dest: "{{ APP_PATH }}/docker-compose.yml"
+        owner: "{{ USER }}"
+        group: "{{ GROUP }}"
+        mode: 0644
+      become: yes
+      become_method: sudo
+
+    - name: "create {{ APP_PATH }}/deployments"
+      file:
+        path: "{{ APP_PATH }}/deployments"
+        owner: "{{ USER }}"
+        group: "{{ GROUP }}"
+        mode: 0775
+      become: yes
+      become_method: sudo
+
+    - name: "copy default.conf"
+      copy:
+        src: "../deployments/default.conf"
+        dest: "{{ APP_PATH }}/deployments/default.conf"
+        owner: "{{ USER }}"
+        group: "{{ GROUP }}"
+        mode: 0644
+      become: yes
+      become_method: sudo
+
+    - name: "stop services"
+      shell: docker compose -f {{ APP_PATH }}/docker-compose.yml stop
+
+    - name: "login docker"
+      shell: echo "{{ DOCKER_PASSWORD }}" | docker login ghcr.io -u "{{ DOCKER_LOGIN }}" --password-stdin
+
+    - name: "pull images"
+      shell: docker compose -f {{ APP_PATH }}/docker-compose.yml pull
+
+    - name: "start services"
+      shell: docker compose -f {{ APP_PATH }}/docker-compose.yml up -d
+
+    - name: "install fixtures"
+      shell: |
+        cd {{ APP_PATH }};
+        docker compose exec backend bash -c "cd app; make set-backend";
