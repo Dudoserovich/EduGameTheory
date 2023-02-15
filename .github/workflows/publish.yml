@@ -73,7 +73,7 @@ jobs:
         run: sudo docker build ./server -t $IMAGE_NAME
 
       - name: Login to GitHub container Registry
-        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Post image to github packages
         run: |
@@ -119,7 +119,7 @@ jobs:
         run: sudo docker build ./client -t $IMAGE_NAME
 
       - name: Login to GitHub container Registry
-        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        run: echo "${{ secrets.PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Post image to github packages
         run: |
