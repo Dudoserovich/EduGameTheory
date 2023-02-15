@@ -100,7 +100,7 @@ jobs:
           options: |
             --verbose
             --ask-vault-pass
-            --e @./vars.yaml
+            -e @vault.yaml
 
   # Собираем и публикуем образ frontend части сайта
   frontend_service:
