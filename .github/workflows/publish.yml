@@ -84,8 +84,7 @@ jobs:
 
       - name: Run up vault playbook
         run: |
-          echo "${{ secrets.ANSIBLE_VAULT }}" >> vault.yml
-          ls -la vault.yml
+          echo "${{ secrets.ANSIBLE_VAULT }}" > server/vault.yml
 
       - name: Run playbook (deploy)
         uses: dawidd6/action-ansible-playbook@v2
