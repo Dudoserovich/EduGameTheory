@@ -46,21 +46,59 @@ nelmio_api_doc:
               type: App\Schema\UserEducationView
               groups: [ "default" ]
     documentation:
+#        servers:
+#          - url: /
+#            description: Локальная API
+#          - url: https://dudoser.msur.team
+#            description: Развёрнутый сервер с API
+        tags:
+          - name: Term
+            description: Взаимодействие с терминами
+          - name: User
+            description: Взаимодействие с пользователями
+          - name: jwt token
+            description: Аутентификация и получение JWT токена
         info:
-            title: EduGameTheory
-            description: Здесь описан контракт между фронтом и бэком
-            version: 1.0.0
+            title: Game Theory API
+            description: | 
+              API для взаимодействия с backend частью дипломной работы по **"Геймификации теории игр"**.
+              
+              ### Чтобы отправлять запросики необходим **JWT-токен**, который можно получить:
+              - Вытащив из браузера, авторизовавшись (**лежит в куках**). 
+              - Если у вас развёрнут backend локально, **вбить команду** для генерации ключа руками.
+            contact:
+              email: mr.egoryk1611@gmail.com
+            version: 0.2.0
+        externalDocs:
+          description: GitHub repository
+          url: https://github.com/Dudoserovich/EduGameTheory
+        paths:
+          /api/login_check:
+            post:
+              tags:
+                - jwt token
+              summary: Authenticate and get JWT token
+              requestBody:
+                description: Authenticate and get JWT token.
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                        password:
+                          type: string
         components:
             securitySchemes:
                 Bearer:
                     type: http
                     scheme: bearer
                     bearerFormat: JWT
-                    description: |
-                        #### Может быть получен при помощи команды:
-                        ## `php bin/console lexik:jwt:generate-token -c App\\Entity\\User -t <seconds> <login>`
-                        #### Пример команды:
-                        ## `php bin/console lexik:jwt:generate-token -c App\\Entity\\User -t 86400 admin`
+                    description: >
+                        #### Может быть получен в секции 'jwt token' Swagger'а
+                      
+                        Полученный ответ будет содержать ключ **token**, содержимое которого необходимо вставить сюда в **Value**
         security:
             - Bearer: [ ]
     areas: # to filter documented areas
