@@ -84,7 +84,7 @@ jobs:
 
       - name: Run up vault playbook
         run: |
-          echo "${{ secrets.ANSIBLE_VAULT }}" > server/vault.yml
+          echo "${{ secrets.ANSIBLE_VAULT }}" > vault.yml
 
       - name: Run playbook (deploy)
         uses: dawidd6/action-ansible-playbook@v2
@@ -99,7 +99,8 @@ jobs:
             95.154.71.35 ansible_ssh_user=${{ secrets.SSH_USER }} ansible_ssh_port=${{ secrets.SSH_PORT }} ansible_become_user=${{ secrets.ANSIBLE_BECOME_USER }} ansible_become_password=${{ secrets.ANSIBLE_BECOME_PASSWORD }}
           options: |
             --verbose
-            --extra-vars @vault.yml
+            --ask-vault-pass
+            --extra-vars @../vars.yaml
 
   # Собираем и публикуем образ frontend части сайта
   frontend_service:
