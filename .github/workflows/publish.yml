@@ -89,8 +89,8 @@ jobs:
       - name: Run playbook (deploy)
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbook.yml
-          directory: ./server
+          playbook: server/playbook.yml
+#          directory: ./server
           # Указывайте ключик, не требующий подтверждения в виде пароля и будет вам счастье
           key: ${{ secrets.SSH_KEY }}
           vault_password: ${{ secrets.ANSIBLE_PASS_VAULT }}
@@ -100,7 +100,7 @@ jobs:
           options: |
             --verbose
             --ask-vault-pass
-            --extra-vars @../vars.yaml
+            --e @./vars.yaml
 
   # Собираем и публикуем образ frontend части сайта
   frontend_service:
