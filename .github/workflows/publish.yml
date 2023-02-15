@@ -78,9 +78,28 @@ jobs:
       - name: Post image to github packages
         run: |
           IMAGE_ID=$PREFIX/$IMAGE_NAME
-          VERSION=${GITHUB_SHA::7}
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+#          VERSION=${GITHUB_SHA::7}
+          docker tag $IMAGE_NAME $IMAGE_ID
+          docker push $IMAGE_ID
+
+      - name: Run up vault playbook
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT }}" >> vault.yml
+
+      - name: Run playbook (deploy)
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbook.yml
+          directory: ./server
+          # Указывайте ключик, не требующий подтверждения в виде пароля и будет вам счастье
+          key: ${{ secrets.SSH_KEY }}
+          vault_password: ${{ secrets.ANSIBLE_PASS_VAULT }}
+          inventory: |
+            [all]
+            95.154.71.35 ansible_ssh_user=${{ secrets.SSH_USER }} ansible_ssh_port=${{ secrets.SSH_PORT }} ansible_become_user=${{ secrets.ANSIBLE_BECOME_USER }} ansible_become_password=${{ secrets.ANSIBLE_BECOME_PASSWORD }}
+          options: |
+            --verbose
+            --extra-vars @vault.yml
 
   # Собираем и публикуем образ frontend части сайта
   frontend_service:
@@ -105,9 +124,22 @@ jobs:
       - name: Post image to github packages
         run: |
           IMAGE_ID=$PREFIX/$IMAGE_NAME
-          VERSION=${GITHUB_SHA::7}
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+#          VERSION=${GITHUB_SHA::7}
+          docker tag $IMAGE_NAME $IMAGE_ID
+          docker push $IMAGE_ID
+
+#      - name: Run playbook (deploy)
+#        uses: dawidd6/action-ansible-playbook@v2
+#        with:
+#          playbook: deploy.yml
+#          directory: ./client
+#          # Указывайте ключик, не требующий подтверждения в виде пароля и будет вам счастье
+#          key: ${{ secrets.SSH_KEY }}
+#          inventory: |
+#            [all]
+#            95.154.71.35 ansible_ssh_user=${{secrets.SSH_USER}} ansible_ssh_port=${{ secrets.SSH_PORT }} ansible_become_user=${{ secrets.ANSIBLE_BECOME_USER }} ansible_become_password=${{ secrets.ANSIBLE_BECOME_PASSWORD }}
+#          options: |
+#            --verbose
           
   # Отправка сообщений telegram-ботом, если один из образов билдился
   # P.S. Пока отправка сообщений настроена только на владельца репозитория :D
@@ -125,19 +157,24 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       
-      # Получаем случайную картинку котика :D
+      # Получаем случайную картинку утки, раньше были котики((
       - name: wget
         uses: wei/wget@v1
         with:
-          args: -O cat.png https://cataas.com/cat
+          args: -O duck.png https://random-d.uk/api/v2/randomimg
+#          args: -O cat.png https://cataas.com/cat
           
       # Отправляем сообщение в телеграм с картинкой котика
       - name: Send message with status backend_service and frontend_service
         uses: appleboy/telegram-action@master
+#        strategy:
+#          matrix:
+#            chat-id: [ ]
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          photo: cat.png
+#          photo: cat.png
+          photo: duck.png
           format: 'markdown'
           message: |
             *Репозиторий:* `${{ github.repository }}`

@@ -24,3 +24,5 @@ composer.phar
 ###> temporary files ###
 *~
 ###< temporary files ###
+
+playbook.yml
