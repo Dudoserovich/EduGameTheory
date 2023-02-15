@@ -1,0 +1,27 @@
+{% extends '@!NelmioApiDoc/SwaggerUi/index.html.twig' %}
+
+{% block header %}
+    <a style="text-decoration: none;" id="logo" href="#" target="_blank">
+        <div style="display: flex; align-items: center;">
+            <h1 style="color: #3b4151; font-family: monospace;">
+                Game Theory API
+            </h1>
+            <img style="height: 4rem;" src="https://www.linkpicture.com/q/logo-wM_97l9-Q-transformed.png"
+                 alt="EduGameTheory">
+        </div>
+    </a>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ nelmioAsset(assets_mode, 'swagger-ui/swagger-ui.css') }}
+    {{ nelmioAsset(assets_mode, 'style.css') }}
+{% endblock stylesheets %}
+
+{% block swagger_initialization %}
+    <script type="text/javascript">
+        window.onload = loadSwaggerUI({
+            defaultModelsExpandDepth: -1,
+            deepLinking: true,
+        });
+    </script>
+{% endblock %}
