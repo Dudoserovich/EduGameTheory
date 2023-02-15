@@ -78,7 +78,7 @@ jobs:
       - name: Post image to github packages
         run: |
           IMAGE_ID=$PREFIX/$IMAGE_NAME
-#          VERSION=${GITHUB_SHA::7}
+          # VERSION=${GITHUB_SHA::7}
           docker tag $IMAGE_NAME $IMAGE_ID
           docker push $IMAGE_ID
 
@@ -124,7 +124,7 @@ jobs:
       - name: Post image to github packages
         run: |
           IMAGE_ID=$PREFIX/$IMAGE_NAME
-#          VERSION=${GITHUB_SHA::7}
+          # VERSION=${GITHUB_SHA::7}
           docker tag $IMAGE_NAME $IMAGE_ID
           docker push $IMAGE_ID
 
