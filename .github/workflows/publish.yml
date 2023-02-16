@@ -58,7 +58,7 @@ jobs:
   # Собираем и публикуем образ backend части сайта
   backend_service:
     needs: [check]
-    if: needs.check.outputs.backend_service == 'true'
+    if: needs.check.outputs.backend_service == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: egt_backend
@@ -104,7 +104,7 @@ jobs:
   # Собираем и публикуем образ frontend части сайта
   frontend_service:
     needs: [check]
-    if: needs.check.outputs.frontend_service == 'true'
+    if: needs.check.outputs.frontend_service == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: egt_frontend
@@ -142,7 +142,7 @@ jobs:
             -e @vault.yml
           
   # Отправка сообщений telegram-ботом, если один из образов билдился
-  # P.S. Пока отправка сообщений настроена только на владельца репозитория :D
+  # P.S. Пока отправка сообщений для нескольких людей прям вот так в открытую лежит, что не очень хорошо...
   send_telegram:
       needs: [backend_service, frontend_service]
       strategy:

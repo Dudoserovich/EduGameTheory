@@ -35,6 +35,7 @@ services:
       XDEBUG_SESSION: "PHPSTORM"
       PHP_IDE_CONFIG: "serverName=backend"
 
+  # TODO: Было бы хорошо скрыть environment от чужих глаз в какие-нибудь secrets
   db:
     image: mysql:5.7.27
     command: --default-authentication-plugin=mysql_native_password

@@ -1,8 +1,14 @@
+# ide
 .idea
 .vscode
 
+# dco with other names
 docker-compose-*.yml
 
+# Ancible files
 hosts.ini
 vault.yml
 ansible_vault_password
+
+# other .md
+UTILS.md
