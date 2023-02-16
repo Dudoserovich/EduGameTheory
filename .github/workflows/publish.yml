@@ -94,7 +94,7 @@ jobs:
 #          directory: ./server
           # Указывайте ключик, не требующий подтверждения в виде пароля и будет вам счастье
           key: ${{ secrets.SSH_KEY }}
-          vault_password: ${{ secrets.ANSIBLE_PASS_VAULT }}
+#          vault_password: ${{ secrets.ANSIBLE_PASS_VAULT }}
           inventory: |
             [all]
             95.154.71.35 ansible_ssh_user=${{ secrets.SSH_USER }} ansible_ssh_port=${{ secrets.SSH_PORT }} ansible_become_user=${{ secrets.ANSIBLE_BECOME_USER }} ansible_become_password=${{ secrets.ANSIBLE_BECOME_PASSWORD }}

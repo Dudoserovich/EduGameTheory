@@ -2,3 +2,7 @@
 .vscode
 
 docker-compose-*.yml
+
+hosts.ini
+vault.yml
+ansible_vault_password

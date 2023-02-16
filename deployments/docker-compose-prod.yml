@@ -14,13 +14,13 @@ services:
     command: [nginx-debug, '-g', 'daemon off;']
 
   frontend:
-    image: ghcr.io/dudoserovich/egt_frontend
+    image: ghcr.io/dudoserovich/egt_frontend:latest
     networks:
       - dudoser-net
     command: npm start
 
   backend:
-    image: ghcr.io/dudoserovich/egt_backend
+    image: ghcr.io/dudoserovich/egt_backend:latest
     restart: on-failure
     environment:
       WEB_DOCUMENT_ROOT: '/app/public'
