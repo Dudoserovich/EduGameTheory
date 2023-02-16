@@ -150,7 +150,7 @@ jobs:
         TELEGRAM_TO_NASTYA: ${{ secrets.TELEGRAM_TO_NASTYA }}
       strategy:
         matrix:
-          chat_id: [TELEGRAM_TO_OWNER, TELEGRAM_TO_NASTYA]
+          chat_id: [$TELEGRAM_TO_OWNER, $TELEGRAM_TO_NASTYA]
       # Условие до outputs говорит о том, что job нужно запускать независимо от того, 
       #   что предыдущие job могут быть пропущены
       # Остальная часть условия отвечает за проверку на хотя бы 1 сбилженный образ
