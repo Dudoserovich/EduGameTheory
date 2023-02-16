@@ -145,6 +145,9 @@ jobs:
   # P.S. Пока отправка сообщений настроена только на владельца репозитория :D
   send_telegram:
       needs: [backend_service, frontend_service]
+      strategy:
+        matrix:
+          chat_id: [${{ secrets.TELEGRAM_TO_OWNER }}, ${{ secrets.TELEGRAM_TO_NASTYA }}]
       # Условие до outputs говорит о том, что job нужно запускать независимо от того, 
       #   что предыдущие job могут быть пропущены
       # Остальная часть условия отвечает за проверку на хотя бы 1 сбилженный образ
@@ -165,9 +168,6 @@ jobs:
           
       # Отправляем сообщение в телеграм с картинкой котика
       - name: Send message with status backend_service and frontend_service
-        strategy:
-          matrix:
-            chat_id: [${{ secrets.TELEGRAM_TO_OWNER }}, ${{ secrets.TELEGRAM_TO_NASTYA }}]
         uses: appleboy/telegram-action@master
         with:
 #          to: ${{ secrets.TELEGRAM_TO }}
