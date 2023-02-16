@@ -1,19 +1,7 @@
 ---
 - hosts: all
   gather_facts: true
-#  vars:
-#    service_path: /opt/egt/server
-#    app_path: /opt/egt
   tasks:
-#    - name: "create {{ APP_PATH }}/"
-#      file:
-#        path: "{{ APP_PATH }}/server/"
-#        state: "directory"
-#        owner: "{{ USER }}"
-#        group: "{{ GROUP }}"
-#        mode: 0775
-#      become: yes
-#      become_method: sudo
 
     - name: "copy docker-compose.yml"
       copy:
