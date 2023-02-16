@@ -145,12 +145,9 @@ jobs:
   # P.S. Пока отправка сообщений настроена только на владельца репозитория :D
   send_telegram:
       needs: [backend_service, frontend_service]
-      env:
-        TELEGRAM_TO_OWNER: ${{ secrets.TELEGRAM_TO_OWNER }}
-        TELEGRAM_TO_NASTYA: ${{ secrets.TELEGRAM_TO_NASTYA }}
       strategy:
         matrix:
-          chat_id: [$TELEGRAM_TO_OWNER, $TELEGRAM_TO_NASTYA]
+          chat_id: [503246477, 755526816]
       # Условие до outputs говорит о том, что job нужно запускать независимо от того, 
       #   что предыдущие job могут быть пропущены
       # Остальная часть условия отвечает за проверку на хотя бы 1 сбилженный образ
