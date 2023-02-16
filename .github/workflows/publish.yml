@@ -166,11 +166,12 @@ jobs:
       # Отправляем сообщение в телеграм с картинкой котика
       - name: Send message with status backend_service and frontend_service
         uses: appleboy/telegram-action@master
-#        strategy:
-#          matrix:
-#            chat-id: [ ]
+        strategy:
+          matrix:
+            chat-id: [${{ TELEGRAM_TO_OWNER }}, ${{ TELEGRAM_TO_NASTYA }}]
         with:
-          to: ${{ secrets.TELEGRAM_TO }}
+#          to: ${{ secrets.TELEGRAM_TO }}
+          to: ${{ matrix.chat-id }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
 #          photo: cat.png
           photo: duck.png
