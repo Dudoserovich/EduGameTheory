@@ -128,6 +128,11 @@ jobs:
           docker push $IMAGE_ID
 #          VERSION=${GITHUB_SHA::7}
 
+      - name: Run up vault playbook
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT }}" > vault.yml
+          cat vault.yml
+
       - name: Run playbook (deploy)
         uses: dawidd6/action-ansible-playbook@v2
         with:

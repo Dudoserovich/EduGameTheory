@@ -48,4 +48,3 @@
       shell: |
         cd {{ APP_PATH }};
         docker compose exec backend bash -c "cd app; make set-backend";
-        exit 1;
