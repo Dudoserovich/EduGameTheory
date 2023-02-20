@@ -33,7 +33,7 @@ class TaskView
     public Topic $topic;
 
     /**
-     * @OA\Property(property="owner", ref="#/components/schemas/UserView1")
+     * @OA\Property(property="owner", ref="#/components/schemas/UserIdAndFioView")
      * @Groups({"default", "owner"})
      */
     public UserView $owner;

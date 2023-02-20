@@ -12,7 +12,7 @@ nelmio_api_doc:
             - { alias: UserAchievement,       type: App\Entity\UserAchievement,       groups: [ "default" ] }
             - { alias: UserEducation,         type: App\Entity\UserEducation,         groups: [ "default" ] }
 
-            - alias: UserView1
+            - alias: UserIdAndFioView
               type: App\Schema\UserView
               groups: [ "id", "fio" ]
             - alias: UserView
