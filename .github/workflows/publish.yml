@@ -17,6 +17,14 @@ on:
       - 'docs/**'
 
   workflow_dispatch:
+    inputs:
+      backend_service:
+        type: boolean
+        required: false
+
+      frontend_service:
+        type: boolean
+        required: false
 
 env:
   PREFIX: ghcr.io/dudoserovich
@@ -58,7 +66,7 @@ jobs:
   # Собираем и публикуем образ backend части сайта
   backend_service:
     needs: [check]
-    if: needs.check.outputs.backend_service == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.check.outputs.backend_service == 'true' || github.event.inputs.backend_service
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: egt_backend
@@ -104,7 +112,7 @@ jobs:
   # Собираем и публикуем образ frontend части сайта
   frontend_service:
     needs: [check]
-    if: needs.check.outputs.frontend_service == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.check.outputs.frontend_service == 'true' || github.event.inputs.frontend_service
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: egt_frontend
