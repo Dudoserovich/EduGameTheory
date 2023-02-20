@@ -36,6 +36,14 @@ class TaskMark
     private ?User $user;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Task::class)
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
+     * @OA\Property(ref=@Model(type=Task::class))
+     * @Groups({"default"})
+     */
+    private ?Task $task;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      * @OA\Property(minimum=2, maximum=5)
      * @Groups({"default"})
@@ -62,6 +70,17 @@ class TaskMark
     public function setUser(?User $user): self
     {
         $this->user = $user;
+        return $this;
+    }
+
+    public function getTask(): ?Task
+    {
+        return $this->task;
+    }
+
+    public function setTask(?Task $task): self
+    {
+        $this->task = $task;
         return $this;
     }
 
