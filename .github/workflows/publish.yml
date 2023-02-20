@@ -8,13 +8,6 @@ on:
       - 'README.md'
       - 'backup/**'
       - 'docs/**'
-      
-  pull_request:
-    branches: [ "main" ]
-    paths-ignore:
-      - 'README.md'
-      - 'backup/**'
-      - 'docs/**'
 
   workflow_dispatch:
     inputs:
