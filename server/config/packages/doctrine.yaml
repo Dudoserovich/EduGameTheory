@@ -12,16 +12,21 @@ doctrine:
         mappings:
             App:
                 is_bundle: false
+                type: annotation
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                enabled: true
 
-when@test:
-    doctrine:
-        dbal:
-            # "TEST_TOKEN" is typically set by ParaTest
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
-
+#when@test:
+#    doctrine:
+#        dbal:
+#            # "TEST_TOKEN" is typically set by ParaTest
+#            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+#
 when@prod:
     doctrine:
         orm:
