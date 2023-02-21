@@ -33,8 +33,8 @@ class UserFixtures extends BaseFixtureAbstract
         $admin
             ->setUsername("admin")
             ->setPassword($this->passwordHasher->hashPassword($admin, "admin"))
-            ->setFio($this->faker->name)
-            ->setEmail($this->faker->email)
+            ->setFio($this->faker->name())
+            ->setEmail($this->faker->email())
             ->setRoles([self::ROLE_ADMIN]);
         $manager->persist($admin);
         $this->saveReference($admin);
@@ -46,8 +46,8 @@ class UserFixtures extends BaseFixtureAbstract
                 ->setRoles($i % 2 ? [self::ROLE_USER] : [self::ROLE_TEACHER])
                 ->setUsername("login$i")
                 ->setPassword($this->passwordHasher->hashPassword($user, "password$i"))
-                ->setFio($this->faker->name)
-                ->setEmail($this->faker->email);
+                ->setFio($this->faker->name())
+                ->setEmail($this->faker->email());
             $manager->persist($user);
             $this->saveReference($user);
         }
