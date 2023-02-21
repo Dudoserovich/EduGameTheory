@@ -6,7 +6,6 @@ use App\Entity\Term;
 use App\Repository\TermRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,6 +45,7 @@ class TermController extends ApiController
      * @OA\Tag(name="Term")
      * @Security(name="Bearer")
      */
+//    #[Get(deprecated: true)]
     #[Route(name: 'get', methods: ['GET'])]
     public function getTerms(TermPreviewer $termPreviewer): JsonResponse
     {
@@ -88,17 +88,8 @@ class TermController extends ApiController
 
 //        $this->setSoftDeleteable(false);
         $term = $this->termRepository->findOneBy(['name' => $request['name']]);
-        if ($term) {
-//            if ($grade->getDeletedAt()) {
-//                $grade->setDeletedAt(null);
-//                $this->em->persist($grade);
-//                $this->em->flush();
-//                $this->setSoftDeleteable();
-//                return $this->respondWithSuccess("Term added successfully");
-//            }
-
+        if ($term)
             return $this->respondValidationError('A term with such name has already been created');
-        }
 
         $term = new Term();
         try {
