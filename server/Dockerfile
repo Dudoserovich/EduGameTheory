@@ -9,4 +9,6 @@ RUN pecl install xdebug \
     && echo "xdebug.client_host = host.docker.internal" >>  \
     /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
+WORKDIR /app
+
 LABEL org.opencontainers.image.source=https://github.com/Dudoserovich/EduGameTheory
