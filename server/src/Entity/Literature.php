@@ -45,7 +45,7 @@ class Literature
      * @Groups({"default"})
      */
     #[Assert\Regex(
-        pattern: '/((https?:\/\/)?[^\s.]+\.[\w][^\s]+)/',
+        pattern: "^(?:http(s)?:\/\/)?[\w.-]{2,}(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$",
         message: 'Your name cannot contain a number',
         match: false,
     )]
