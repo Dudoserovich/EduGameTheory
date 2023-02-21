@@ -2,8 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Attestation;
-use App\Entity\CompetenceQuestion;
 use App\Entity\Literature;
 use App\Entity\Topic;
 use App\Entity\TopicLiterature;
@@ -27,7 +25,7 @@ class LiteratureFixtures extends BaseFixtureAbstract implements DependentFixture
             $literature = new Literature();
             $literature
                 ->setName($this->faker->unique()->word())
-                ->setLink($this->faker->regexify('((https?:\/\/)?[^\s.]+\.[\w][^\s]+)'));
+                ->setLink($this->faker->url());
             $manager->persist($literature);
 
             # Решение для включения нескольких тем (топиков)

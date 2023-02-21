@@ -45,8 +45,8 @@ class Literature
      * @Groups({"default"})
      */
     #[Assert\Regex(
-        pattern: '/((https?:\/\/)?[^\s.]+\.[\w][^\s]+)/',
-        message: 'Your name cannot contain a number',
+        pattern: "/^(?:http(s)?:\/\/)?[\w.-]{2,}(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/",
+        message: 'Invalid link',
         match: false,
     )]
     private ?string $link = null;
