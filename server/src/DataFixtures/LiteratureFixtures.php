@@ -2,8 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Attestation;
-use App\Entity\CompetenceQuestion;
 use App\Entity\Literature;
 use App\Entity\Topic;
 use App\Entity\TopicLiterature;
