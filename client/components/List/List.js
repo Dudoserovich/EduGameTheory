@@ -86,7 +86,7 @@ export default function List({
                             :
                             items.map((item, i) =>
                                 linked
-                                    ? <Link href={linkPattern + i}>
+                                    ? <Link key={i} href={linkPattern + i}>
                                         <div
                                             className={classNames(s.li, {[s.li_selected]: selectedItems.findIndex(el => comparisonObj(el, item)) !== -1})}
                                             key={i}
