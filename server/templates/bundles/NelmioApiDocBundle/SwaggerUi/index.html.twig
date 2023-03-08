@@ -3,8 +3,13 @@
 {% block header %}
     <a style="text-decoration: none;" id="logo" href="#" target="_blank">
         <div style="display: flex; align-items: center;">
-            <h1 style="color: #3b4151; font-family: monospace;">
-                Game Theory API
+            <h1 id="title-h1" style="
+                /*color: #3b4151;*/
+                color: #fad2b0;
+                font-family: monospace;
+                border-right: solid;"
+            >
+
             </h1>
             <img style="height: 4rem;" src="https://www.linkpicture.com/q/logo-wM_97l9-Q-transformed.png"
                  alt="EduGameTheory">
@@ -12,16 +17,58 @@
     </a>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ nelmioAsset(assets_mode, 'swagger-ui/swagger-ui.css') }}
-    {{ nelmioAsset(assets_mode, 'style.css') }}
-{% endblock stylesheets %}
-
 {% block swagger_initialization %}
     <script type="text/javascript">
-        window.onload = loadSwaggerUI({
-            defaultModelsExpandDepth: -1,
-            deepLinking: true,
-        });
+        window.onload = () => {
+            loadSwaggerUI({
+                // Отображение моделей(схем)
+                defaultModelsExpandDepth: -1,
+                // Линковка моделей(схем)
+                deepLinking: true,
+                // Раскрытость тегов, параметры: ["list", "full", "none"]
+                docExpansion: "none",
+                // Поиск по тегам
+                filter: '',
+            });
+
+            typeWriter()
+        }
+
+        // typing animation заголовка :D
+        let title = document.getElementById('title-h1');
+        let i = 0;
+        let txt = "Game Theory API"
+
+        function typeWriter() {
+            if (i < txt.length) {
+                title.innerHTML += txt.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+
     </script>
 {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+{#  Моргающий курсор у текста  #}
+    <style>
+        #title-h1 {
+            -webkit-animation: title-h1 3.5s linear infinite;
+            animation: title-h1 3.5s linear infinite;
+        }
+        @-webkit-keyframes title-h1 {
+            0% { border-right-color: rgba(243, 194, 132, 1); }
+            50% { border-right-color: rgba(243, 194, 132, 0); }
+            100% { border-right-color: rgba(243, 194, 132, 1); }
+        }
+        @keyframes title-h1 {
+            0% { border-right-color: rgba(243, 194, 132, 1); }
+            50% { border-right-color: rgba(243, 194, 132, 0); }
+            100% { border-right-color: rgba(243, 194, 132, 1); }
+        }
+    </style>
+
+{% endblock stylesheets %}
