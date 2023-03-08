@@ -49,12 +49,12 @@ class TermController extends ApiController
     #[Route(name: 'get', methods: ['GET'])]
     public function getTerms(TermPreviewer $termPreviewer): JsonResponse
     {
-        $gradePreviews = array_map(
+        $termPreviewers = array_map(
             fn(Term $term): array => $termPreviewer->preview($term),
             $this->termRepository->findBy([], ["name" => "ASC"])
         );
 
-        return $this->response($gradePreviews);
+        return $this->response($termPreviewers);
     }
 
     /**
@@ -68,7 +68,7 @@ class TermController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Term added successgully"
+     *     description="Term added successfully"
      * )
      * * @OA\Response(
      *     response=403,
@@ -176,14 +176,14 @@ class TermController extends ApiController
      * @Security(name="Bearer")
      */
     #[Route('/{termId}', name: 'get_by_id', requirements: ['termId' => '\d+'], methods: ['GET'])]
-    public function getTerm(TermPreviewer $gradePreviewer, int $gradeId): JsonResponse
+    public function getTerm(TermPreviewer $termPreviewer, int $termId): JsonResponse
     {
-        $grade = $this->termRepository->find($gradeId);
-        if (!$grade) {
+        $term = $this->termRepository->find($termId);
+        if (!$term) {
             return $this->respondNotFound("Term not found");
         }
 
-        return $this->response($gradePreviewer->preview($grade));
+        return $this->response($termPreviewer->preview($term));
     }
 
     /**
@@ -197,7 +197,7 @@ class TermController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Term updated successgully"
+     *     description="Term updated successfully"
      * )
      * * @OA\Response(
      *     response=403,
