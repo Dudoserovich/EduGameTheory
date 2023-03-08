@@ -1,4 +1,5 @@
 nelmio_api_doc:
+    # TODO: Добавить нормальные examples для входных данных
     models:
         names:
             - { alias: User,                  type: App\Entity\User,                  groups: [ "default" ] }
@@ -45,6 +46,9 @@ nelmio_api_doc:
             - alias: UserEducationView
               type: App\Schema\UserEducationView
               groups: [ "default" ]
+            - alias: LiteratureView
+              type: App\Schema\LiteratureView
+              groups: [ "default" ]
     documentation:
 #        servers:
 #          - url: /
@@ -58,6 +62,8 @@ nelmio_api_doc:
             description: Взаимодействие с пользователями
           - name: jwt token
             description: Аутентификация и получение JWT токена
+          - name: Literature
+            description: Взаимодействие со списком литературы
         info:
             title: Game Theory API
             description: | 

@@ -43,6 +43,8 @@ class Term
      */
     private ?string $description;
 
+    # TODO: Термину тоже нужен топик, причём с возможностью оставить поле null
+
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @OA\Property(format="date-time")
