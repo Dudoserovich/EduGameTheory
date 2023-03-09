@@ -1,9 +1,9 @@
 # EduGameTheory
-Полезные ссылки:
+**Полезные ссылки:**
 - [Ссылка на Miro](https://miro.com/app/board/uXjVOzMrYDg=/)
 - [Ссылка на Confluence](https://game-theory-edu.atlassian.net/wiki/spaces/GTTS/pages/10092545)
 
-Для разработки используется docker версии 20.10.21
+Для сборки проекта используется **docker** версии 20.10.21
 - [установка docker для Linux](https://docs.docker.com/engine/install/ubuntu/#set-up-the-repository) 
 - [установка Docker desktop для Windows/Mac](https://www.docker.com/)
 
