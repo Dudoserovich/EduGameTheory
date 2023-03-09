@@ -14,7 +14,7 @@ Front пока засран говном 😢
 
 ## Организационные вопросы
 ### Общие моменты
-- **url Swager'а:** ```localhost/api/doc```
+- **url Swager'а:** `dudoser.msur.team/api/doc`
 - Все **текущие задачки** лежат на [kanban](https://github.com/Dudoserovich/EduGameTheory/projects/1)
 ### Git
 - Делаем `git pull` перед началом работы!
