@@ -62,8 +62,9 @@ class TermController extends ApiController
      * @OA\RequestBody (
      *     required=true,
      *     @OA\JsonContent(
+     *         example={"name": "Игрок", "description": "Одна из сторон в игровой ситуации"},
      *         @OA\Property(property="name", ref="#/components/schemas/Term/properties/name"),
-     *         @OA\Property(property="lvl", ref="#/components/schemas/Term/properties/description")
+     *         @OA\Property(property="description", ref="#/components/schemas/Term/properties/description")
      *     )
      * )
      * @OA\Response(
@@ -105,59 +106,6 @@ class TermController extends ApiController
     }
 
     /**
-     * Delete terms
-     * @OA\RequestBody(
-     *     required=true,
-     *     @OA\JsonContent(
-     *         @OA\Property(
-     *             property="terms_id",
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Term/properties/id")
-     *         )
-     *     )
-     * )
-     * @OA\Response(
-     *     response=200,
-     *     description="Terms deleted successfully"
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Term not found"
-     * )
-     * @OA\Tag(name="Term")
-     * @Security(name="Bearer")
-     */
-    #[Route(name: 'delete', methods: ['DELETE'])]
-    public function delTerms(Request $request): JsonResponse
-    {
-        $request = $request->request->all();
-
-        try {
-            $termsIds = $request['terms_id'];
-
-            $this->em->beginTransaction();
-            foreach ($termsIds as $termsId) {
-                $term = $this->termRepository->find($termsId);
-                if (!$term) {
-                    $this->em->rollback();
-                    return $this->respondNotFound("Term not found");
-                }
-                $this->em->remove($term);
-            }
-            $this->em->flush();
-            $this->em->commit();
-
-            return $this->respondWithSuccess("Terms deleted successfully");
-        } catch (Exception) {
-            return $this->respondValidationError();
-        }
-    }
-
-    /**
      * Term object
      * @OA\Response(
      *     response=200,
@@ -192,7 +140,7 @@ class TermController extends ApiController
      *     required=true,
      *     @OA\JsonContent(
      *         @OA\Property(property="name", nullable=true, ref="#/components/schemas/Term/properties/name"),
-     *         @OA\Property(property="lvl", nullable=true, ref="#/components/schemas/Term/properties/description")
+     *         @OA\Property(property="description", nullable=true, ref="#/components/schemas/Term/properties/description")
      *     )
      * )
      * @OA\Response(

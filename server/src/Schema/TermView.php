@@ -3,6 +3,7 @@
 namespace App\Schema;
 
 use OpenApi\Annotations as OA;
+use OpenApi\Attributes\Property;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 class TermView
@@ -17,11 +18,13 @@ class TermView
      * @OA\Property(property="name", ref="#/components/schemas/Term/properties/name")
      * @Groups({"default", "name"})
      */
+    #[Property(example: "Игрок")]
     public string $name;
 
     /**
      * @OA\Property(property="description", ref="#/components/schemas/Term/properties/description")
      * @Groups({"default", "description"})
      */
+    #[Property(example: "Одна из сторон в игровой ситуации")]
     public string $description;
 }
