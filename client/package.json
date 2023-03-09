@@ -13,7 +13,7 @@
     "@inovua/reactdatagrid-community": "^4.4.2",
     "@material-ui/core": "^4.12.1",
     "@material-ui/icons": "^4.11.2",
-    "@mui/icons-material": "^5.10.14",
+    "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.9",
     "@reduxjs/toolkit": "^1.9.2",
     "axios": "^0.27.2",
