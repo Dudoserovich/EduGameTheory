@@ -7,6 +7,7 @@ parameters:
     router.request_context.host: '%env(string:ROUTER_HOST)%'
     router.request_context.scheme: '%env(string:ROUTER_SCHEME)%'
     router.request_context.base_url: '%env(string:ROUTER_BASE_URL)%'
+#    photo_dir: "%kernel.project_dir%/public/uploads/photos"
 
 services:
     # default configuration for services in *this* file
