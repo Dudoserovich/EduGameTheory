@@ -160,7 +160,7 @@ class LiteratureController extends ApiController
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
-     *         @OA\Property(property="name", nullable=true, ref="#/components/schemas/LiteratureView/properties/name"),
+     *         @OA\Property(property="name", nullable=false, ref="#/components/schemas/LiteratureView/properties/name"),
      *         @OA\Property(property="link", nullable=true, ref="#/components/schemas/LiteratureView/properties/link"),
      *         @OA\Property(property="old_topic_id", ref="#/components/schemas/Topic/properties/id"),
      *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
@@ -170,7 +170,7 @@ class LiteratureController extends ApiController
      *     response=200,
      *     description="Literature updated successfully"
      * )
-     * * @OA\Response(
+     * @OA\Response(
      *     response=403,
      *     description="Permission denied!"
      * )
