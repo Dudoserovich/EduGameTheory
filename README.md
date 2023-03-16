@@ -1,5 +1,9 @@
 # EduGameTheory
-Для разработки используется docker версии 20.10.21
+**Полезные ссылки:**
+- [Ссылка на Miro](https://miro.com/app/board/uXjVOzMrYDg=/)
+- [Ссылка на Confluence](https://game-theory-edu.atlassian.net/wiki/spaces/GTTS/pages/10092545)
+
+Для сборки проекта используется **docker** версии 20.10.21
 - [установка docker для Linux](https://docs.docker.com/engine/install/ubuntu/#set-up-the-repository) 
 - [установка Docker desktop для Windows/Mac](https://www.docker.com/)
 
@@ -10,7 +14,7 @@ Front пока засран говном 😢
 
 ## Организационные вопросы
 ### Общие моменты
-- **url Swager'а:** ```localhost/api/doc```
+- **url Swager'а:** `dudoser.msur.team/api/doc`
 - Все **текущие задачки** лежат на [kanban](https://github.com/Dudoserovich/EduGameTheory/projects/1)
 ### Git
 - Делаем `git pull` перед началом работы!
