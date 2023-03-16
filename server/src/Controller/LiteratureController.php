@@ -170,6 +170,7 @@ class LiteratureController extends ApiController
      *     response=200,
      *     description="Literature updated successfully"
      * )
+     *
      * @OA\Response(
      *     response=403,
      *     description="Permission denied!"
