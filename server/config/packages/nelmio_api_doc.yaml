@@ -62,6 +62,8 @@ nelmio_api_doc:
             description: Аутентификация и получение JWT токена
           - name: Literature
             description: Взаимодействие со списком литературы
+          - name: Achievement
+            description: Взаимодействие с достижениями
         info:
             title: Game Theory API
             description: | 

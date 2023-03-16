@@ -1,0 +1,29 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        achievement:
+            uri_prefix: /achievements/upload
+            upload_destination: '%kernel.project_dir%/public/uploads/achievement'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: true
+
+#    db_driver: orm        # or mongodb or phpcr - default db driver
+#    twig: false            # set to false to disable twig integration
+#    form: false            # set to false to disable form integration
+##    storage: file_system  # or gaufrette or flysystem
+#    metadata:
+##        auto_detection: true
+##        cache: file
+#        type: annotation    # or annotation
+#    mappings:
+#        achievement:
+#            uri_prefix: /uploads/achievement    # uri prefix to resource
+#            upload_destination: '%kernel.project_dir%/public/uploads/achievement'   # gaufrette storage fs id, required
+#            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+#            namer: ~                # specify a file namer service for this entity, null default
+#            directory_namer: ~      # specify a directory namer service for this entity, null default
+#            delete_on_remove: true  # determine whether to delete file upon removal of entity
+#            delete_on_update: true  # determine wheter to delete the file upon update of entity
+#            inject_on_load: false   # determine whether to inject a File instance upon load
+#            db_driver: orm        # override the default db driver set above. Allow separate driver per mapping
