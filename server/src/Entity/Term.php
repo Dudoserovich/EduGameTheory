@@ -43,7 +43,13 @@ class Term
      */
     private ?string $description;
 
-    # TODO: Термину тоже нужен топик, причём с возможностью оставить поле null
+    /**
+     * @ORM\ManyToOne(targetEntity=Topic::class)
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
+     * @OA\Property(ref=@Model(type=Topic::class))
+     * @Groups({"default"})
+     */
+    private ?Topic $topic;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -76,6 +82,18 @@ class Term
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+        return $this;
+    }
+
+    public function getTopic(): ?Topic
+    {
+        return $this->topic;
+    }
+
+    public function setTopic(?Topic $topic): self
+    {
+        $this->topic = $topic;
+
         return $this;
     }
 

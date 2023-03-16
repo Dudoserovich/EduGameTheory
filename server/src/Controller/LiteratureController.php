@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Literature;
+use App\Entity\TopicLiterature;
 use App\Previewer\LiteraturePreviewer;
 use App\Repository\LiteratureRepository;
+use App\Repository\TopicLiteratureRepository;
+use App\Repository\TopicRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,7 +49,6 @@ class LiteratureController extends ApiController
      * @OA\Tag(name="Literature")
      * @Security(name="Bearer")
      */
-//    #[Get(deprecated: true)]
     #[Route(name: 'get', methods: ['GET'])]
     public function getLiteratures(LiteraturePreviewer $literaturePreviewer): JsonResponse
     {
@@ -58,15 +60,14 @@ class LiteratureController extends ApiController
         return $this->response($literaturePreviewers);
     }
 
-    # TODO: помимо самой литературы,
-    #   нужно добавление ему топика
     /**
      * Add new literature
      * @OA\RequestBody (
      *     required=true,
      *     @OA\JsonContent(
      *         @OA\Property(property="name", ref="#/components/schemas/LiteratureView/properties/name"),
-     *         @OA\Property(property="lvl", ref="#/components/schemas/LiteratureView/properties/link")
+     *         @OA\Property(property="link", ref="#/components/schemas/LiteratureView/properties/link"),
+     *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
      * @OA\Response(
@@ -85,7 +86,7 @@ class LiteratureController extends ApiController
      * @Security(name="Bearer")
      */
     #[Route(name: 'post', methods: ['POST'])]
-    public function postLiterature(Request $request): JsonResponse
+    public function postLiterature(Request $request, TopicRepository $topicRepository): JsonResponse
     {
         $request = $request->request->all();
 
@@ -94,68 +95,26 @@ class LiteratureController extends ApiController
         if ($literature)
             return $this->respondValidationError('A literature with such name has already been created');
 
+        $topic = $topicRepository->find($request['topic_id']);
+        if (!$topic) {
+            return $this->respondNotFound("Topic not found");
+        }
+
         $literature = new Literature();
         try {
             $literature
                 ->setName($request['name'])
                 ->setLink($request['link']);
             $this->em->persist($literature);
+
+            $topicLiterature = new TopicLiterature();
+            $topicLiterature
+                ->setLiterature($literature)
+                ->setTopic($topic);
+            $this->em->persist($topicLiterature);
+
             $this->em->flush();
             return $this->respondWithSuccess("Literature added successfully");
-        } catch (Exception) {
-            return $this->respondValidationError();
-        }
-    }
-
-    # TODO: Это скорее всего лишнее
-    /**
-     * Delete literatures
-     * @OA\RequestBody(
-     *     required=true,
-     *     @OA\JsonContent(
-     *         @OA\Property(
-     *             property="Literatures_id",
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/LiteratureView/properties/id")
-     *         )
-     *     )
-     * )
-     * @OA\Response(
-     *     response=200,
-     *     description="Literatures deleted successfully"
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Literature not found"
-     * )
-     * @OA\Tag(name="Literature")
-     * @Security(name="Bearer")
-     */
-    #[Route(name: 'delete', methods: ['DELETE'])]
-    public function delLiteratures(Request $request): JsonResponse
-    {
-        $request = $request->request->all();
-
-        try {
-            $literatureIds = $request['literature_id'];
-
-            $this->em->beginTransaction();
-            foreach ($literatureIds as $literatureId) {
-                $literature = $this->literatureRepository->find($literatureId);
-                if (!$literature) {
-                    $this->em->rollback();
-                    return $this->respondNotFound("Literature not found");
-                }
-                $this->em->remove($literature);
-            }
-            $this->em->flush();
-            $this->em->commit();
-
-            return $this->respondWithSuccess("Literatures deleted successfully");
         } catch (Exception) {
             return $this->respondValidationError();
         }
@@ -201,15 +160,17 @@ class LiteratureController extends ApiController
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
-     *         @OA\Property(property="name", nullable=true, ref="#/components/schemas/LiteratureView/properties/name"),
-     *         @OA\Property(property="link", nullable=true, ref="#/components/schemas/LiteratureView/properties/link")
+     *         @OA\Property(property="name", nullable=false, ref="#/components/schemas/LiteratureView/properties/name"),
+     *         @OA\Property(property="link", nullable=true, ref="#/components/schemas/LiteratureView/properties/link"),
+     *         @OA\Property(property="old_topic_id", ref="#/components/schemas/Topic/properties/id"),
+     *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
      * @OA\Response(
      *     response=200,
      *     description="Literature updated successfully"
      * )
-     * * @OA\Response(
+     * @OA\Response(
      *     response=403,
      *     description="Permission denied!"
      * )
@@ -225,7 +186,10 @@ class LiteratureController extends ApiController
      * @Security(name="Bearer")
      */
     #[Route('/{literatureId}', name: 'put_by_id', requirements: ['literatureId' => '\d+'], methods: ['PUT'])]
-    public function upLiterature(Request $request, int $literatureId): JsonResponse
+    public function upLiterature(Request $request,
+                                 int $literatureId,
+                                 TopicLiteratureRepository $topicLiteratureRepository,
+                                 TopicRepository $topicRepository): JsonResponse
     {
         $literature = $this->literatureRepository->find($literatureId);
         if (!$literature) {
@@ -240,6 +204,20 @@ class LiteratureController extends ApiController
             }
             if (isset($request['link'])) {
                 $literature->setLink($request['link']);
+            }
+            if (isset($request['topic_id'])) {
+                $newTopic = $topicRepository->find($request['topic_id']);
+                $topicLiterature = $topicLiteratureRepository->findOneBy(["literature" => $literature, "topic" => $newTopic]);
+
+                // Попытка заменить топик на уже существующий
+                if ($topicLiterature)
+                    return $this->respondWithSuccess("Literature is already exists");
+                else { // Если меняем топик, нам нужно заменить на новый
+                    $oldTopic = $topicRepository->find($request["old_topic_id"]);
+                    $topicLiterature = $topicLiteratureRepository->findOneBy(["literature" => $literature, "topic" => $oldTopic]);
+
+                    $topicLiterature->setTopic($newTopic);
+                }
             }
 
             $this->em->flush();

@@ -1,5 +1,4 @@
 nelmio_api_doc:
-    # TODO: Добавить нормальные examples для входных данных
     models:
         names:
             - { alias: User,                  type: App\Entity\User,                  groups: [ "default" ] }
@@ -50,20 +49,21 @@ nelmio_api_doc:
               type: App\Schema\LiteratureView
               groups: [ "default" ]
     documentation:
-#        servers:
-#          - url: /
-#            description: Локальная API
-#          - url: https://dudoser.msur.team
-#            description: Развёрнутый сервер с API
+        servers:
+          - url: /
+          - url: https://dudoser.msur.team
+            description: API на удалённом сервере
         tags:
           - name: Term
             description: Взаимодействие с терминами
           - name: User
             description: Взаимодействие с пользователями
-          - name: jwt token
+          - name: Login Check
             description: Аутентификация и получение JWT токена
           - name: Literature
             description: Взаимодействие со списком литературы
+          - name: Achievement
+            description: Взаимодействие с достижениями
         info:
             title: Game Theory API
             description: | 
@@ -85,7 +85,7 @@ nelmio_api_doc:
 #              deprecated: true
               security: [ ]
               tags:
-                - jwt token
+                - Login Check
               summary: Authenticate and get JWT token
               requestBody:
                 description: Authenticate and get JWT token.
@@ -95,8 +95,10 @@ nelmio_api_doc:
                       type: object
                       properties:
                         username:
+                          example: "admin"
                           type: string
                         password:
+                          example: "admin"
                           type: string
         components:
             securitySchemes:

@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 //use ApiPlatform\Core\Validator\ValidatorInterface;
 
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -68,6 +69,7 @@ class UserController extends ApiController
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
+     *         example={"login": "pupil", "password": "pupil123", "email": "pupil@mail.ru", "fio": "Иваненко Иван Иванович"},
      *         @OA\Property(property="login", ref="#/components/schemas/User/properties/login"),
      *         @OA\Property(property="password", ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/User/properties/email"),
@@ -76,7 +78,7 @@ class UserController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Category added successgully"
+     *     description="User added successgully"
      * )
      * @OA\Response(
      *     response=403,
@@ -137,58 +139,6 @@ class UserController extends ApiController
             $this->em->flush();
 
             return $this->respondWithSuccess("User added successfully");
-        } catch (Exception) {
-            return $this->respondValidationError();
-        }
-    }
-
-    /**
-     * Delete users
-     * @OA\RequestBody(
-     *     @OA\JsonContent(
-     *         @OA\Property(
-     *             property="user_id",
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/User/properties/id")
-     *         )
-     *     )
-     * )
-     * @OA\Response(
-     *     response=200,
-     *     description="Users deleted successfully"
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="User not found"
-     * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
-     */
-    #[Route(name: 'delete', methods: ['DELETE'])]
-    public function delUsers(Request $request): JsonResponse
-    {
-        $request = $request->request->all();
-
-        try {
-            $userIds = $request['users_id'];
-
-            $this->em->beginTransaction();
-            foreach ($userIds as $userId) {
-                $user = $this->userRepository->find($userId);
-                if (!$user) {
-                    $this->em->rollback();
-                    return $this->respondNotFound("User not found");
-                }
-                $this->em->remove($user);
-            }
-            $this->em->flush();
-            $this->em->commit();
-
-            return $this->respondWithSuccess("Users deleted successfully");
         } catch (Exception) {
             return $this->respondValidationError();
         }
@@ -374,6 +324,13 @@ class UserController extends ApiController
      * @OA\RequestBody (
      *     required = true,
      *     @OA\JsonContent(
+     *         example={
+     *                  "login": "pupil",
+     *                  "oldPassword": "pupil123",
+     *                  "newPassword": "qwerty123",
+     *                  "email": "pupil@mail.ru",
+     *                  "fio": "Иваненко Иван Иванович"
+     *          },
      *         @OA\Property(property="login", nullable=true, ref="#/components/schemas/User/properties/login"),
      *         @OA\Property(property="oldPassword", nullable=true, ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="newPassword", nullable=true, ref="#/components/schemas/User/properties/password"),

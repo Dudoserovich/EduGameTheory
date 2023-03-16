@@ -27,3 +27,7 @@ composer.phar
 *~
 /.composer.cache
 ###< temporary files ###
+
+###> images for achievement ###
+/public/uploads/achievement/*
+###> images for achievement ###
