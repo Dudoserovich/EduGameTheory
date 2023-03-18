@@ -18,6 +18,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(name="Literature")
+ * @Security(name="Bearer")
+ */
 #[Route('/literatures', name: 'literatures_')]
 class LiteratureController extends ApiController
 {
@@ -46,8 +50,6 @@ class LiteratureController extends ApiController
      *     response=403,
      *     description="Permission deinied"
      * )
-     * @OA\Tag(name="Literature")
-     * @Security(name="Bearer")
      */
     #[Route(name: 'get', methods: ['GET'])]
     public function getLiteratures(LiteraturePreviewer $literaturePreviewer): JsonResponse
@@ -82,8 +84,6 @@ class LiteratureController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="Literature")
-     * @Security(name="Bearer")
      */
     #[Route(name: 'post', methods: ['POST'])]
     public function postLiterature(Request $request, TopicRepository $topicRepository): JsonResponse
@@ -135,8 +135,6 @@ class LiteratureController extends ApiController
      *     response=404,
      *     description="Literature not found"
      * )
-     * @OA\Tag(name="Literature")
-     * @Security(name="Bearer")
      */
     #[Route('/{literatureId}',
         name: 'get_by_id',
@@ -183,8 +181,6 @@ class LiteratureController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="Literature")
-     * @Security(name="Bearer")
      */
     #[Route('/{literatureId}', name: 'put_by_id', requirements: ['literatureId' => '\d+'], methods: ['PUT'])]
     public function upLiterature(Request $request,
@@ -243,8 +239,6 @@ class LiteratureController extends ApiController
      *     response=404,
      *     description="Literature not found"
      * )
-     * @OA\Tag(name="Literature")
-     * @Security(name="Bearer")
      */
     #[Route('/{literatureId}', name: 'delete_by_id', requirements: ['literatureId' => '\d+'], methods: ['DELETE'])]
     public function delLiterature(int $literatureId): JsonResponse

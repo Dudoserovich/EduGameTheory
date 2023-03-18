@@ -17,6 +17,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(name="Achievement")
+ * @Security(name="Bearer")
+ **/
 #[Route('/achievements', name: 'achievements_')]
 class AchievementController extends ApiController
 {
@@ -64,8 +68,6 @@ class AchievementController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route(name: 'post', methods: ['POST'])]
     public function postAchievement(Request $request, FileUploader $fileUploader): JsonResponse
@@ -122,8 +124,6 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Image not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route('/{achievementId}/image',
         name: 'get_image',
@@ -164,8 +164,6 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Achievement not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route('/{achievementId}',
         name: 'get_achievement',
@@ -224,8 +222,6 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Achievement not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route('/{achievementId}', name: 'put_by_id', requirements: ['achievementId' => '\d+'], methods: ['PUT'])]
     public function upAchievement(Request $request,
@@ -292,8 +288,6 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Achievement not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route('/{achievementId}',
         name: 'delete_by_id',
