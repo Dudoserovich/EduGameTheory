@@ -60,11 +60,15 @@ class Achievement
 
     /**
      * @ORM\Column(nullable="true")
+     * @OA\Property()
+     * @Groups({"default"})
      */
     private ?string $imageName = null;
 
     /**
      * @ORM\Column(nullable="true")
+     * @OA\Property()
+     * @Groups({"default"})
      */
     private ?int $imageSize = null;
 
