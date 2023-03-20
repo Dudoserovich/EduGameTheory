@@ -20,6 +20,9 @@ services:
   backend:
     image: the_dudoser/egt_backend
     restart: on-failure
+    build:
+      args:
+        ENV: dev
     volumes:
       - ./server:/app:delegated
     environment:
