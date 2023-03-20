@@ -44,6 +44,10 @@
     - name: "start services"
       shell: docker compose -f {{ APP_PATH }}/docker-compose.yml up -d
 
+    - name: "create uploads/achievement"
+      shell: |
+        docker compose -f {{ APP_PATH }}/docker-compose.yml exec backend bash -c "mkdir -p public/uploads/achievement";
+
     - name: "set backend"
       shell: |
         docker compose -f {{ APP_PATH }}/docker-compose.yml exec backend bash -c "make set-backend";
