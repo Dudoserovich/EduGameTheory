@@ -2,10 +2,15 @@
 // src/Service/FileUploader.php
 namespace App\Service;
 
+use App\Entity\Achievement;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Events;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
+//#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Achievement::class)]
 class FileUploader
 {
     private $targetDirectory;

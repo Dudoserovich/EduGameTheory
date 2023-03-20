@@ -21,6 +21,17 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 
+# TODO: Разобраться с soft delete
+# TODO: Запросы на получение пользователя с его достижениями
+# TODO: Запросы на получение пользователя с его процессом обучения
+# TODO: Запросы на получение пользователя с его пройденными заданиями вне обучения
+# TODO: Нужен listener, который при получении пользователем достижения,
+#   будет выплёвывать его на frontend часть
+
+/**
+ * @OA\Tag(name="User")
+ * @Security(name="Bearer")
+ */
 #[Route('/users', name: 'users_')]
 class UserController extends ApiController
 {
@@ -47,8 +58,6 @@ class UserController extends ApiController
      *     response=403,
      *     description="Permission denied"
      * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
      */
     #[Route(name: 'get', methods: ['GET'])]
     public function getUsers(UserPreviewer $userPreviewer): JsonResponse
@@ -88,8 +97,6 @@ class UserController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
      */
     #[Route(name: 'post', methods: ['POST'])]
     public function postUser(Request                     $request,
@@ -159,8 +166,6 @@ class UserController extends ApiController
      *     response=404,
      *     description="User not found"
      * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
      */
     #[Route('/{userId}', name: 'get_by_id', requirements: ['userId' => '\d+'], methods: ['GET'])]
     public function getUserApi(UserPreviewer $userPreviewer, int $userId): JsonResponse
@@ -204,8 +209,6 @@ class UserController extends ApiController
      *     response=404,
      *     description="User not found"
      * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
      */
     #[Route('/{userId}', name: 'put_by_id', requirements: ['userId' => '\d+'], methods: ['PUT'])]
     public function upUser(Request                     $request,
@@ -277,8 +280,6 @@ class UserController extends ApiController
      *     response=404,
      *     description="User not found"
      * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
      */
     #[Route('/{userId}', name: 'delete_by_id', requirements: ['userId' => '\d+'], methods: ['DELETE'])]
     public function delUser(int $userId): JsonResponse
@@ -309,8 +310,6 @@ class UserController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
      */
     #[Route('/self', name: 'get_info', methods: ['GET'])]
     public function getSelf(UserPreviewer $userPreviewer): JsonResponse
@@ -350,8 +349,6 @@ class UserController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="User")
-     * @Security(name="Bearer")
      */
     #[Route('/self', name: 'self_put', methods: ['PUT'])]
     public function upSelf(Request $request, UserPasswordHasherInterface $passwordEncoder): JsonResponse

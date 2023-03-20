@@ -17,6 +17,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(name="Achievement")
+ * @Security(name="Bearer")
+ **/
 #[Route('/achievements', name: 'achievements_')]
 class AchievementController extends ApiController
 {
@@ -64,11 +68,12 @@ class AchievementController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route(name: 'post', methods: ['POST'])]
-    public function postAchievement(Request $request, FileUploader $fileUploader): JsonResponse
+    public function postAchievement(
+        Request $request,
+        FileUploader $fileUploader
+    ): JsonResponse
     {
         $jsonRequest = $request->request->all();
 
@@ -122,8 +127,6 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Image not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route('/{achievementId}/image',
         name: 'get_image',
@@ -164,8 +167,6 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Achievement not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route('/{achievementId}',
         name: 'get_achievement',
@@ -185,25 +186,17 @@ class AchievementController extends ApiController
     }
 
     /**
-     * Change fields for achievement
+     * Change name and description for achievement
      * @OA\RequestBody (
      *     required=true,
-     *     @OA\MediaType(
-     *         mediaType="multipart/form-data",
-     *         @OA\Schema(
-     *             @OA\Property(
-     *                  property="name",
-     *                  ref="#/components/schemas/AchievementView/properties/name"
-     *             ),
-     *             @OA\Property(
-     *                  property="description",
-     *                  ref="#/components/schemas/AchievementView/properties/description"
-     *             ),
-     *             @OA\Property(
-     *                  property="imageFile",
-     *                  nullable=false,
-     *                  ref="#/components/schemas/AchievementView/properties/imageFile"
-     *             ),
+     *     @OA\JsonContent(
+     *         @OA\Property(
+     *              property="name",
+     *              ref="#/components/schemas/AchievementView/properties/name"
+     *         ),
+     *         @OA\Property(
+     *              property="description",
+     *              ref="#/components/schemas/AchievementView/properties/description"
      *         )
      *     )
      * )
@@ -224,10 +217,12 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Achievement not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
-    #[Route('/{achievementId}', name: 'put_by_id', requirements: ['achievementId' => '\d+'], methods: ['PUT'])]
+    #[Route('/{achievementId}',
+        name: 'put_by_id',
+        requirements: ['achievementId' => '\d+'],
+        methods: ['PUT']
+    )]
     public function upAchievement(Request $request,
                                       int $achievementId,
                                       FileUploader $fileUploader): JsonResponse
@@ -240,34 +235,21 @@ class AchievementController extends ApiController
         }
 
         $jsonRequest = $request->request->all();
-        $imageFile = $request->files->get('imageFile');
 
         try {
-            if (isset($request['name'])) {
-                $name = $jsonRequest['name'];
-                if (!$name) {
-                    throw new Exception();
-                }
+            if (isset($jsonRequest['name'])) {
                 if ($this->achievementRepository->findOneBy(['name' => $jsonRequest['name']])) {
                     return $this->respondValidationError('Achievement with this name is already exist');
                 }
 
-                $achievement->setName($name);
+                $achievement->setName($jsonRequest['name']);
             }
 
             if (isset($jsonRequest['description'])) {
                 $achievement->setDescription($jsonRequest['description']);
             }
 
-            if (isset($imageFile)) {
-                $movedImageFile = $fileUploader->upload($imageFile);
-
-                $achievement
-                    ->setImageSize($movedImageFile->getSize())
-                    ->setImageName($movedImageFile->getFilename())
-                    ->setImageFile($movedImageFile);
-            }
-
+            $this->em->persist($achievement);
             $this->em->flush();
 
             return $this->respondWithSuccess("Achievement updated successfully");
@@ -276,7 +258,35 @@ class AchievementController extends ApiController
         }
     }
 
-    // TODO: Получение всех достижений
+    // TODO: изменение картинки достижения
+
+    /**
+     * Get all achievements except the authorized user
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(ref="#/components/schemas/AchievementView")
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied"
+     * )
+     */
+    #[Route(name: 'get', methods: ['GET'])]
+    public function getAchievements(AchievementPreviewer $achievementPreviewer): JsonResponse
+    {
+        $achievements = $this->achievementRepository->findAll();
+
+        $achievementPreviews = array_map(
+            fn(Achievement $achievement): array => $achievementPreviewer->preview($achievement),
+            $achievements
+        );
+
+        return $this->response($achievementPreviews);
+    }
 
     /**
      * Delete achievement
@@ -292,8 +302,6 @@ class AchievementController extends ApiController
      *     response=404,
      *     description="Achievement not found"
      * )
-     * @OA\Tag(name="Achievement")
-     * @Security(name="Bearer")
      */
     #[Route('/{achievementId}',
         name: 'delete_by_id',

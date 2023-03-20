@@ -16,6 +16,10 @@ use App\Previewer\TermPreviewer;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(name="Term")
+ * @Security(name="Bearer")
+ */
 #[Route('/terms', name: 'terms_')]
 class TermController extends ApiController
 {
@@ -42,8 +46,6 @@ class TermController extends ApiController
      *     response=403,
      *     description="Permission deinied"
      * )
-     * @OA\Tag(name="Term")
-     * @Security(name="Bearer")
      */
 //    #[Get(deprecated: true)]
     #[Route(name: 'get', methods: ['GET'])]
@@ -79,8 +81,6 @@ class TermController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="Term")
-     * @Security(name="Bearer")
      */
     #[Route(name: 'post', methods: ['POST'])]
     public function postTerm(Request $request): JsonResponse
@@ -120,8 +120,6 @@ class TermController extends ApiController
      *     response=404,
      *     description="Term not found"
      * )
-     * @OA\Tag(name="Term")
-     * @Security(name="Bearer")
      */
     #[Route('/{termId}', name: 'get_by_id', requirements: ['termId' => '\d+'], methods: ['GET'])]
     public function getTerm(TermPreviewer $termPreviewer, int $termId): JsonResponse
@@ -159,8 +157,6 @@ class TermController extends ApiController
      *     response=422,
      *     description="Data no valid"
      * )
-     * @OA\Tag(name="Term")
-     * @Security(name="Bearer")
      */
     #[Route('/{termId}', name: 'put_by_id', requirements: ['termId' => '\d+'], methods: ['PUT'])]
     public function upTerm(Request $request, int $termId): JsonResponse
@@ -202,8 +198,6 @@ class TermController extends ApiController
      *     response=404,
      *     description="Term not found"
      * )
-     * @OA\Tag(name="Term")
-     * @Security(name="Bearer")
      */
     #[Route('/{termId}', name: 'delete_by_id', requirements: ['termId' => '\d+'], methods: ['DELETE'])]
     public function delTerm(int $termId): JsonResponse
