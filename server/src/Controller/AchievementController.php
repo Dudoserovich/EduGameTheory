@@ -88,6 +88,8 @@ class AchievementController extends ApiController
         if (!$achievementByName) {
             try {
                 $achievement = new Achievement();
+                // TODO: можно задать ограничение на размер картинки,
+                //  т.к. сейчас я без понятия как сжать
                 $movedImageFile = $fileUploader->upload($imageFile);
 
                 $achievement
