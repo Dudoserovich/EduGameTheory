@@ -5,6 +5,12 @@ api_login_check:
 gesdinet_jwt_refresh_token:
     path: /api/token/refresh
 
+# Я специально прокинул недоступный путь,
+#   чтобы отрубить путь к api_platform (/api/docs)
+api_doc:
+    path: /disabled_api_platform
+    controller: api_platform.swagger_ui.action
+
 app.swagger_ui:
     path: /api/doc
     methods: GET
