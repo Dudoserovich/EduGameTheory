@@ -49,3 +49,14 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%kernel.project_dir%/public/uploads/achievement'
+
+    App\Controller\UserController:
+        arguments:
+            $avatarDirectory: '%kernel.project_dir%/public/uploads/avatars'
+
+    App\EventListener\UploadImageListener:
+        arguments:
+            - '@Vich\UploaderBundle\Templating\Helper\UploaderHelper'
+            - '@liip_imagine.cache.manager'
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }

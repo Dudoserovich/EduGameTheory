@@ -31,3 +31,6 @@ composer.phar
 ###> images for achievement ###
 /public/uploads/achievement/*
 ###> images for achievement ###
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
