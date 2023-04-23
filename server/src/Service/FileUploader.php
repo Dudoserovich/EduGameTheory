@@ -22,9 +22,9 @@ class FileUploader
         $this->slugger = $slugger;
     }
 
-    public function upload(File $file): File
+    public function upload(File $file): File | null
     {
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $originalFilename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
 

@@ -28,11 +28,11 @@ class AchievementFixtures extends BaseFixtureAbstract
             $image = new File($imageStr);
 
             $achievement
+                ->setImageFile($image)
                 ->setName($this->faker->unique()->word())
                 ->setDescription($this->faker->sentence())
                 ->setImageSize($image->getSize())
-                ->setImageName($image->getFilename())
-                ->setImageFile($image);
+                ->setImageName($image->getFilename());
             $manager->persist($achievement);
 
             $this->saveReference($achievement);

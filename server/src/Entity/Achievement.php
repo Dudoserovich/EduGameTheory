@@ -51,11 +51,12 @@ class Achievement
      */
     private ?string $description = null;
 
-    /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     *
-     * @Vich\UploadableField(mapping="achievement", fileNameProperty="imageName", size="imageSize")
-     */
+//    /**
+//     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+//     *
+//     * @Vich\UploadableField(mapping="achievement", fileNameProperty="imageName", size="imageSize")
+//     */
+    #[Vich\UploadableField(mapping: "achievement", fileNameProperty: "imageName", size: "imageSize")]
     private ?File $imageFile = null;
 
     /**
@@ -97,6 +98,22 @@ class Achievement
         }
 
         return $this;
+    }
+
+    /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    **/
+    private string $thumbnail;
+
+    public function setThumbnail(string $thumbnail): self
+    {
+        $this->thumbnail = $thumbnail;
+        return $this;
+    }
+
+    public function getThumbnail(): string
+    {
+        return $this->thumbnail;
     }
 
     public function getImageFile(): ?File
