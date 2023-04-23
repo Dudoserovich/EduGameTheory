@@ -18,6 +18,7 @@ class UserPreviewer
         "login" => "string",
         "roles" => "string[]",
         "email" => "string",
+        "avatar" => "string",
     ])]
     public function preview(User $user): array
     {
@@ -26,7 +27,8 @@ class UserPreviewer
                 "full_name" => $user->getFio(),
                 "login" => $user->getUserIdentifier(),
                 "roles" => $user->getRoles(),
-                "email" => $user->getEmail()
+                "email" => $user->getEmail(),
+                "avatar" => $user->getAvatar()
             ];
     }
 
