@@ -8,8 +8,11 @@ use App\Entity\User;
 use App\Previewer\UserPreviewer;
 use App\Repository\UserRepository;
 
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,10 +26,9 @@ use OpenApi\Annotations as OA;
 
 # TODO: Разобраться с soft delete
 # TODO: Запросы на получение пользователя с его достижениями
+# TODO: Изменить запросы на получение и изменение с учётом его аватара
 # TODO: Запросы на получение пользователя с его процессом обучения
 # TODO: Запросы на получение пользователя с его пройденными заданиями вне обучения
-# TODO: Нужен listener, который при получении пользователем достижения,
-#   будет выплёвывать его на frontend часть
 
 /**
  * @OA\Tag(name="User")
@@ -37,11 +39,17 @@ class UserController extends ApiController
 {
     private UserRepository $userRepository;
     private EntityManagerInterface $em;
+    private string $avatarDirectory;
 
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em)
+    public function __construct(
+        UserRepository $userRepository,
+        EntityManagerInterface $em,
+        string $avatarDirectory
+    )
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
+        $this->avatarDirectory = $avatarDirectory;
     }
 
     /**
@@ -149,6 +157,125 @@ class UserController extends ApiController
         } catch (Exception) {
             return $this->respondValidationError();
         }
+    }
+
+    /**
+     * Get self avatar
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\MediaType(
+     *          mediaType="images/png",
+     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Avatar not found"
+     * )
+     */
+    #[Route('/self/avatar',
+        name: 'get_self_avatar',
+        methods: ['GET'])
+    ]
+    public function getSelfAvatar(): BinaryFileResponse|JsonResponse
+    {
+        $user = $this->getUserEntity($this->userRepository);
+        $selfAvatar = $user->getAvatar();
+
+        $files = scandir($this->avatarDirectory);
+        $files = array_diff($files, array('.', '..'));
+
+        if (in_array($selfAvatar, $files)) {
+            $file = new File($this->avatarDirectory . "/$selfAvatar");
+
+            return new BinaryFileResponse($file);
+        } else {
+            return $this->respondNotFound("Avatar not found");
+        }
+
+    }
+
+    /**
+     * Get specific avatar
+     *
+     * @OA\Parameter(
+     *     name="avatar",
+     *     in="path",
+     *     description="avatar",
+     *     required=true,
+     *     example="angry_cat.png"
+     * )
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\MediaType(
+     *          mediaType="images/png",
+     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Avatar not found"
+     * )
+     */
+    #[Route('/avatars/{avatar}',
+        name: 'get_spec_avatar',
+        requirements: ['avatar' => '[A-z]+\.png'],
+        methods: ['GET'])
+    ]
+    public function getSpecificAvatar(string $avatar): BinaryFileResponse|JsonResponse
+    {
+        $files = scandir($this->avatarDirectory);
+        $files = array_diff($files, array('.', '..'));
+
+        if (in_array($avatar, $files)) {
+            $file = new File($this->avatarDirectory . "/$avatar");
+
+            return new BinaryFileResponse($file);
+        } else {
+            return $this->respondNotFound("Avatar not found");
+        }
+
+    }
+
+    /**
+     * Get all avatar names
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK"
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Avatars not found"
+     * )
+     */
+    #[Route('/avatars',
+        name: 'get_specific_avatar',
+        methods: ['GET'])
+    ]
+    public function getAllAvatars(): JsonResponse
+    {
+        $files = scandir($this->avatarDirectory);
+        $files = array_diff($files, array('.', '..'));
+
+        if (!$files)
+            return $this->respondNotFound("No avatars");
+        else return $this->response(array_values($files));
+
     }
 
     /**

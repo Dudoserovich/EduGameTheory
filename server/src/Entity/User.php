@@ -71,6 +71,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email;
 
     /**
+     * @ORM\Column(type="string", length=255, options={"default" : "serious_cat.png"})
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    #[Assert\Regex(
+        pattern: "/[A-z]+\.png$/",
+        message: 'Invalid avatar',
+        match: false,
+    )]
+    private ?string $avatar = 'serious_cat.png';
+
+    /**
      * @ORM\Column(type="datetime", nullable=true)
      * @OA\Property(format="date-time")
      * @Groups({"default"})
@@ -164,6 +176,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getAvatar(): string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $avatar): self
+    {
+        $this->avatar = $avatar;
+
         return $this;
     }
 
