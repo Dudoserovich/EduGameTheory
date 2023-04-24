@@ -26,7 +26,6 @@ use OpenApi\Annotations as OA;
 
 # TODO: Разобраться с soft delete
 # TODO: Запросы на получение пользователя с его достижениями
-# TODO: Изменить запросы на получение и изменение с учётом его аватара
 # TODO: Запросы на получение пользователя с его процессом обучения
 # TODO: Запросы на получение пользователя с его пройденными заданиями вне обучения
 
@@ -86,11 +85,18 @@ class UserController extends ApiController
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
-     *         example={"login": "pupil", "password": "pupil123", "email": "pupil@mail.ru", "fio": "Иваненко Иван Иванович"},
+     *         example={"login": "pupil",
+     *                  "password": "pupil123",
+     *                  "email": "pupil@mail.ru",
+     *                  "fio": "Иваненко Иван Иванович",
+     *                  "roles": "ROLE_USER",
+     *                  "avatar": "serious_cat.png"},
      *         @OA\Property(property="login", ref="#/components/schemas/User/properties/login"),
      *         @OA\Property(property="password", ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/User/properties/email"),
      *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/User/properties/fio"),
+     *         @OA\Property(property="roles", nullable=true, ref="#/components/schemas/UserView/properties/roles"),
+     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/User/properties/avatar"),
      *     )
      * )
      * @OA\Response(
@@ -112,22 +118,23 @@ class UserController extends ApiController
                              ValidatorInterface          $validator): JsonResponse
     {
         $request = $request->request->all();
-        $user = new User();
 
         try {
-//            $this->setSoftDeleteable(false);
+            $this->setSoftDeleteable($this->em, false);
             $user = $this->userRepository->findOneBy(['login' => $request['login']]);
             if ($user) {
-//                if ($user->getDeletedAt()) {
-//                    $user->setDeletedAt(null);
-//                    $this->em->persist($user);
-//                    $this->em->flush();
-//                    $this->setSoftDeleteable();
-//                    return $this->respondWithSuccess("User added successfully");
-//                }
+                if ($user->getDeletedAt()) {
+                    $user->setDeletedAt(null);
+                    $this->em->persist($user);
+                    $this->em->flush();
+                    $this->setSoftDeleteable($this->em);
+                    return $this->respondWithSuccess("User added successfully");
+                }
 
                 return $this->respondValidationError('User with this login is already exist');
             }
+            $user = new User();
+
             $user->setUsername($request['login']);
             $user->setPassword($request['password']);
 
@@ -135,10 +142,19 @@ class UserController extends ApiController
                 $user->setFio($request['fio']);
             }
             if (isset($request['roles'])) {
-                $user->setRoles([$request['roles']]);
+                $user->setRoles($request['roles']);
             }
             if (isset($request['email'])) {
                 $user->setEmail($request['email']);
+            }
+            if (isset($request['avatar'])) {
+                $files = scandir($this->avatarDirectory);
+                $files = array_diff($files, array('.', '..'));
+
+                if (!in_array($request['avatar'], $files))
+                    return $this->respondNotFound("Avatar not found");
+
+                $user->setAvatar($request['avatar']);
             }
 
             $validator->validate($user);
@@ -180,8 +196,8 @@ class UserController extends ApiController
      */
     #[Route('/self/avatar',
         name: 'get_self_avatar',
-        methods: ['GET'])
-    ]
+        methods: ['GET']
+    )]
     public function getSelfAvatar(): BinaryFileResponse|JsonResponse
     {
         $user = $this->getUserEntity($this->userRepository);
@@ -231,8 +247,8 @@ class UserController extends ApiController
     #[Route('/avatars/{avatar}',
         name: 'get_spec_avatar',
         requirements: ['avatar' => '[A-z]+\.png'],
-        methods: ['GET'])
-    ]
+        methods: ['GET']
+    )]
     public function getSpecificAvatar(string $avatar): BinaryFileResponse|JsonResponse
     {
         $files = scandir($this->avatarDirectory);
@@ -265,8 +281,8 @@ class UserController extends ApiController
      */
     #[Route('/avatars',
         name: 'get_specific_avatar',
-        methods: ['GET'])
-    ]
+        methods: ['GET']
+    )]
     public function getAllAvatars(): JsonResponse
     {
         $files = scandir($this->avatarDirectory);
@@ -294,7 +310,11 @@ class UserController extends ApiController
      *     description="User not found"
      * )
      */
-    #[Route('/{userId}', name: 'get_by_id', requirements: ['userId' => '\d+'], methods: ['GET'])]
+    #[Route('/{userId}',
+        name: 'get_by_id',
+        requirements: ['userId' => '\d+'],
+        methods: ['GET']
+    )]
     public function getUserApi(UserPreviewer $userPreviewer, int $userId): JsonResponse
     {
         $user = $this->userRepository->find($userId);
@@ -316,7 +336,8 @@ class UserController extends ApiController
      *         @OA\Property(property="password", nullable=true, ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/UserView/properties/fio"),
      *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/UserView/properties/email"),
-     *         @OA\Property(property="roles", nullable=true, ref="#/components/schemas/UserView/properties/roles")
+     *         @OA\Property(property="roles", nullable=true, ref="#/components/schemas/UserView/properties/roles"),
+     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/UserView/properties/avatar")
      *     )
      * )
      * @OA\Response(
@@ -337,7 +358,11 @@ class UserController extends ApiController
      *     description="User not found"
      * )
      */
-    #[Route('/{userId}', name: 'put_by_id', requirements: ['userId' => '\d+'], methods: ['PUT'])]
+    #[Route('/{userId}',
+        name: 'put_by_id',
+        requirements: ['userId' => '\d+'],
+        methods: ['PUT']
+    )]
     public function upUser(Request                     $request,
                            UserPasswordHasherInterface $passwordEncoder,
                            ValidatorInterface          $validator,
@@ -378,6 +403,15 @@ class UserController extends ApiController
             if (isset($request['email'])) {
                 $user->setEmail($request['email']);
             }
+            if (isset($request['avatar'])) {
+                $files = scandir($this->avatarDirectory);
+                $files = array_diff($files, array('.', '..'));
+
+                if (!in_array($request['avatar'], $files))
+                    return $this->respondNotFound("Avatar not found");
+
+                $user->setAvatar($request['avatar']);
+            }
 
             $validator->validate($user);
 
@@ -408,7 +442,11 @@ class UserController extends ApiController
      *     description="User not found"
      * )
      */
-    #[Route('/{userId}', name: 'delete_by_id', requirements: ['userId' => '\d+'], methods: ['DELETE'])]
+    #[Route('/{userId}',
+        name: 'delete_by_id',
+        requirements: ['userId' => '\d+'],
+        methods: ['DELETE']
+    )]
     public function delUser(int $userId): JsonResponse
     {
         $user = $this->userRepository->find($userId);
@@ -438,7 +476,10 @@ class UserController extends ApiController
      *     description="Data no valid"
      * )
      */
-    #[Route('/self', name: 'get_info', methods: ['GET'])]
+    #[Route('/self',
+        name: 'get_info',
+        methods: ['GET']
+    )]
     public function getSelf(UserPreviewer $userPreviewer): JsonResponse
     {
 //        $this->setSoftDeleteable($this->em, false);
@@ -455,13 +496,15 @@ class UserController extends ApiController
      *                  "oldPassword": "pupil123",
      *                  "newPassword": "qwerty123",
      *                  "email": "pupil@mail.ru",
-     *                  "fio": "Иваненко Иван Иванович"
+     *                  "fio": "Иваненко Иван Иванович",
+     *                  "avatar": "serious_cat.png"
      *          },
      *         @OA\Property(property="login", nullable=true, ref="#/components/schemas/User/properties/login"),
      *         @OA\Property(property="oldPassword", nullable=true, ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="newPassword", nullable=true, ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/User/properties/fio"),
-     *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/User/properties/email")
+     *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/User/properties/email"),
+     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/User/properties/avatar")
      *     )
      * )
      * @OA\Response(
@@ -478,7 +521,9 @@ class UserController extends ApiController
      * )
      */
     #[Route('/self', name: 'self_put', methods: ['PUT'])]
-    public function upSelf(Request $request, UserPasswordHasherInterface $passwordEncoder): JsonResponse
+    public function upSelf(Request $request,
+                           UserPasswordHasherInterface $passwordEncoder
+    ): JsonResponse
     {
         $user = $this->getUserEntity($this->userRepository);
         $request = $request->request->all();
@@ -500,6 +545,15 @@ class UserController extends ApiController
                     return $this->respondValidationError("No valid email");
                 }
                 $user->setEmail($email);
+            }
+            if (isset($request['avatar'])) {
+                $files = scandir($this->avatarDirectory);
+                $files = array_diff($files, array('.', '..'));
+
+                if (!in_array($request['avatar'], $files))
+                    return $this->respondNotFound("Avatar not found");
+
+                $user->setAvatar($request['avatar']);
             }
 
             if (!isset($request['oldPassword']) && isset($request['newPassword'])) {

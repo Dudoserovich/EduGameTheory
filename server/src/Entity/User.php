@@ -78,7 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Regex(
         pattern: "/[A-z]+\.png$/",
         message: 'Invalid avatar',
-        match: false,
+        match: true,
     )]
     private ?string $avatar = 'serious_cat.png';
 
