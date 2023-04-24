@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Auth from "../components/Auth/Auth";
 import Head from "../polyfills/head";
+
+import Toast, {notify} from "../components/Toast/Toast";
 
 export default function Home() {
     return (
