@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Toast = () => {
     useEffect(() => {
         // let origin = window.location.protocol + '//' + window.location.host + ':8081'
-        let origin = window.location.protocol + '//' + window.location.host
+        let origin = 'https://' + window.location.host
         // The subscriber subscribes to updates for the https://example.com/users/dunglas topic
         const url = new URL(`${origin}/.well-known/mercure`);
         url.searchParams.append('topic', '/news');
