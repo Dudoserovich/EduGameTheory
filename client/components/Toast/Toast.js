@@ -34,7 +34,10 @@ const Toast = () => {
                 setTimeout(() => {
                     eventSource.close();
 
-                    const newEventSource = new EventSource('/news');
+                    const url = new URL(`${origin}/.well-known/mercure`);
+                    url.searchParams.append('topic', '/news');
+
+                    const newEventSource = new EventSource(url);
 
                     newEventSource.onopen = eventSource.onopen;
                     newEventSource.onmessage = eventSource.onmessage;
