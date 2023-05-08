@@ -5,6 +5,10 @@ services:
     image: nginx
     ports:
       - "80:80"
+    depends_on:
+      - frontend
+      - backend
+      - backend-notifier
     networks:
       - dudoser-net
     environment:
