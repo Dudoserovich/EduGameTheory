@@ -1,0 +1,222 @@
+@import "styles/mixins";
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 16px;
+  align-content: center;
+  position: fixed;
+  background: rgb(255, 255, 255, 0.2);
+  width: 100%;
+  height: 64px;
+
+
+  .container {
+    position: relative;
+    display: flex;
+    height: 100%;
+    @include content;
+
+  }
+
+}
+
+.catSVG {
+  padding: 10px 40px 20px 10px;
+  background: radial-gradient(rgb(255, 242, 189, 0.6) 10%,rgb(0,0,0,0) 70% );
+  object-fit: contain;
+  position: absolute;
+  z-index: -2;
+  right: 80px;
+  animation: animateCat 2s infinite ease alternate;
+
+  @media screen and  (max-width: 4000px) {
+    width: 760px;
+    top: 160px;
+  }
+  @media screen and  (max-width: 1600px) {
+    width: 560px;
+    top: 160px;
+    right: 60px;
+  }
+  @media screen and (max-width: 1400px) {
+    width: 300px;
+    top: 140px;
+    right: 60px;
+  }
+  @media screen and (max-width: 998px) {
+    width: 300px;
+    top: 140px;
+    right: 20px;
+  }
+  @media screen and (max-width: 576px) {
+    width: 200px;
+    top: 150px;
+    right: 20px;
+  }
+  @keyframes animateCat {
+    to {
+      transform: translateY(20px);
+    }
+  }
+}
+
+
+.aboutUs {
+  z-index: -1;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+  height: 90vh;
+}
+
+.logo {
+  width: 35px;
+  height: 35px;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--light-text-yellow);
+}
+
+.about {
+  alignment: center;
+  max-width: 800px;
+  padding: 10px;
+  position: absolute;
+
+  @media screen and  (max-width: 4000px) {
+    margin: 20vh 120px;
+  }
+  @media screen and (max-width: 1400px) {
+    margin: 20vh 100px;
+    max-width: 1200px;
+  }
+  @media screen and (max-width: 998px) {
+    margin: 20vh 60px;
+  }
+  @media screen and (max-width: 576px) {
+    margin: 20vh 20px;
+  }
+
+}
+.button{
+  color: rgb(84, 88, 171);
+  background: white;
+  padding: 10px 30px;
+  font-size: 40px;
+  border-radius: 30px;
+  alignment: center;
+  font-weight: bold;
+  margin-top: 40px;
+}
+
+.animationArea {
+  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+  radial-gradient(  #6f79bd 90%, #ffffff 10%);
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  z-index: -2;
+}
+
+h1 {
+  color: white;
+  font-size: 60px;
+  font-weight: bold;
+}
+
+h3 {
+  background: rgba(234, 181, 236, 0.6);
+  padding: 20px 40px;
+  border-radius: 20px;
+  font-size: 28px;
+  color: white;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+h4 {
+  margin-top: 20px;
+  font-size: 28px;
+  color: white;
+}
+
+.boxArea {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  z-index: -3;
+}
+
+.boxArea li {
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 25px;
+  height: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  animation: animate 20s linear infinite;
+  bottom: -150px;
+}
+
+.boxArea li:nth-child(1) {
+  left: 86%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 0s;
+}
+
+.boxArea li:nth-child(2) {
+  left: 12%;
+  width: 83px;
+  height: 30px;
+  animation-delay: 1.5s;
+  animation-duration: 10s;
+}
+
+.boxArea li:nth-child(3) {
+  left: 70%;
+  width: 100px;
+  height: 100px;
+  animation-delay: 5.5s;
+}
+
+.boxArea li:nth-child(4) {
+  left: 42%;
+  width: 150px;
+  height: 150px;
+  animation-delay: 0s;
+  animation-duration: 15s;
+}
+
+.boxArea li:nth-child(5) {
+  left: 65%;
+  width: 40px;
+  height: 40px;
+  animation-delay: 0s;
+}
+
+.boxArea li:nth-child(6) {
+  left: 15%;
+  width: 110px;
+  height: 110px;
+  animation-delay: 3.5s;
+}
+
+@keyframes animate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-600px) rotate(360deg);
+    opacity: 0;
+  }
+}

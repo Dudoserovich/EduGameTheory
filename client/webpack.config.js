@@ -67,6 +67,10 @@ module.exports = (env, argv) => {
           use: ["babel-loader"],
         },
         {
+          test: /.svg$/,
+          loader: 'svg-inline-loader'
+        },
+        {
           test: /\.css$/,
           include: [srcDir, /node_modules/],
           use: [
