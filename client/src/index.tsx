@@ -12,21 +12,25 @@ import '../styles/nprogress.scss';
 import Home from "../pages";
 import Profile from "../pages/profile";
 import Page404 from "../pages/404";
+import Toast from "../components/Toast/Toast";
 
 const App = () => {
     return (
-        <Provider store={store}>
-            <Router>
-                <Routes>
-                    <Route path="/">
-                        <Route path="404" element={<Page404/>}/>
-                        <Route index element={<Home/>}/>
-                        <Route path="profile" element={<Profile/>}/>
-                    </Route>
-                    <Route path="*" element={<Page404 />} />
-                </Routes>
-            </Router>
-        </Provider>
+        <>
+            <Provider store={store}>
+                <Router>
+                    <Routes>
+                        <Route path="/">
+                            <Route path="404" element={<Page404/>}/>
+                            <Route index element={<Home/>}/>
+                            <Route path="profile" element={<Profile/>}/>
+                        </Route>
+                        <Route path="*" element={<Page404 />} />
+                    </Routes>
+                </Router>
+                <Toast />
+            </Provider>
+        </>
     );
 }
 

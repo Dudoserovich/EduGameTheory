@@ -64,6 +64,8 @@ nelmio_api_doc:
             description: Взаимодействие со списком литературы
           - name: Achievement
             description: Взаимодействие с достижениями
+          - name: Test
+            description: Фичи, находящиеся на этапе разработки
         info:
             title: Game Theory API
             description: | 

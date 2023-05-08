@@ -36,6 +36,13 @@ class UserView
     public string $fio;
 
     /**
+     * @OA\Property(property="avatar", ref="#/components/schemas/User/properties/avatar")
+     * @Groups({"default", "avatar"})
+     */
+    #[Property(example: "serious_cat.png")]
+    public string $avatar;
+
+    /**
      * @var string[]
      * @OA\Property(property="roles", ref="#/components/schemas/User/properties/roles")
      * @Groups({"default", "roles"})

@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -90,14 +92,12 @@ class AchievementController extends ApiController
                 $achievement = new Achievement();
                 // TODO: можно задать ограничение на размер картинки,
                 //  т.к. сейчас я без понятия как сжать
-                $movedImageFile = $fileUploader->upload($imageFile);
+//                $movedImageFile = $fileUploader->upload($imageFile);
 
                 $achievement
+                    ->setImageFile($imageFile)
                     ->setName($jsonRequest['name'])
-                    ->setDescription($jsonRequest['description'])
-                    ->setImageSize($movedImageFile->getSize())
-                    ->setImageName($movedImageFile->getFilename())
-                    ->setImageFile($movedImageFile);
+                    ->setDescription($jsonRequest['description']);
 
                 $this->em->persist($achievement);
                 $this->em->flush();
@@ -278,7 +278,8 @@ class AchievementController extends ApiController
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
-    public function getAchievements(AchievementPreviewer $achievementPreviewer): JsonResponse
+    public function getAchievements(
+        AchievementPreviewer $achievementPreviewer): JsonResponse
     {
         $achievements = $this->achievementRepository->findAll();
 

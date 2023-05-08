@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Auth from "../components/Auth/Auth";
 import Head from "../polyfills/head";
 import {MainLogo} from "../public/logos/Logos";
@@ -12,6 +12,8 @@ import Button from "../components/Button";
 import s from '../styles/pages/index.module.scss';
 import mySvg from '../public/logos/1.svg';
 import catSvg from '../public/logos/cat3.svg';
+
+import Toast, {notify} from "../components/Toast/Toast";
 
 export default function Home() {
     const centerY = window.innerWidth / 9;
