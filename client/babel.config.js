@@ -8,7 +8,7 @@ module.exports = (api) => {
       // Enable development transform of React with new automatic runtime
       [
         "@babel/preset-react",
-        { development: !api.env("production"), runtime: "automatic" },
+        { development: !api.env("production"), runtime: "automatic", "throwIfNamespace": false },
       ],
       "@babel/preset-typescript",
     ],

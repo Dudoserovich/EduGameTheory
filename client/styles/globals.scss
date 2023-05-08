@@ -2,7 +2,18 @@
 @import "mixins";
 @import "../public/font/stylesheet.scss";
 
-:root {  
+:root {
+    --light-text: #ffffff;
+    --light-text-yellow: #fff4ad;
+    --light-text-purple: #C084FC;
+    --light-text-black: #000000;
+
+    --light-header-theme: #1a1643;
+    --light-card-yellow: #ffda84;
+    --light-card-white: #ffffff;
+    --light-card-grey: rgb(255, 255, 255, 0.0);
+    --light-card-blue: rgb(255, 255, 255, 0.2);
+
     --light-shades: #ffffff;
     --light-accent: #F6BFC6;
     --main-brand-color: #DB001B;
