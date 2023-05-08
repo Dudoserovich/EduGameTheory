@@ -10,7 +10,6 @@ import Input from "../components/Input/Input";
 import Spinner from "../components/Spinner/Spinner";
 import Button from "../components/Button";
 import s from '../styles/pages/index.module.scss';
-import mySvg from '../public/logos/1.svg';
 import catSvg from '../public/logos/cat3.svg';
 
 import Toast, {notify} from "../components/Toast/Toast";
