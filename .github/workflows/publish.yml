@@ -147,12 +147,17 @@ jobs:
             -e @vault.yml
           
   # Отправка сообщений telegram-ботом, если один из образов билдился
-  # P.S. Пока отправка сообщений для нескольких людей прям вот так в открытую лежит, что не очень хорошо...
+  # P.S. Чтобы скрыть chat_id, я хитровыебнулся и добавил каждому секрету 'псевдоним'
   send_telegram:
       needs: [backend_service, frontend_service]
       strategy:
         matrix:
-          chat_id: [503246477, 755526816]
+          chat_id: [dudoser_developer, lissee_developer]
+          include:
+          - chat_id: dudoser_developer
+            secret_chat_id: DUDOSER_CHAT_ID
+          - chat_id: lissee_developer
+            secret_chat_id: LISSEE_CHAT_ID
       # Условие до outputs говорит о том, что job нужно запускать независимо от того, 
       #   что предыдущие job могут быть пропущены
       # Остальная часть условия отвечает за проверку на хотя бы 1 сбилженный образ
@@ -169,16 +174,13 @@ jobs:
         uses: wei/wget@v1
         with:
           args: -O duck.png https://random-d.uk/api/v2/randomimg
-#          args: -O cat.png https://cataas.com/cat
           
       # Отправляем сообщение в телеграм с картинкой котика
       - name: Send message with status backend_service and frontend_service
         uses: appleboy/telegram-action@master
         with:
-#          to: ${{ secrets.TELEGRAM_TO }}
-          to: ${{ matrix.chat_id }}
+          to: ${{ secrets[matrix.secret_chat_id] }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-#          photo: cat.png
           photo: duck.png
           format: 'markdown'
           message: |
