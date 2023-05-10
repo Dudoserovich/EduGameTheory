@@ -1,76 +1,49 @@
 @import "styles/mixins";
 
+.background_style{
+  overflow-x: hidden;
+  scrollbar-width: none;
+  display: grid;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+  radial-gradient(  #6f79bd 90%, #ffffff 10%);
+
+}
 .content {
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 16px;
-  align-content: center;
+  padding: 10px 40px 20px 40px;
   position: fixed;
   background: rgb(255, 255, 255, 0.2);
   width: 100%;
-  height: 64px;
-
-
-  .container {
-    position: relative;
-    display: flex;
-    height: 100%;
-    @include content;
-
-  }
+}
+.cont{
+  overflow-x: hidden;
+  height: 100vh;
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  scrollbar-width: none;
 
 }
-
-.catSVG {
-  padding: 10px 40px 20px 10px;
-  background: radial-gradient(rgb(255, 242, 189, 0.6) 10%,rgb(0,0,0,0) 70% );
-  object-fit: contain;
-  position: absolute;
-  z-index: -2;
-  right: 80px;
-  animation: animateCat 2s infinite ease alternate;
-
-  @media screen and  (max-width: 4000px) {
-    width: 760px;
-    top: 160px;
-  }
-  @media screen and  (max-width: 1600px) {
-    width: 560px;
-    top: 160px;
-    right: 60px;
-  }
-  @media screen and (max-width: 1400px) {
-    width: 300px;
-    top: 140px;
-    right: 60px;
-  }
-  @media screen and (max-width: 998px) {
-    width: 300px;
-    top: 140px;
-    right: 20px;
-  }
-  @media screen and (max-width: 576px) {
-    width: 200px;
-    top: 150px;
-    right: 20px;
-  }
-  @keyframes animateCat {
-    to {
-      transform: translateY(20px);
-    }
-  }
+#element::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f9f9fd;
 }
-
-
-.aboutUs {
-  z-index: -1;
-  overflow: hidden;
-  position: relative;
+.lists{
   width: 100vw;
-  height: 90vh;
-}
+  height: auto;
+  min-height: 100vh;
+  scroll-snap-align: start;
 
+}
 .logo {
   width: 35px;
   height: 35px;
@@ -82,77 +55,14 @@
   color: var(--light-text-yellow);
 }
 
-.about {
-  alignment: center;
-  max-width: 800px;
-  padding: 10px;
-  position: absolute;
-
-  @media screen and  (max-width: 4000px) {
-    margin: 20vh 120px;
-  }
-  @media screen and (max-width: 1400px) {
-    margin: 20vh 100px;
-    max-width: 1200px;
-  }
-  @media screen and (max-width: 998px) {
-    margin: 20vh 60px;
-  }
-  @media screen and (max-width: 576px) {
-    margin: 20vh 20px;
-  }
-
-}
-.button{
-  color: rgb(84, 88, 171);
-  background: white;
-  padding: 10px 30px;
-  font-size: 40px;
-  border-radius: 30px;
-  alignment: center;
-  font-weight: bold;
-  margin-top: 40px;
-}
-
-.animationArea {
-  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
-  radial-gradient(  #6f79bd 90%, #ffffff 10%);
-  width: 100%;
-  height: 100vh;
-  position: absolute;
-  z-index: -2;
-}
-
-h1 {
-  color: white;
-  font-size: 60px;
-  font-weight: bold;
-}
-
-h3 {
-  background: rgba(234, 181, 236, 0.6);
-  padding: 20px 40px;
-  border-radius: 20px;
-  font-size: 28px;
-  color: white;
-  font-weight: bold;
-  margin-top: 20px;
-}
-
-h4 {
-  margin-top: 20px;
-  font-size: 28px;
-  color: white;
-}
-
 .boxArea {
-  top: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 80%;
   overflow: hidden;
-  position: absolute;
-  z-index: -3;
+  position: fixed;
+  z-index: 0;
 }
 
 .boxArea li {

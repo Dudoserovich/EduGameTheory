@@ -1,84 +1,51 @@
 import React, {useEffect} from "react";
 import Auth from "../components/Auth/Auth";
+import ProjectPage from "../components/IndexPage/ProjectPage";
+import TheoryPage from "../components/IndexPage/TheoryPage";
 import Head from "../polyfills/head";
 import {MainLogo} from "../public/logos/Logos";
-import {Accordion, AccordionSummary, Typography} from "@material-ui/core";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {AccordionDetails, Card, CardActions, CardContent} from "@mui/material";
+import {Grid, Hidden} from "@material-ui/core";
 import {Controller} from "react-hook-form";
-import Input from "../components/Input/Input";
-import Spinner from "../components/Spinner/Spinner";
-import Button from "../components/Button";
 import s from '../styles/pages/index.module.scss';
-import catSvg from '../public/logos/cat3.svg';
 
 import Toast, {notify} from "../components/Toast/Toast";
+import auto from "chart.js/auto";
 
 export default function Home() {
-    const centerY = window.innerWidth / 9;
-    const size = window.innerWidth / 2.4;
-
     return (
         <>
             <Head>
-                <title>О нас (EduGameTheory)</title>
+                <title>О проекте (EduGameTheory)</title>
                 <meta
                     name="viewport"
                     content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
                 />
             </Head>
+            <div className={s.background_style}>
+                <div className={s.cont}>
+                <div className={s.lists}><ProjectPage/></div>
+                <div className={s.lists}> <TheoryPage/></div>
+            </div>
+                <ul className={s.boxArea}>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            <div className={s.content}>
             <div style={{
                 display: 'flex',
-                alignItems: 'baseline',
-                justifyContent: 'space-between',
-                width: '100%',
-                height: '100%',
-                flexDirection: 'column',
+                alignItems: 'center',
+                marginLeft: '20px',
+                marginRight: '20px',
             }}>
-                <div className={s.content}>
-                    <div style={{
-                        display: 'flex',
-                        color: 'black',
-                        alignItems: 'center',
-                        width: '12em',
-                        justifyContent: 'space-between',
-                    }}>
-                        <div className={s.logo}>
-                            <MainLogo/>
-                        </div>
-                        <span className={s.name}>EduGameTheory</span>
-                    </div>
-
-                    <Auth/>
-                </div>
-                <div className={s.aboutUs}>
-                    <div className={s.catSVG}  dangerouslySetInnerHTML={{__html: catSvg}}/>
-                    <div className={s.about}>
-                        <h1>О проекте</h1>
-                        {/*Мы хотим немного поиграть с вами, рассказать красивую
-                            историю и самое главное научить решать задачки по теории игр!</h3>*/}
-                        <h4>
-                            Всем привет!
-                        </h4>
-                        <h3>
-                            Данный проект создан для легкого и интересного изучения матричных методов в Теории Игр.</h3>
-                        <h4>Мы попытались создать комфорную и понятную среду обучения, так что жмякай на кнопку и скорее начнем!</h4>
-                        <button  className={s.button}>Начать</button>
-                    </div>
-                </div>
-                <div className={s.animationArea}>
-                    <ul className={s.boxArea}>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
-
-                </div>
-
-
+                <MainLogo className={s.logo}/>
+                <span className={s.name}>EduGameTheory</span>
             </div>
+            <Auth/>
+        </div>
         </>
     )
 }
