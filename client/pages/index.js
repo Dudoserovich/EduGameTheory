@@ -1,15 +1,17 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Auth from "../components/Auth/Auth";
+import SmallAuth from "../components/Auth/SmallAuth";
 import ProjectPage from "../components/IndexPage/ProjectPage";
 import TheoryPage from "../components/IndexPage/TheoryPage";
+import TaskPage from "../components/IndexPage/TaskPage";
+import ContactsPage from "../components/IndexPage/ContactsPage";
+import AchivPage from "../components/IndexPage/AchivPage";
 import Head from "../polyfills/head";
-import {MainLogo} from "../public/logos/Logos";
-import {Grid, Hidden} from "@material-ui/core";
-import {Controller} from "react-hook-form";
 import s from '../styles/pages/index.module.scss';
-
 import Toast, {notify} from "../components/Toast/Toast";
 import auto from "chart.js/auto";
+import {Hidden} from "@material-ui/core";
+import logoSvg from "../public/svg/logo.svg";
 
 export default function Home() {
     return (
@@ -21,31 +23,39 @@ export default function Home() {
                     content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
                 />
             </Head>
-            <div className={s.background_style}>
-                <div className={s.cont}>
-                <div className={s.lists}><ProjectPage/></div>
-                <div className={s.lists}> <TheoryPage/></div>
-            </div>
-                <ul className={s.boxArea}>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
+            <div>
+                <div className={s.background_style} id='myFullPage'>
+                    <div className={s.lists}><ProjectPage/></div>
+                    <div className={s.lists}><TheoryPage/></div>
+                    <div className={s.lists}><AchivPage/></div>
+                    <div className={s.lists}><TaskPage/></div>
+                    <div className={s.lists}><ContactsPage/></div>
+
+                    <ul className={s.boxArea}>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
             </div>
             <div className={s.content}>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginLeft: '20px',
-                marginRight: '20px',
-            }}>
-                <MainLogo className={s.logo}/>
-                <span className={s.name}>EduGameTheory</span>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginLeft: '20px',
+                    marginRight: '20px',
+                }}>
+                    <div className={s.logo} dangerouslySetInnerHTML={{__html: logoSvg}}/>
+                </div>
+                <Hidden xsDown>
+                <Auth/>
+                    </Hidden>
+                <Hidden smUp>
+                    <SmallAuth/>
+                </Hidden>
             </div>
-            <Auth/>
-        </div>
         </>
     )
 }

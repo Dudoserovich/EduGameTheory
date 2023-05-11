@@ -4,14 +4,16 @@
 }
 
 .auth {
-  background: var(--light-card-grey) !important ;
+  background: rgba(145, 144, 208, 0.7)!important ;
+  color: white !important ;
+  backdrop-filter: blur(7px) !important;
   position:absolute !important ;
   z-index: 3;
   top:6px !important ;
   right: 10px!important ;
-  box-shadow: 0px 0px 10px 0px rgb(0,0, 0, 0)!important;
+  box-shadow: 0 0 10px 0 rgba(243, 205, 185, 0.1) !important;
   border-radius: 4px;
-  border-color: rgb(255, 255, 255, 0.5);
+  border-color: rgba(255, 219, 179, 0.6);
   border-width: 2px;
   border-style: solid;
 
@@ -22,9 +24,12 @@
 
 
 .input{
-  background: var(--light-card-grey)!important;
+  background: white !important;
+  border-radius: 4px !important;
+
 }
 
-.Button{
-  background: var(--light-card-yellow)!important;
+.button{
+  padding: 0 20px !important;
+  margin-top: 40px !important;
 }

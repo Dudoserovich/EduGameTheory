@@ -1,0 +1,73 @@
+
+.back{
+  justify-content: right !important;
+  background: linear-gradient(to right, rgb(58, 61, 132, 1) , rgba(148, 92, 204, 0.9), rgb(255, 208, 182, 0.9));
+  max-width: 900px !important;
+  min-width: 600px !important;
+  padding: 10px !important;
+
+  @media screen and (max-width: 412px) {
+    min-width: 300px !important;
+  }
+}
+.title{
+  padding: 0;
+  margin: 0;
+  color: white;
+  font-size: 40px;
+  text-align: center;
+  font-weight: bold;
+  transform: translateY(-20px);
+}
+.contents{
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 20px !important;
+  margin-bottom: 10px !important;
+  padding: 0 !important;
+  justify-content: center;
+}
+
+.input{
+  width: 300px !important;
+  margin: 10px 0 !important;
+}
+.botton {
+  margin-top: 20px;
+  color: rgb(84, 88, 171);
+  background: white;
+  padding: 10px 60px;
+  font-size: 40px;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-bottom: 100px;
+
+  @media screen and (max-width: 960px) {
+    margin-left: 36%;
+    margin-right: 36%;
+    margin-top: 60px;
+  }
+  @media screen and (max-width: 412px) {
+    margin-left: 16%;
+    margin-right: 16%;
+    margin-top: 60px;
+  }
+}
+
+.bottonGo {
+  background: rgb(84, 88, 171) !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+  color: white !important;
+  padding: 10px 0 !important;
+  width: 300px !important;
+  font-size: 20px!important;
+  border-radius: 10px!important;
+  font-weight: bold!important;
+}
+
+.closeSVG{
+  padding: 0;
+  margin: 0;
+  width: 35px;
+}

@@ -1,8 +1,8 @@
 @import "styles/mixins";
 
 .background_style{
-  overflow-x: hidden;
-  scrollbar-width: none;
+  z-index: 0;
+  overflow: hidden;
   display: grid;
   align-items: baseline;
   justify-content: space-between;
@@ -10,43 +10,75 @@
   height: 100%;
   min-height: 100vh;
   flex-direction: column;
-  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
-  radial-gradient(  #6f79bd 90%, #ffffff 10%);
 
 }
+h2{
+  color: white;
+  margin-bottom: 20px;
+  font-size: 60px;
+  font-weight: bold;
+}
+
+h5{
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+
+}
+
 .content {
   top: 0;
   left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 40px 20px 40px;
+  padding: 12px 1vw 10px 1vw;
   position: fixed;
-  background: rgb(255, 255, 255, 0.2);
+  z-index: 8;
+  background: rgba(145, 144, 208, 0.7);
+  backdrop-filter: blur(6px);
   width: 100%;
 }
-.cont{
-  overflow-x: hidden;
-  height: 100vh;
-  scroll-snap-type: y mandatory;
-  overflow-y: auto;
-  scrollbar-width: none;
 
-}
-#element::-webkit-scrollbar {
-  width: 10px;
-  background-color: #f9f9fd;
-}
 .lists{
   width: 100vw;
   height: auto;
   min-height: 100vh;
-  scroll-snap-align: start;
+}
+.lists:nth-child(1){
+  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+  radial-gradient(  rgba(73, 82, 140, 0.8) 90%, #ffffff 10%);
+}
+.lists:nth-child(2){
+  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+  rgb(255, 255, 255, 1);
+}
+.lists:nth-child(3){
+  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+  rgba(73, 82, 140, 0.8);
+  min-height: auto;
+  padding: 40px 2vw;
+  text-align: center;
+  height: auto;
+  backdrop-filter: blur(15px);
 
 }
+.lists:nth-child(4){
+  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+  rgb(255, 255, 255, 1);
+}
+.lists:nth-child(5){
+  background: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+  rgba(73, 82, 140, 0.8);
+  min-height: auto;
+  padding: 40px 2vw;
+  text-align: center;
+  height: auto;
+}
+
+
 .logo {
-  width: 35px;
-  height: 35px;
+  width: 300px;
 }
 
 .name {
