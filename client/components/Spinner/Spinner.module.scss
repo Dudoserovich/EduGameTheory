@@ -2,15 +2,17 @@
     display: flex;
     justify-content: space-between;
     position: relative;
+    z-index: 8;
     height: 30px;
     width: 120px;
     margin: 65px auto;
     
     span {
-        // position: absolute;
+        background: rgba(238, 168, 255, 0.6);
+        position: relative;
+        z-index: 10;
         width: 20px;
         height: 20px;
-        background: var(--light-card-theme);
         border-radius: 50%;
         -webkit-animation: spinner 1s infinite ease-in-out;
         animation: spinner 1s infinite ease-in-out;

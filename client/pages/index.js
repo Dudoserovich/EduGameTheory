@@ -1,72 +1,36 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Auth from "../components/Auth/Auth";
+import SmallAuth from "../components/Auth/SmallAuth";
+import ProjectPage from "../components/IndexPage/ProjectPage";
+import TheoryPage from "../components/IndexPage/TheoryPage";
+import TaskPage from "../components/IndexPage/TaskPage";
+import ContactsPage from "../components/IndexPage/ContactsPage";
+import AchivPage from "../components/IndexPage/AchivPage";
 import Head from "../polyfills/head";
-import {MainLogo} from "../public/logos/Logos";
-import {Accordion, AccordionSummary, Typography} from "@material-ui/core";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {AccordionDetails, Card, CardActions, CardContent} from "@mui/material";
-import {Controller} from "react-hook-form";
-import Input from "../components/Input/Input";
-import Spinner from "../components/Spinner/Spinner";
-import Button from "../components/Button";
 import s from '../styles/pages/index.module.scss';
-import catSvg from '../public/logos/cat3.svg';
-
 import Toast, {notify} from "../components/Toast/Toast";
+import auto from "chart.js/auto";
+import {Hidden} from "@material-ui/core";
+import logoSvg from "../public/svg/logo.svg";
 
 export default function Home() {
-    const centerY = window.innerWidth / 9;
-    const size = window.innerWidth / 2.4;
-
     return (
         <>
             <Head>
-                <title>О нас (EduGameTheory)</title>
+                <title>О проекте (EduGameTheory)</title>
                 <meta
                     name="viewport"
                     content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
                 />
             </Head>
-            <div style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                justifyContent: 'space-between',
-                width: '100%',
-                height: '100%',
-                flexDirection: 'column',
-            }}>
-                <div className={s.content}>
-                    <div style={{
-                        display: 'flex',
-                        color: 'black',
-                        alignItems: 'center',
-                        width: '12em',
-                        justifyContent: 'space-between',
-                    }}>
-                        <div className={s.logo}>
-                            <MainLogo/>
-                        </div>
-                        <span className={s.name}>EduGameTheory</span>
-                    </div>
+            <div>
+                <div className={s.background_style} id='myFullPage'>
+                    <div className={s.lists}><ProjectPage/></div>
+                    <div className={s.lists}><TheoryPage/></div>
+                    <div className={s.lists}><AchivPage/></div>
+                    <div className={s.lists}><TaskPage/></div>
+                    <div className={s.lists}><ContactsPage/></div>
 
-                    <Auth/>
-                </div>
-                <div className={s.aboutUs}>
-                    <div className={s.catSVG}  dangerouslySetInnerHTML={{__html: catSvg}}/>
-                    <div className={s.about}>
-                        <h1>О проекте</h1>
-                        {/*Мы хотим немного поиграть с вами, рассказать красивую
-                            историю и самое главное научить решать задачки по теории игр!</h3>*/}
-                        <h4>
-                            Всем привет!
-                        </h4>
-                        <h3>
-                            Данный проект создан для легкого и интересного изучения матричных методов в Теории Игр.</h3>
-                        <h4>Мы попытались создать комфорную и понятную среду обучения, так что жмякай на кнопку и скорее начнем!</h4>
-                        <button  className={s.button}>Начать</button>
-                    </div>
-                </div>
-                <div className={s.animationArea}>
                     <ul className={s.boxArea}>
                         <li></li>
                         <li></li>
@@ -74,10 +38,23 @@ export default function Home() {
                         <li></li>
                         <li></li>
                     </ul>
-
                 </div>
-
-
+            </div>
+            <div className={s.content}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginLeft: '20px',
+                    marginRight: '20px',
+                }}>
+                    <div className={s.logo} dangerouslySetInnerHTML={{__html: logoSvg}}/>
+                </div>
+                <Hidden xsDown>
+                <Auth/>
+                    </Hidden>
+                <Hidden smUp>
+                    <SmallAuth/>
+                </Hidden>
             </div>
         </>
     )
