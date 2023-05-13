@@ -1,4 +1,16 @@
+@import "styles/mixins";
 .we{
-  color: white;
+  color: var(--light-text);
   font-size: 30px;
+}
+
+.link{
+  position: relative;
+  z-index: 7;
+}
+
+
+.marginStyle{
+  justify-items: center;
+  @include content;
 }

@@ -5,12 +5,29 @@
 :root {
     --light-text: #ffffff;
     --light-text-yellow: #fff4ad;
-    --light-text-purple: #C084FC;
+    --light-text-primary: rgb(84, 88, 171);
     --light-text-black: #000000;
 
-    --light-header-theme: #1a1643;
-    --light-card-yellow: #ffda84;
-    --light-card-white: #ffffff;
+    --dark-header-theme: rgba(145, 144, 208, 0.5);
+    --light-header-theme: rgba(206, 206, 253, 0.7);
+
+    --light-background-primary2: linear-gradient(to right top, rgb(84, 88, 171, 0.8) 2%, rgba(98, 80, 162, 0.4), rgba(135, 60, 255, 0.4)),
+    rgb(255, 255, 255, 1);
+
+    --light-background-primary: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+    rgb(255, 255, 255, 1);
+    --dark-background-primary: linear-gradient(to right, rgb(84, 88, 171, 0.8) 2%, rgba(135, 60, 255, 0.4), rgb(111, 121, 189, 0.9)),
+    rgba(73, 82, 140, 0.8);
+    --light-background: #ffffff;
+
+    --dark-button-white: white;
+    --light-button-violet: rgb(84, 88, 171);
+
+    --primary: linear-gradient(to top right, rgb(58, 61, 132, 1) , rgba(148, 92, 204, 0.9), rgb(255, 208, 182, 0.9));
+
+    --dark-illumination: radial-gradient( rgb(255, 242, 189, 0.5) 10%,rgb(0,0,0,0) 70% );
+
+    --dark-card-pink: rgba(255, 223, 232, 0.5);
     --light-card-grey: rgb(255, 255, 255, 0.0);
     --light-card-blue: rgb(255, 255, 255, 0.2);
 

@@ -1,7 +1,8 @@
 .container {
     position: absolute;
     top: 100%;
-    background: var(--dark-shades);
+    background: var(--dark-header-theme);
+    backdrop-filter: blur(16px) !important;
     border-radius: 0 0 6px 6px;
     overflow: hidden;
 }
