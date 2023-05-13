@@ -54,16 +54,18 @@ nelmio_api_doc:
           - url: https://dudoser.msur.team
             description: API на удалённом сервере
         tags:
-          - name: Term
-            description: Взаимодействие с терминами
-          - name: User
-            description: Взаимодействие с пользователями
           - name: Login Check
             description: Аутентификация и получение JWT токена
+          - name: User
+            description: Взаимодействие с пользователями
+          - name: Term
+            description: Взаимодействие с терминами
           - name: Literature
             description: Взаимодействие со списком литературы
           - name: Achievement
             description: Взаимодействие с достижениями
+          - name: Task
+            description: Взаимодействие с заданиями
           - name: Test
             description: Фичи, находящиеся на этапе разработки
         info:

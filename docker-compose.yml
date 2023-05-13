@@ -38,6 +38,7 @@ services:
       DATABASE_URL: "mysql://user:password@db:3306/edu_game_theory?serverVersion=5.7.27&charset=utf8"
       APP_DEBUG: "true"
       XDEBUG_MODE: "debug"
+      #      XDEBUG_CONFIG: "start_with_request=yes client_port=9007 client_host=host.docker.internal"
       XDEBUG_CONFIG: "start_with_request=yes client_port=9007 client_host=172.18.0.1"
       XDEBUG_SESSION: "PHPSTORM"
       PHP_IDE_CONFIG: "serverName=backend"
