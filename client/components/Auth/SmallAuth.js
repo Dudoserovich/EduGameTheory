@@ -1,22 +1,27 @@
-import React, {useEffect} from 'react';
-import s from './Auth.module.scss';
+import React, {useEffect} from "react";
+import s from './Button.module.scss';
+import {DialogTitle, Dialog, DialogContent, DialogActions, Button} from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
-import Input from '../Input/Input';
-import router from '../../polyfills/router';
-import Spinner from '../Spinner/Spinner';
-import {useDispatch, useSelector} from 'react-redux';
-import {getToken, saveToken} from '../../store/slices/authSlice';
-import Button from '../Button';
-import {refreshingToken} from '../../api';
-import {getRefreshToken} from '../../scripts/jwtService';
-import {Accordion, AccordionSummary, Typography} from "@material-ui/core";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {AccordionDetails} from "@mui/material";
+import Input from "../Input/Input";
+import Spinner from "../Spinner/Spinner";
+import {getRefreshToken} from "../../scripts/jwtService";
+import {refreshingToken} from "../../api";
+import router from "router";
+import {useDispatch, useSelector} from "react-redux";
+import {getToken, saveToken} from "../../store/slices/authSlice";
+import closeSvg from '../../public/svg/close.svg';
+import authSvg from './SingUp.svg';
 
+export default function ProjectPage() {
+    const [open, setOpen] = React.useState( false);
 
-export var user = 'lead';
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    }
 
-const Auth = () => {
     const {handleSubmit, control, formState: {errors}} = useForm({
         mode: 'onBlur',
         defaultValues: {
@@ -48,17 +53,18 @@ const Auth = () => {
     }
 
     return (
-        <div>
-            <Accordion className={s.auth}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon/>}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                    className={s.authSummary}
-                >
-                    <Typography>Авторизация</Typography>
-                </AccordionSummary>
-                <AccordionDetails  className={s.authDetails}>
+        <>
+            <button onClick={handleClickOpen}>
+                <div className={s.closeSVG} dangerouslySetInnerHTML={{__html: authSvg}}/>
+            </button>
+            <Dialog open={open} onClose={handleClose} aria-lablledby='form-dialog-title' fullWidth={true} >
+                <DialogTitle id='form-dialog-title' className={s.back}>
+                    <Button onClick={handleClose}>
+                        <div className={s.closeSVG} dangerouslySetInnerHTML={{__html: closeSvg}}/>
+                    </Button>
+                    <h1 className={s.title}>Авторизация</h1>
+                </DialogTitle>
+                <DialogContent className={s.contents}>
                     <form onSubmit={handleSubmit(onSubmit)} >
                         <div>
                             <Controller
@@ -96,18 +102,20 @@ const Auth = () => {
                                 color: 'var(--main-brand-color)'
                             }}>Обязательное поле</span>}
                         </div>
-                        {
-                            authState.isLoading
-                                ?
-                                <Spinner/>
-                                :
-                                <Button type={'submit'} className={s.button}>Войти</Button>
-                        }
                     </form>
-                </AccordionDetails>
-            </Accordion>
-        </div>
-    );
+                </DialogContent>
+                <DialogActions style={ {
+                    justifyContent: 'center'
+                }}>
+                    {
+                        authState.isLoading
+                            ?
+                            <Spinner/>
+                            :
+                            <Button type={'submit'} className={s.bottonGo}>Войти</Button>
+                    }
+                </DialogActions>
+            </Dialog>
+        </>
+    )
 }
-
-export default Auth;
