@@ -10,9 +10,12 @@ import VerticalMenu from '../components/VerticalMenu/VerticalMenu';
 import {AiOutlineUser} from "react-icons/ai";
 import classNames from 'classnames';
 import ProfileInput from "../components/Input/ProfileInput";
-
+import catSvg from  "../public/svg/circleCat.svg"
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import {Grid} from "@material-ui/core";
+import BoxAnimation from "../components/BoxAnimation/BoxAnimation";
+import ContactPage from "../components/IndexPage/ContactsPage";
 
 function PersonalInformation({data, onChange}) {
     const {handleSubmit, control} = useForm({
@@ -165,29 +168,44 @@ export default function profile() {
 
     return (
         <Page pageTitle={'Профиль'}>
-            <div className={s.ctn}>
-                <div className={s.user}>
-                    {
-                        user.isLoading
-                            ?
-                            <ProfileHeaderSkeleton/>
-                            :
-                            <>
-                                {/*<div className={s.user__avatar}>*/}
-                                    {user.data?.full_name ?
-                                        <Avatar style={{height: '55px', width: '55px'}} {...stringAvatar(user.data?.full_name)} />
-                                        : <AiOutlineUser className={s.icon}/>
-                                    }
-                                {/*</div>*/}
-                                <div className={s.user__main_info}>
-                                    <span className={s.user__fullname}>{user.data?.full_name}</span>
+            <div className={s.backgroundStyle}>
+                <div className={s.ctn}>
+                    <Grid container className={s.contentName}>
+                        <Grid container xs={12} sm={12} md={8} lg={9} className={s.hello}>
+                            <Grid item xs={4} sm={4} md={4} lg={4}>
+                                <div className={s.catSVG} dangerouslySetInnerHTML={{__html: catSvg}}/>
+                            </Grid>
+                            <Grid item xs={7} sm={7} md={7} lg={7}>
+                                <div>
+                                    <h1 className={s.lableText}>Привет!</h1>
+                                    <h4 className={s.h4Text}>Мы ждем твоих новых свершений!</h4>
                                 </div>
-                            </>
-                    }
-                </div>
+                            </Grid>
 
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={4} lg={3} className={s.user}>
+                            {
+                                user.isLoading
+                                    ?
+                                    <ProfileHeaderSkeleton/>
+                                    :
+                                    <>
+                                        {/*<div className={s.user__avatar}>*/}
+                                        {user.data?.full_name ?
+                                            <Avatar
+                                                className={s.user__avatar} {...stringAvatar(user.data?.full_name)} />
+                                            : <AiOutlineUser className={s.icon}/>
+                                        }
+                                        {/*</div>*/}
+                                        <div className={s.user__main_info}>
+                                            <span className={s.user__fullname}>{user.data?.full_name}</span>
+                                        </div>
+                                    </>
+                            }
+                        </Grid>
+                    </Grid>
 
-                <div className={classNames(s.content, {[s.loading]: user.isLoading})}>
+                    {/*                <div className={classNames(s.content, {[s.loading]: user.isLoading})}>
                     {
                         user.isLoading
                             ?
@@ -230,7 +248,22 @@ export default function profile() {
                                 </VerticalMenu>
                         }
                     </div>
+                </div>*/}
+
                 </div>
+                <ul className={s.boxArea}>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <BoxAnimation/>
+                <div className={s.contact}>
+                    <ContactPage/>
+            </div>
+
             </div>
         </Page>
     );

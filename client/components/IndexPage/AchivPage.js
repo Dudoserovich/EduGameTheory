@@ -28,7 +28,7 @@ export default function TheoryPage() {
     return (
         <>
             <h2>НАГРАДЫ</h2>
-            <h4>Получайте различные награды за прохждение заданий!</h4>
+            <h4>Получайте различные награды за прохождение заданий!</h4>
             <Grid container spacing={2} style={{
                 justifyContent: 'space-evenly',
                 paddingTop: '20px',
@@ -62,7 +62,7 @@ export default function TheoryPage() {
                     <h5>10 побед!</h5>
                 </Grid>
             </Grid>
-            <h4>Примите участие в поиске секретных нград!</h4>
+            <h4>Примите участие в поиске секретных наград!</h4>
         </>
     )
 }
