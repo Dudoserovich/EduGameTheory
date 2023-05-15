@@ -18,7 +18,7 @@ class TaskSolver
         $X = [];
         foreach ($solution as $x) {
             if ($x != 0) {
-                $X[] = $x/$Z;
+                $X[] = $x / $Z;
             }
         }
 
@@ -40,13 +40,28 @@ class TaskSolver
         $taskFindSaddle = new TaskFindSaddle($matrix);
         $saddlePoint = $taskFindSaddle->findSaddlePoint();
 
+        // Возвращаем оптимальную стратегию первого и второго игрока
+        if ($saddlePoint) {
+            list($i, $j) = $saddlePoint;
+            return array(
+                "strategy" => "чистые стратегии",
+                "firstPlayer" => $i,
+                "secondPlayer" => $j,
+                "gamePrice" => $matrix[$i][$j]
+            );
+        }
+
         # 2. Упрощение матрицы.
         # Происходит удаление доминирующих столбцов и строк.
-        # TODO: так же можно получить промежуточные шаги с помощью getTurnsSimpleMatrix
-        $simpleMatrix = TaskMatrixSimpler::getEndSimpleMatrix($matrix);
+        # TODO: так же можно получить промежуточные шаги
+        #   с помощью getTurnsSimpleMatrix
+        // TODO: Пока что упрощённую матрицу не используем
+        // TODO: Ломается на Камень-ножницы-бумага
+//        $simpleMatrix = TaskMatrixSimpler::getEndSimpleMatrix($matrix);
 
         # 3. Поиск решения в смешанных стратегиях с помощью симплекс-метода.
         # Ответ: Цена игры и оптимальные стратегии первого и второго игрока.
+        // TODO: Ломается на Камень-ножницы-бумага
 
         # Решение для 1-го игрока
         $c = TaskPlay::fillArray(count($matrix[0]), 1);
@@ -58,7 +73,11 @@ class TaskSolver
         $P = self::calcOptimalStrategy($solution);
 
         // Цена игры(V) высчитывается только по первому игроку
-        $V = array_sum(Map\Multi::multiply($P, $matrix[0]));
+        $V = round(
+            array_sum(
+                Map\Multi::multiply($P, $matrix[0])
+            ), 2
+        );
 
         # Решение для 2-го игрока
         $newMatrix = MatrixFactory::create($matrix);
@@ -70,6 +89,7 @@ class TaskSolver
         $Q = self::calcOptimalStrategy($solution);
 
         return array(
+            "strategy" => "смешанные стратегии",
             "firstPlayer" => $P,
             "secondPlayer" => $Q,
             "gamePrice" => $V
@@ -86,7 +106,7 @@ class TaskSolver
      * @throws IncorrectTypeException
      * @throws MathException
      */
-    function solveRiskMatrix($matrix): array
+    static public function solveRiskMatrix($matrix): array
     {
         $A = MatrixFactory::create($matrix);
         $countCol = $A->getN();

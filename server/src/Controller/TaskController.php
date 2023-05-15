@@ -5,17 +5,25 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Previewer\TaskPreviewer;
 use App\Repository\TaskRepository;
-use App\Repository\TopicLiteratureRepository;
 use App\Repository\TopicRepository;
 use App\Repository\UserRepository;
 use App\Service\Task\TaskPlay;
 use App\Service\Task\TaskSolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+
+use MathPHP\Exception\BadDataException;
+use MathPHP\Exception\IncorrectTypeException;
+use MathPHP\Exception\MathException;
+use MathPHP\Exception\MatrixException;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
+
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Tag(name="Task")
@@ -230,12 +238,11 @@ class TaskController extends ApiController
      */
     #[Route('/{taskId}',
         name: 'put_by_id',
-        requirements: ['literatureId' => '\d+'],
+        requirements: ['taskId' => '\d+'],
         methods: ['PUT']
     )]
     public function upTask(Request $request,
                                  int $taskId,
-                                 TopicLiteratureRepository $topicLiteratureRepository,
                                  TopicRepository $topicRepository): JsonResponse
     {
         $task = $this->taskRepository->find($taskId);
@@ -317,20 +324,154 @@ class TaskController extends ApiController
         return $this->respondWithSuccess("Task deleted successfully");
     }
 
+//    /**
+//     * Игра по ходам
+//     * @OA\RequestBody(
+//     *     required=true,
+//     *     @OA\JsonContent(
+//     *         example={
+//     *              "row_number": 1
+//     *         },
+//     *         @OA\Property(property="row_number", type="number")
+//     *     )
+//     * )
+//     * @OA\Response(
+//     *     response=200,
+//     *     description="Ход сделан"
+//     * )
+//     * @OA\Response(
+//     *     response=403,
+//     *     description="Permission denied!"
+//     * )
+//     * @OA\Response(
+//     *     response=404,
+//     *     description="Task not found"
+//     * )
+//     */
+//    #[Route('/{taskId}/play',
+//        name: 'play_task',
+//        requirements: ['taskId' => '\d+'],
+//        methods: ['PUT']
+//    )]
+//    public function playTask(Request $request, int $taskId): JsonResponse
+//    {
+//        $request = $request->request->all();
+//        $session = $this->requestStack->getSession();
+//
+//        $task = $this->taskRepository->find($taskId);
+//        if (!$task) {
+//            return $this->respondNotFound("Task not found");
+//        }
+//
+//        // получает атрибуты по имени
+//        $success = $session->get("task_$taskId")["success"] ?? 0;
+//        $fail = $session->get("task_$taskId")["fail"] ?? 0;
+//
+//        $task_result = $session->get("task_$taskId")["task_result"] ?? null;
+////        $session->remove("task_$taskId");
+//        // Проверяем есть ли конечный результат по заданию у пользователя
+//        if ($task_result)
+//            return $this->respondWithSuccess("Вы уже проходили это задание. $task_result");
+//
+//        $moves = $session->get("task_$taskId")["moves"] ?? [];
+//        $moves[] = $request['row_number'];
+//
+//        // Проверка на валидность переданного номера строки
+//        if (!($request['row_number'] <= count($task->getMatrix()) and $request['row_number'] > 0))
+//            return $this->respondNotFound("Row number does not exist");
+//
+//        // вычисляем результат хода
+//        $resultMove = TaskPlay::move(
+//            $task->getMatrix(), $request['row_number'],
+//            $task->getChance()
+//        );
+//
+//        if (is_null($resultMove))
+//            return $this->respondNotFound("Matrix or array of chance is empty");
+//        elseif ($resultMove < 0) {
+//            $fail += 1;
+//            $resultMessage = 'Проигрыш!';
+//        } elseif ($resultMove == 0) {
+//            $resultMessage = 'Ничья!';
+//        } else {
+//            $success += 1;
+//            $resultMessage = 'Выигрыш!';
+//        }
+//
+//        // Так как мы играем до какого-то количества побед,
+//        //  то нам нужно рассчитать когда пользователь выиграл, а когда проиграл
+//        $scores = $success - $fail;
+//        $initScores = $task->getInitScores();
+//        $taskResult = null;
+//        if ($success >= $initScores and $scores > 0) {
+//            $taskResult = "Вы прошли задание!";
+//        } elseif ($fail >= $initScores and $scores > 0) {
+//            $taskResult = "Задание провалено!";
+//        }
+//
+//        $resultArray =
+//            ["success" => $success,
+//                "fail" => $fail,
+//                "moves" => $moves,
+//                "task_result" => $taskResult
+//            ];
+//        // сохраняет результаты задачи в сессии
+//        $session->set(
+//            "task_$taskId",
+//            $resultArray
+//        );
+//
+//        $resultArray['turn_result'] = $resultMessage;
+////        $resultArray['task_result'] = $taskResult;
+//        return $this->response($resultArray);
+//    }
+//
+//    /**
+//     * Перезапуск задания
+//     *
+//     * @OA\Response(
+//     *     response=200,
+//     *     description="Ход сделан"
+//     * )
+//     * @OA\Response(
+//     *     response=403,
+//     *     description="Permission denied!"
+//     * )
+//     * @OA\Response(
+//     *     response=404,
+//     *     description="Task not found"
+//     * )
+//     */
+//    #[Route('/{taskId}/restart',
+//        name: 'restart_task',
+//        requirements: ['taskId' => '\d+'],
+//        methods: ['PUT']
+//    )]
+//    public function restartTask(int $taskId): JsonResponse
+//    {
+//        $session = $this->requestStack->getSession();
+//
+//        $task = $this->taskRepository->find($taskId);
+//        if (!$task) {
+//            return $this->respondNotFound("Task not found");
+//        }
+//
+//        $task_result = $session->get("task_$taskId")["task_result"] ?? null;
+//        // Проверяем есть ли конечный результат по заданию у пользователя
+//        if ($task_result) {
+//            $session->remove("task_$taskId");
+//            return $this->respondWithSuccess("Задание '{$task->getName()}' перезапущено!");
+//        } else {
+//            return $this->respondWithSuccess("Задание '{$task->getName()}' ещё не пройдено");
+//        }
+//
+//    }
+
     /**
-     * Игра по ходам
-     * @OA\RequestBody(
-     *     required=true,
-     *     @OA\JsonContent(
-     *         example={
-     *              "row_number": 1
-     *         },
-     *         @OA\Property(property="row_number", type="number")
-     *     )
-     * )
+     * Поиск оптимальных стратегий
      * @OA\Response(
      *     response=200,
-     *     description="Ход сделан"
+     *     description="Решение получено"
      * )
      * @OA\Response(
      *     response=403,
@@ -341,125 +482,36 @@ class TaskController extends ApiController
      *     description="Task not found"
      * )
      */
-    #[Route('/{taskId}/play',
-        name: 'play_task',
+    #[Route('/{taskId}/optimal',
+        name: 'optimal_task',
         requirements: ['taskId' => '\d+'],
-        methods: ['PUT']
+        methods: ['GET']
     )]
-    public function playTask(Request $request, int $taskId): JsonResponse
+    public function optimalTask(Request $request, int $taskId): JsonResponse
     {
-        $request = $request->request->all();
-        $session = $this->requestStack->getSession();
-
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
             return $this->respondNotFound("Task not found");
         }
 
-        // получает атрибуты по имени
-        $success = $session->get("task_$taskId")["success"] ?? 0;
-        $fail = $session->get("task_$taskId")["fail"] ?? 0;
-
-        $task_result = $session->get("task_$taskId")["task_result"] ?? null;
-//        $session->remove("task_$taskId");
-        // Проверяем есть ли конечный результат по заданию у пользователя
-        if ($task_result)
-            return $this->respondWithSuccess("Вы уже проходили это задание. $task_result");
-
-        $moves = $session->get("task_$taskId")["moves"] ?? [];
-        $moves[] = $request['row_number'];
-
-        // Проверка на валидность переданного номера строки
-        if (!($request['row_number'] <= count($task->getMatrix()) and $request['row_number'] > 0))
-            return $this->respondNotFound("Row number does not exist");
-
-        // вычисляем результат хода
-        $resultMove = TaskPlay::move(
-            $task->getMatrix(), $request['row_number'],
-            $task->getChance()
-        );
-
-        if (is_null($resultMove))
-            return $this->respondNotFound("Matrix or array of chance is empty");
-        elseif ($resultMove < 0) {
-            $fail += 1;
-            $resultMessage = 'Проигрыш!';
-        } elseif ($resultMove == 0) {
-            $resultMessage = 'Ничья!';
+        // Матрица последствий
+        if ($task->getFlagMatrix() != 'платёжная матрица') {
+            try {
+                $solve = TaskSolver::solveRiskMatrix($task->getMatrix());
+            } catch (BadDataException | IncorrectTypeException
+            | MatrixException | MathException $e) {
+                return $this->respondValidationError($e->getMessage());
+            }
         } else {
-            $success += 1;
-            $resultMessage = 'Выигрыш!';
+            // Платёжная матрица
+            try {
+                $solve = TaskSolver::solvePayoffMatrix($task->getMatrix());
+            } catch (BadDataException|IncorrectTypeException
+            |MatrixException|MathException $e) {
+                return $this->respondValidationError($e->getMessage());
+            }
         }
 
-        // Так как мы играем до какого-то количества побед,
-        //  то нам нужно рассчитать когда пользователь выиграл, а когда проиграл
-        $scores = $success - $fail;
-        $initScores = $task->getInitScores();
-        $taskResult = null;
-        if ($success >= $initScores and $scores > 0) {
-            $taskResult = "Вы прошли задание!";
-        } elseif ($fail >= $initScores and $scores > 0) {
-            $taskResult = "Задание провалено!";
-        }
-
-        $resultArray =
-            ["success" => $success,
-                "fail" => $fail,
-                "moves" => $moves,
-                "task_result" => $taskResult
-            ];
-        // сохраняет результаты задачи в сессии
-        $session->set(
-            "task_$taskId",
-            $resultArray
-        );
-
-        $resultArray['turn_result'] = $resultMessage;
-//        $resultArray['task_result'] = $taskResult;
-        return $this->response($resultArray);
+        return $this->response($solve);
     }
-
-    /**
-     * Перезапуск задания
-     *
-     * @OA\Response(
-     *     response=200,
-     *     description="Ход сделан"
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Task not found"
-     * )
-     */
-    #[Route('/{taskId}/restart',
-        name: 'restart_task',
-        requirements: ['taskId' => '\d+'],
-        methods: ['PUT']
-    )]
-    public function restartTask(int $taskId): JsonResponse
-    {
-        $session = $this->requestStack->getSession();
-
-        $task = $this->taskRepository->find($taskId);
-        if (!$task) {
-            return $this->respondNotFound("Task not found");
-        }
-
-        $task_result = $session->get("task_$taskId")["task_result"] ?? null;
-        // Проверяем есть ли конечный результат по заданию у пользователя
-        if ($task_result) {
-            $session->remove("task_$taskId");
-            return $this->respondWithSuccess("Задание '{$task->getName()}' перезапущено!");
-        } else {
-            return $this->respondWithSuccess("Задание '{$task->getName()}' ещё не пройдено");
-        }
-
-    }
-
-    // TODO: получить решение задачи
-    
 }
