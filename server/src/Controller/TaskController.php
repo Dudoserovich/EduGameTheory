@@ -2,27 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Literature;
 use App\Entity\Task;
-use App\Entity\TopicLiterature;
-use App\Previewer\LiteraturePreviewer;
 use App\Previewer\TaskPreviewer;
-use App\Repository\LiteratureRepository;
 use App\Repository\TaskRepository;
 use App\Repository\TopicLiteratureRepository;
 use App\Repository\TopicRepository;
 use App\Repository\UserRepository;
-use App\Service\TaskSolver;
+use App\Service\Task\TaskPlay;
+use App\Service\Task\TaskSolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-
-use Nelmio\ApiDocBundle\Annotation\Security;
-use OpenApi\Annotations as OA;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @OA\Tag(name="Task")
@@ -381,7 +374,7 @@ class TaskController extends ApiController
             return $this->respondNotFound("Row number does not exist");
 
         // вычисляем результат хода
-        $resultMove = TaskSolver::move(
+        $resultMove = TaskPlay::move(
             $task->getMatrix(), $request['row_number'],
             $task->getChance()
         );
