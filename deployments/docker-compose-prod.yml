@@ -55,10 +55,10 @@ services:
     restart: unless-stopped
     networks:
       - dudoser-net
-    depends_on:
-      - backend
+#    depends_on:
+#      - backend
     environment:
-      #SERVER_NAME: ':80'
+      SERVER_NAME: ':80'
       MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
       MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
       # eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXJjdXJlIjp7InB1Ymxpc2giOlsiKiJdfX0.HYO3bkOHodu0Xxdt7SOwCWKixD-gyKfbhtXZDc2OA2Q
