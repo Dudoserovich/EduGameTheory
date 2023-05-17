@@ -12,6 +12,7 @@ import Toast, {notify} from "../components/Toast/Toast";
 import auto from "chart.js/auto";
 import {Hidden} from "@material-ui/core";
 import logoSvg from "../public/svg/logo.svg";
+import BoxAnimation from "../components/BoxAnimation/BoxAnimation";
 
 export default function Home() {
     return (
@@ -30,23 +31,11 @@ export default function Home() {
                     <div className={s.lists}><AchivPage/></div>
                     <div className={s.lists}><TaskPage/></div>
                     <div className={s.lists}><ContactsPage/></div>
-
-                    <ul className={s.boxArea}>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
+                    <BoxAnimation/>
                 </div>
             </div>
-            <div className={s.content}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginLeft: '20px',
-                    marginRight: '20px',
-                }}>
+            <div className={s.header}>
+                <div className={s.headerContent}>
                     <div className={s.logo} dangerouslySetInnerHTML={{__html: logoSvg}}/>
                 </div>
                 <Hidden xsDown>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import s from './Header.module.scss';
-import { MainLogo } from '../../public/logos/Logos';
 import { useRouter } from "router";
 import Link from "../../polyfills/link";
 import { AiFillCaretDown, AiOutlineMenu } from "react-icons/ai";
@@ -11,6 +10,7 @@ import { useWindowSize } from "../../scripts/hooks/useWindowSize";
 import { CSSTransition } from 'react-transition-group';
 import VerticalMenu from '../VerticalMenu/VerticalMenu';
 import { removeJWT, removeRefreshToken } from "../../scripts/jwtService";
+import logoSvg from '../../public/svg/logo.svg'
 
 export default function Header({navConfig, username}) {
     const [openMobileNav, setOpenMobileNav] = useState(false);
@@ -27,10 +27,7 @@ export default function Header({navConfig, username}) {
         <div className={s.content}>
             <div className={s.container}>
                 <div className={s.brand}>
-                    <div className={s.logo}>
-                        <MainLogo/>
-                    </div>
-                    <span className={s.name}>EduGameTheory</span>
+                    <div className={s.logo} dangerouslySetInnerHTML={{__html: logoSvg}}/>
                 </div>
 
                 {

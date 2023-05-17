@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import s from './Button.module.scss';
-import {DialogTitle, Dialog, DialogContent, DialogActions, Button} from "@mui/material";
+import {DialogTitle, Dialog, DialogContent, Button} from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
 import Input from "../Input/Input";
 import Spinner from "../Spinner/Spinner";
@@ -55,7 +55,7 @@ export default function ProjectPage() {
     return (
         <>
             <button onClick={handleClickOpen}>
-                <div className={s.closeSVG} dangerouslySetInnerHTML={{__html: authSvg}}/>
+                <div className={s.authSVG} dangerouslySetInnerHTML={{__html: authSvg}}/>
             </button>
             <Dialog open={open} onClose={handleClose} aria-lablledby='form-dialog-title' fullWidth={true} >
                 <DialogTitle id='form-dialog-title' className={s.back}>
@@ -102,19 +102,15 @@ export default function ProjectPage() {
                                 color: 'var(--main-brand-color)'
                             }}>Обязательное поле</span>}
                         </div>
+                        {
+                            authState.isLoading
+                                ?
+                                <Spinner/>
+                                :
+                                <Button type={'submit'} className={s.bottonGo}>Войти</Button>
+                        }
                     </form>
                 </DialogContent>
-                <DialogActions style={ {
-                    justifyContent: 'center'
-                }}>
-                    {
-                        authState.isLoading
-                            ?
-                            <Spinner/>
-                            :
-                            <Button type={'submit'} className={s.bottonGo}>Войти</Button>
-                    }
-                </DialogActions>
             </Dialog>
         </>
     )

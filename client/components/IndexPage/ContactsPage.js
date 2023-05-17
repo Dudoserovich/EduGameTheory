@@ -25,26 +25,22 @@ export default function TheoryPage() {
 
     return (
         <>
-            <h2>Контакты</h2>
-            <Grid container spacing={2} style={{
-                justifyContent: 'space-around',
-                paddingTop: '20px',
-                marginBottom: '20px'
+                <div className={s.marginStyle}>
+                    <h2>Контакты</h2>
+                    <Grid container spacing={2} style={{
+                        justifyContent: 'space-around',
+                        paddingTop: '20px',
+                        marginBottom: '20px'
 
-            }}>
-                    <Grid item sx={6} sm={6} md={5} lg={5} style={{
-                        position: 'relative',
-                        zIndex: '7'
                     }}>
-                        <a className={s.we} href="https://vk.com/liss_see"> Вконтакте: Liss_see</a>.
+                        <Grid item sx={6} sm={6} md={5} lg={5} className={s.link}>
+                            <a className={s.we} href="https://vk.com/liss_see"> Вконтакте: Liss_see</a>.
+                        </Grid>
+                        <Grid item sx={6} sm={6} md={5} lg={5} className={s.link}>
+                            <a className={s.we} href="https://vk.com/egorhmell"> Вконтакте: Dudoserovich</a>.
+                        </Grid>
                     </Grid>
-                <Grid item sx={6} sm={6} md={5} lg={5} style={{
-                    position: 'relative',
-                    zIndex: '7'
-                }}>
-                    <a className={s.we} href="https://vk.com/egorhmell"> Вконтакте: Dudoserovich</a>.
-                </Grid>
-            </Grid>
+                </div>
         </>
     )
 }

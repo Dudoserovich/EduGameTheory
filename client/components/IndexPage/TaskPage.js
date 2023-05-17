@@ -1,7 +1,7 @@
 import React from "react";
 import {Grid, Hidden} from "@material-ui/core";
 import s from './Style/Left.module.scss';
-import catSvg from './svg/task1.svg';
+import catSvg from './svg/task.svg';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Buttom from '../Auth/ButtonAuth';

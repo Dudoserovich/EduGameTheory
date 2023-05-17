@@ -1,16 +1,12 @@
-.button {
-  width: 100%;
-  margin-top: 64px;
-}
 
 .auth {
-  background: rgba(145, 144, 208, 0.7)!important ;
-  color: white !important ;
+  background: var(--dark-header-theme) !important ;
+  color: var(--light-text) !important ;
   backdrop-filter: blur(7px) !important;
   position:absolute !important ;
   z-index: 3;
   top:6px !important ;
-  right: 10px!important ;
+  right: 2vw !important ;
   box-shadow: 0 0 10px 0 rgba(243, 205, 185, 0.1) !important;
   border-radius: 4px;
   border-color: rgba(255, 219, 179, 0.6);
@@ -19,12 +15,8 @@
 
 }
 
-
-
-
-
 .input{
-  background: white !important;
+  background:  var(--light-background) !important;
   border-radius: 4px !important;
 
 }
