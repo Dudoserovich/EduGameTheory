@@ -487,7 +487,7 @@ class TaskController extends ApiController
         requirements: ['taskId' => '\d+'],
         methods: ['GET']
     )]
-    public function solveTask(Request $request, int $taskId): JsonResponse
+    public function solveTask(int $taskId): JsonResponse
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
