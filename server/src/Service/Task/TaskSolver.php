@@ -45,9 +45,9 @@ class TaskSolver
             list($i, $j) = $saddlePoint;
             return array(
                 "strategy" => "чистые стратегии",
-                "firstPlayer" => $i,
-                "secondPlayer" => $j,
-                "gamePrice" => $matrix[$i][$j]
+                "first_player" => $i,
+                "second_player" => $j,
+                "game_price" => $matrix[$i][$j]
             );
         }
 
@@ -90,9 +90,9 @@ class TaskSolver
 
         return array(
             "strategy" => "смешанные стратегии",
-            "firstPlayer" => $P,
-            "secondPlayer" => $Q,
-            "gamePrice" => $V
+            "first_player" => $P,
+            "second_player" => $Q,
+            "game_price" => $V
         );
     }
 
@@ -138,6 +138,75 @@ class TaskSolver
         $minValue = min($maxArr);
         $minIndex = array_search($minValue, $maxArr);
 
-        return array("minValue" => $minValue, "minIndex" => $minIndex);
+        return array("min_value" => $minValue, "min_index" => $minIndex);
+    }
+
+    /**
+     * @throws IncorrectTypeException
+     * @throws MatrixException
+     * @throws BadDataException
+     * @throws MathException
+     */
+    static public function comparisionPaymentResult(
+        array $matrix,
+        array $solvePlayer
+    ): array
+    {
+        $solveSystem = TaskSolver::solvePayoffMatrix($matrix);
+
+        $diff = array_diff(
+            array_map('serialize', $solvePlayer),
+            array_map('serialize', $solveSystem)
+        );
+
+        $multidimensional_diff = array_map('unserialize', $diff);
+
+//        print_r($multidimensional_diff);
+        //$diff = array_diff_assoc($array1, $array2);
+
+        if (!array_key_exists("strategy", $multidimensional_diff)) {
+            //    echo "Правильно!" . PHP_EOL;
+
+            // нормализуем массив вероятностей, полученный учеником
+            self::normalizeArr($solvePlayer['first_player']);
+            self::normalizeArr($solvePlayer['second_player']);
+
+            // нормализуем массив вероятностей, полученный системой
+            self::normalizeArr($solveSystem['first_player']);
+            self::normalizeArr($solveSystem['second_player']);
+
+            $isEqFirst = $solveSystem["first_player"] == $solvePlayer["first_player"];
+            $isEqSecond = $solveSystem["second_player"] == $solvePlayer["second_player"];
+
+            $isEqPrice = round($solveSystem['game_price'], 2) == round($solvePlayer['game_price'], 2);
+
+            if ($isEqFirst && $isEqSecond && $isEqPrice) {
+                // Вернуть ещё полное решение задания системой
+                $message = "Вы правильно решили задание!";
+                $success = true;
+            } else {
+                $success = false;
+                if (!$isEqFirst)
+                    $message = "Ошибка в результате первого игрока";
+                elseif (!$isEqSecond)
+                    $message = "Ошибка в результате второго игрока";
+                else
+                    $message = "Ошибка в цене игры";
+            }
+        } else {
+            $success = false;
+            $message = "Вы выбрали неправильную стратегию игры";
+        }
+
+        return array("success" => $success, "message" => $message);
+    }
+
+    static private function normalizeArr(array|int &$arr): void
+    {
+        if (gettype($arr) == 'array') {
+            foreach ($arr as &$element) {
+                $element = round($element, 2);
+            }
+        }
     }
 }

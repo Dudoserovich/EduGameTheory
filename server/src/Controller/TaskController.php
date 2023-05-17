@@ -468,7 +468,7 @@ class TaskController extends ApiController
 //    }
 
     /**
-     * Поиск оптимальных стратегий
+     * Получение короткого результата задания (платёжная матрица/матрица последствий)
      * @OA\Response(
      *     response=200,
      *     description="Решение получено"
@@ -482,12 +482,12 @@ class TaskController extends ApiController
      *     description="Task not found"
      * )
      */
-    #[Route('/{taskId}/optimal',
-        name: 'optimal_task',
+    #[Route('/{taskId}/solve',
+        name: 'solve_task',
         requirements: ['taskId' => '\d+'],
         methods: ['GET']
     )]
-    public function optimalTask(Request $request, int $taskId): JsonResponse
+    public function solveTask(Request $request, int $taskId): JsonResponse
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
@@ -513,5 +513,86 @@ class TaskController extends ApiController
         }
 
         return $this->response($solve);
+    }
+
+    /**
+     * Найдите решение игры с платёжной матрицей
+     * @OA\RequestBody(
+     *     required=true,
+     *     description="**strategy** - строка, равная `чистые стратегии` или `смешанные стратегии`.<br><br>**first_player** и **second_player** - стратегии первого и второго игрока соответственно. Могут быть либо числом, являющимися номером строки и столбца соответвественно для чистых стратегий. Либо массивом из чисел, являющимся массивом вероятностей выбора стратегий для первого и второго игрока соответственно.<br><br>**game_price** - цена игры.",
+     *     @OA\JsonContent(
+     *         @OA\Property(property="strategy",
+     *                      type="string",
+     *                      enum={"чистые стратегии", "смешанные стратегии"}
+     *         ),
+     *         @OA\Property(
+     *             property="first_player",
+     *             oneOf={
+     *                 @OA\Schema(type="number"),
+     *                 @OA\Schema(
+     *                     type="array",
+     *                     @OA\Items(type="number")
+     *                 )
+     *             }
+     *         ),
+     *         @OA\Property(
+     *             property="second_player",
+     *             oneOf={
+     *                 @OA\Schema(type="number"),
+     *                 @OA\Schema(
+     *                     type="array",
+     *                     @OA\Items(type="number")
+     *                 )
+     *             }
+     *         ),
+     *         @OA\Property(property="game_price", type="number")
+     *     )
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="Решение получено"
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Task not found"
+     * )
+     */
+    #[Route('/{taskId}/payoff/solve',
+        name: 'solve_player_task',
+        requirements: ['taskId' => '\d+'],
+        methods: ['PUT']
+    )]
+    public function solvePlayerTask(Request $request,
+                              int $taskId): JsonResponse
+    {
+        $request = $request->request->all();
+
+        $task = $this->taskRepository->find($taskId);
+        if (!$task) {
+            return $this->respondNotFound("Task not found");
+        }
+
+        $result = null;
+        // Платёжная матрица
+        if ($task->getFlagMatrix() == 'платёжная матрица') {
+            try {
+                $result = TaskSolver::comparisionPaymentResult($task->getMatrix(), $request);
+            } catch (BadDataException|IncorrectTypeException
+            |MatrixException|MathException $e) {
+                return $this->respondValidationError($e->getMessage());
+            }
+        }
+
+        // TODO: если success, вернуть полное решение игры
+//        if ($result['success'])
+//        {
+//
+//        }
+
+        return $this->response($result);
     }
 }
