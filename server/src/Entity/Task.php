@@ -9,10 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
+
+# TODO: default value е работает для array и flagMatrix так просто не задаётся
 
 /**
  * @ORM\Entity(repositoryClass=TaskRepository::class)
@@ -31,11 +34,18 @@ class Task
     private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=32, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @OA\Property()
      * @Groups({"default"})
      */
     private string $name;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private ?string $description;
 
     /**
      * @ORM\Column(type="string", length=32, options={"default" : "system"})
@@ -62,6 +72,35 @@ class Task
     private ?User $owner;
 
     /**
+     * @ORM\Column(type="integer", options={"default": 0})
+     * @Assert\Positive
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private int $initScores = 0;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @OA\Property(type="array", @OA\Items(type="array", @OA\Items(type="number")))
+     * @Groups({"default"})
+     */
+    private ?array $matrix = null;
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default" : "платёжная матрица"})
+     * @OA\Property(enum={"платёжная матрица", "матрица последствий"})
+     * @Groups({"default"})
+     */
+    private ?string $flagMatrix;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @OA\Property(type="array", @OA\Items(type="array", @OA\Items(type="number")))
+     * @Groups({"default"})
+     */
+    private ?array $chance = null;
+
+    /**
      * @ORM\Column(type="datetime", nullable=true)
      * @OA\Property(format="date-time")
      * @Groups({"default"})
@@ -82,6 +121,17 @@ class Task
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
         return $this;
     }
 
@@ -117,7 +167,60 @@ class Task
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
         return $this;
+    }
+
+    public function setInitScores(int $initScores): self
+    {
+        $this->initScores = $initScores;
+
+        return $this;
+    }
+
+    public function getInitScores(): int
+    {
+        return $this->initScores;
+    }
+
+    /** @param array|null $matrix The JSON to set.
+     */
+    public function setMatrix(?array $matrix): self
+    {
+        $this->matrix = $matrix;
+
+        return $this;
+    }
+
+    public function getMatrix(): ?array
+    {
+        return $this->matrix;
+    }
+
+    public function getFlagMatrix(): ?string
+    {
+        return $this->flagMatrix;
+    }
+
+    public function setFlagMatrix(?string $flagMatrix): self
+    {
+        $this->flagMatrix = $flagMatrix;
+
+        return $this;
+    }
+
+    /** @param array|null $chance The JSON to set.
+     */
+    public function setChance(?array $chance): self
+    {
+        $this->chance = $chance;
+
+        return $this;
+    }
+
+    public function getChance(): ?array
+    {
+        return $this->chance;
     }
 
     public function getDeletedAt(): ?DateTimeInterface

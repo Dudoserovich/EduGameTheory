@@ -30,19 +30,27 @@ class TestController extends ApiController
         $this->em = $em;
     }
 
+    // TODO: стоит добавить
+    //  в передаваемые параметры type и message.
+    // TODO: topic стоит передавать в теле и пусть это будет массив строк
     /**
      * Publish your topic
      * @param HubInterface $hub
-     * @param string $topic
      * @param Request $request
      * @return JsonResponse
      *
-     * @OA\Parameter(
-     *     name="topic",
-     *     in="path",
-     *     description="topic",
+     * @OA\RequestBody(
      *     required=true,
-     *     example="/news"
+     *     @OA\JsonContent(
+     *         example={
+     *              "topics": {"/news"},
+     *              "message": "Добавлен сервис, позволяющий получать фронтенд части сообщения с бэка без запроса",
+     *              "type": "news"
+     *         },
+     *         @OA\Property(property="topics", type="array", @OA\Items(type="string")),
+     *         @OA\Property(property="message", type="string"),
+     *         @OA\Property(property="type", type="string")
+     *     )
      * )
      *
      * @OA\Response(
@@ -56,16 +64,18 @@ class TestController extends ApiController
      * )
      *
      */
-    #[Route('/publish/{topic}',
+    #[Route('/publish',
         name: 'new_publish',
-        requirements: ['topic' => '[/A-z0-9]+'],
         methods: ['POST'])]
-    public function publish(HubInterface $hub, string $topic, Request $request): JsonResponse
+    public function publish(HubInterface $hub,
+                            Request $request): JsonResponse
     {
+        $request = $request->request->all();
+
         $update = new Update(
-            '/news',
-            json_encode(['message' => 'Добавлен сервис, 
-                    позволяющий получать фронтенд части сообщения с бэка без запроса'])
+            topics: $request['topics'],
+            data: json_encode(['message' => $request['message']]),
+            type: $request['type']
         );
 
         $hub->publish($update);

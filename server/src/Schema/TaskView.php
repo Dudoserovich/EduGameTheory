@@ -21,6 +21,12 @@ class TaskView
     public string $name;
 
     /**
+     * @OA\Property(property="description", ref="#/components/schemas/Task/properties/description")
+     * @Groups({"default", "description"})
+     */
+    public string $description;
+
+    /**
      * @OA\Property(property="type", ref="#/components/schemas/Task/properties/type")
      * @Groups({"default", "type"})
      */
@@ -37,4 +43,28 @@ class TaskView
      * @Groups({"default", "owner"})
      */
     public UserView $owner;
+
+    /**
+     * @OA\Property(property="initScores", ref="#/components/schemas/Task/properties/initScores")
+     * @Groups({"default", "initScores"})
+     */
+    public int $initScores;
+
+    /**
+     * @OA\Property(property="matrix", ref="#/components/schemas/Task/properties/matrix")
+     * @Groups({"default", "matrix"})
+     */
+    public ?array $matrix;
+
+    /**
+     * @OA\Property(property="flagMatrix", ref="#/components/schemas/Task/properties/flagMatrix")
+     * @Groups({"default", "flagMatrix"})
+     */
+    public ?string $flagMatrix;
+
+    /**
+     * @OA\Property(property="chance", ref="#/components/schemas/Task/properties/chance")
+     * @Groups({"default", "chance"})
+     */
+    public ?array $chance;
 }

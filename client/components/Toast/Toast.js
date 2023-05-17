@@ -1,28 +1,38 @@
 import React, {useEffect} from 'react';
-import {toast, ToastContainer} from "react-toastify";
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Toast = () => {
     useEffect(() => {
-        // let origin = window.location.protocol + '//' + window.location.host + ':8081'
-        let origin = 'https://' + window.location.host
-        // The subscriber subscribes to updates for the https://example.com/users/dunglas topic
+        let origin = window.location.protocol + '//' + window.location.host
+
         const url = new URL(`${origin}/.well-known/mercure`);
         url.searchParams.append('topic', '/news');
 
         const eventSource = new EventSource(url);
-        // The callback will be called every time an update is published
-        ``
-        // eventSource.onmessage = e => console.log(e); // do something with the payload
-        eventSource.onmessage = e => {
-            let message = JSON.parse(e.data).message
+
+        eventSource.onopen = function() {
+            console.log('Connection SSE opened');
+        };
+
+        eventSource.addEventListener('news', event => {
+            let message = JSON.parse(event.data).message
+            console.log(event)
             notify(message)
-        }
+        })
+
+        // eventSource.onmessage = e => console.log(e); // do something with the payload
+        // eventSource.onmessage = e => {
+        //     let message = JSON.parse(e.data).message
+        //     console.log(e)
+        //     notify(message)
+        // }
+
     }, [])
 
     return (
         <ToastContainer
-            position="bottom-right"
+            position='bottom-right'
             autoClose={10000}
             hideProgressBar={false}
             newestOnTop={false}
@@ -31,7 +41,7 @@ const Toast = () => {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="dark"
+            theme='dark'
         />
     );
 }
