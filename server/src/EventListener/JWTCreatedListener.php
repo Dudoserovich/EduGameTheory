@@ -47,11 +47,11 @@ class JWTCreatedListener
 
         $event->setHeader($header);
 
-        $update = new Update(
-            "/auth/{$user->getUsername()}",
-            json_encode(['message' => "Вы успешно авторизовались как {$user->getFio()}"])
-        );
-
-        $this->hub->publish($update);
+//        $update = new Update(
+//            "/auth/{$user->getUsername()}",
+//            json_encode(['message' => "Вы успешно авторизовались как {$user->getFio()}"])
+//        );
+//
+//        $this->hub->publish($update);
     }
 }
