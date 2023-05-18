@@ -9,10 +9,15 @@ use MathPHP\Exception\MathException;
 use MathPHP\Exception\MatrixException;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use MathPHP\Functions\Map;
-use function PHPUnit\Framework\throwException;
 
 class TaskSolver
 {
+    /**
+     * Расчёт оптимальных стратегий на основе результатов симплекс-метода.
+     *
+     * @param array $solution результат симплекс-метода в виде массива
+     * @return array оптимальные стратегии (вероятности выбора стратегий)
+     */
     static private function calcOptimalStrategy(array $solution): array
     {
         $Z = array_sum($solution);
@@ -28,13 +33,21 @@ class TaskSolver
     }
 
     /**
+     * Решение платёжной матрицы:
+     * 1. Поиск седловой точки (чистые стратегии).
+     * 2. Упрощение матрицы (пока не используется).
+     * 3. Поиск решения в смешанных стратегиях.
+     *
+     * @param array $matrix платёжная матрица
+     * @return array результат чистых/смешанных стратегий
+     *
      * @throws MatrixException
      * @throws IncorrectTypeException
      * @throws BadDataException
      * @throws MathException
      * @throws Exception
      */
-    static public function solvePayoffMatrix($matrix): array
+    static public function solvePayoffMatrix(array $matrix): array
     {
         if (!$matrix) {
             throw new Exception('Matrix cannot be empty');
@@ -108,13 +121,23 @@ class TaskSolver
     //  для решения смешанных стратегий ГРАФИЧЕСКИМ МЕТОДОМ
 
     /**
+     * Решение матрицы рисков.
+     *
+     * @param array $matrix матрица последствий
+     * @return array массив, содержащий номер строки (лучшая стратегия) и минимальный элемент.
+     *
      * @throws MatrixException
      * @throws BadDataException
      * @throws IncorrectTypeException
      * @throws MathException
+     * @throws Exception
      */
-    static public function solveRiskMatrix($matrix): array
+    static public function solveRiskMatrix(array $matrix): array
     {
+        if (!$matrix) {
+            throw new Exception('Matrix cannot be empty');
+        }
+
         $A = MatrixFactory::create($matrix);
         $countCol = $A->getN();
 
@@ -149,6 +172,13 @@ class TaskSolver
     }
 
     /**
+     * Функция, сравнивающая результаты решения
+     *  платёжной матрицы системы $matrix и решение пользователя $solvePlayer.
+     *
+     * @param array $matrix платёжная матрица
+     * @param array $solvePlayer решение пользователя
+     * @return array массив, содержащий успешность сравнения и сообщение
+     *
      * @throws IncorrectTypeException
      * @throws MatrixException
      * @throws BadDataException
@@ -209,6 +239,14 @@ class TaskSolver
         return array("success" => $success, "message" => $message);
     }
 
+    // TODO: в тестах используется округление до 4х.
+    //  Скорее всего в ответе пользователя стоит передавать не десятичные числа, а дробь.
+    /**
+     * Округление элементов массива до 2ух знаков.
+     *
+     * @param array|int $arr массив с числами или число
+     * @return void
+     */
     static private function normalizeArr(array|int &$arr): void
     {
         if (gettype($arr) == 'array') {
