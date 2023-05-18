@@ -2,6 +2,8 @@
 
 namespace App\Service\Task;
 
+use Exception;
+use MathPHP\Exception\BadDataException;
 use MathPHP\Functions\Map;
 
 class TaskSimplex
@@ -51,6 +53,9 @@ class TaskSimplex
         return [$row, $column];
     }
 
+    /**
+     * @throws BadDataException
+     */
     private function pivot_step($tableau, $pivot_position): array
     {
         $new_tableau = array_fill(0, count($tableau), array());
@@ -94,13 +99,28 @@ class TaskSimplex
         return $solutions;
     }
 
+    /**
+     * @throws BadDataException
+     * @throws Exception
+     */
     function simplex(): array
     {
         $tableau = $this->to_tableau();
+        $count = 0;
 
         while ($this->can_be_improved($tableau)) {
+
+            // Тупая проверка на количество итераций.
+            // Если совершенно слишком большое количество
+            //  попыток решения, то значит количество возможных решений НЕ ОГРАНИЧЕНО
+            if ($count >= 100) {
+                throw new Exception('The solution is unbounded');
+            }
+
             $pivot_position = $this->get_pivot_position($tableau);
             $tableau = $this->pivot_step($tableau, $pivot_position);
+
+            $count += 1;
         }
 
         return $this->get_solution($tableau);

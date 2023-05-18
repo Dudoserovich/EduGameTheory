@@ -582,7 +582,7 @@ class TaskController extends ApiController
             try {
                 $result = TaskSolver::comparisionPaymentResult($task->getMatrix(), $request);
             } catch (BadDataException|IncorrectTypeException
-            |MatrixException|MathException $e) {
+            |MatrixException|MathException|Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
         }
