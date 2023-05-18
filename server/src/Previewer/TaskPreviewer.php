@@ -44,7 +44,7 @@ class TaskPreviewer
                 "name" => $task->getTopic()->getName()
             ],
             "owner" => $task->getOwner() ? $this->userPreviewer->previewOnlyFio($task->getOwner()) : null,
-            "init_points" => $task->getInitPoints(),
+            "init_points" => $task->getInitScores(),
             "matrix" => $task->getMatrix(),
             "flag_matrix" => $task->getFlagMatrix(),
             "chance" => $task->getChance()
