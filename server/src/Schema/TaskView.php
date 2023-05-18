@@ -33,7 +33,7 @@ class TaskView
     public string $type;
 
     /**
-     * @OA\Property(property="topic", ref="#/components/schemas/Task/properties/topic")
+     * @OA\Property(property="topic", ref="#/components/schemas/TaskView")
      * @Groups({"default", "topic"})
      */
     public Topic $topic;
