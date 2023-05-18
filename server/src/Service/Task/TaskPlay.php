@@ -11,7 +11,7 @@ class TaskPlay
      *
      * @param int $count длина массива
      * @param float|null $num значение элементов
-     * @return array
+     * @return array заполненный массив
      */
     static public function fillArray(int $count, float|null $num): array
     {
@@ -28,7 +28,7 @@ class TaskPlay
      *
      * @param array $values индексный массив элементов
      * @param array $weights индексный массив соответствующих весов
-     * @return float|null
+     * @return float|null случайный элемент
      */
     static private function weightedRandomSimple(array $values, array $weights): float|null
     {

@@ -331,6 +331,21 @@ class TaskSolverTest extends TestCase
         );
 
         // ======
+
+        // === Проверка пустой матрицы на входе ===
+        $errorMessageActual = "";
+        $errorMessageExpect = "Matrix cannot be empty";
+
+        try {
+            TaskSolver::solveRiskMatrix([]);
+        } catch (\Exception $e) {
+            $errorMessageActual = $e->getMessage();
+        }
+
+        // проверка пустой матрицы на входе
+        self::assertEquals($errorMessageActual, $errorMessageExpect);
+
+        // ======
     }
 
 }

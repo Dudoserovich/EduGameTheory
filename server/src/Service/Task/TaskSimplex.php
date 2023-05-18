@@ -6,6 +6,11 @@ use Exception;
 use MathPHP\Exception\BadDataException;
 use MathPHP\Functions\Map;
 
+/**
+ * Класс, решающий матрицу симплекс методом.
+ * Исходный алгоритм на python тут:
+ * https://radzion.com/blog/operations/simplex
+ */
 class TaskSimplex
 {
     private array $c;
