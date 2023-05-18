@@ -2,12 +2,14 @@
 
 namespace App\Service\Task;
 
+use Exception;
 use MathPHP\Exception\BadDataException;
 use MathPHP\Exception\IncorrectTypeException;
 use MathPHP\Exception\MathException;
 use MathPHP\Exception\MatrixException;
 use MathPHP\LinearAlgebra\MatrixFactory;
 use MathPHP\Functions\Map;
+use function PHPUnit\Framework\throwException;
 
 class TaskSolver
 {
@@ -30,9 +32,14 @@ class TaskSolver
      * @throws IncorrectTypeException
      * @throws BadDataException
      * @throws MathException
+     * @throws Exception
      */
     static public function solvePayoffMatrix($matrix): array
     {
+        if (!$matrix) {
+            throw new Exception('Matrix cannot be empty');
+        }
+
         # 1. Поиск седловой точки
         # Если седловая точка есть, то найдено решение в частных стратегиях.
         # TODO: на этом этапе можно возвращать
@@ -146,6 +153,7 @@ class TaskSolver
      * @throws MatrixException
      * @throws BadDataException
      * @throws MathException
+     * @throws Exception
      */
     static public function comparisionPaymentResult(
         array $matrix,
