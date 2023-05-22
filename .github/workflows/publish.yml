@@ -197,7 +197,7 @@ jobs:
         !cancelled()
         && (success() || failure()
         || needs.nginx.result == 'skipped')
-      }}
+        }}
       runs-on: ubuntu-latest
       steps:
       # Получаем случайную картинку утки, раньше были котики((
