@@ -145,11 +145,45 @@ jobs:
           options: |
             --verbose
             -e @vault.yml
+
+  nginx:
+    needs: [backend_service, frontend_service]
+    # Условие до outputs говорит о том, что job нужно запускать независимо от того,
+    #   что предыдущие job могут быть пропущены
+    # Остальная часть условия отвечает за проверку на хотя бы 1 сбилженный образ
+    if: ${{
+      !cancelled()
+      && (success() || failure()
+      || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped')
+      && (needs.check.outputs.backend_service == 'true' || needs.check.outputs.frontend_service == 'true')
+      }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run up vault playbook
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT }}" > vault.yml
+          cat vault.yml
+
+      - name: Run playbook (deploy)
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbook.yml
+          # Указывайте ключик, не требующий подтверждения в виде пароля и будет вам счастье
+          key: ${{ secrets.SSH_KEY }}
+          inventory: |
+            [all]
+            95.154.71.35 ansible_ssh_user=${{ secrets.SSH_USER }} ansible_ssh_port=${{ secrets.SSH_PORT }} ansible_become_user=${{ secrets.ANSIBLE_BECOME_USER }} ansible_become_password=${{ secrets.ANSIBLE_BECOME_PASSWORD }}
+          options: |
+            --verbose
+            -e @vault.yml
           
   # Отправка сообщений telegram-ботом, если один из образов билдился
   # P.S. Чтобы скрыть chat_id, я хитровыебнулся и добавил каждому секрету 'псевдоним'
   send_telegram:
-      needs: [backend_service, frontend_service]
+      needs: nginx
       strategy:
         matrix:
           chat_id: [dudoser_developer, lissee_developer]
@@ -158,15 +192,11 @@ jobs:
             secret_chat_id: DUDOSER_CHAT_ID
           - chat_id: lissee_developer
             secret_chat_id: LISSEE_CHAT_ID
-      # Условие до outputs говорит о том, что job нужно запускать независимо от того, 
-      #   что предыдущие job могут быть пропущены
-      # Остальная часть условия отвечает за проверку на хотя бы 1 сбилженный образ
-      if: ${{ 
-        !cancelled() 
-        && (success() || failure() 
-          || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped')
-        && (needs.check.outputs.backend_service == 'true' || needs.check.outputs.frontend_service == 'true')
-        }}
+
+      if: ${{
+        !cancelled()
+        && (success() || failure()
+        || needs.nginx.result == 'skipped')
       runs-on: ubuntu-latest
       steps:
       # Получаем случайную картинку утки, раньше были котики((

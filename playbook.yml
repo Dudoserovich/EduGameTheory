@@ -1,0 +1,10 @@
+---
+- hosts: all
+  gather_facts: true
+  tasks:
+
+    - name: "stop services"
+      shell: docker compose -f {{ APP_PATH }}/docker-compose.yml stop nginx
+
+    - name: "start services"
+      shell: docker compose -f {{ APP_PATH }}/docker-compose.yml up -d nginx
