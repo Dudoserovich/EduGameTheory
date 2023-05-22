@@ -148,6 +148,9 @@ jobs:
 
   nginx_service:
     needs: [backend_service, frontend_service]
+    outputs:
+      frontend_service: ${{ needs.frontend_service.result }}
+      backend_service: ${{ needs.backend_service.result }}
     # Условие до outputs говорит о том, что job нужно запускать независимо от того,
     #   что предыдущие job могут быть пропущены
     # Остальная часть условия отвечает за проверку на хотя бы 1 сбилженный образ
@@ -196,8 +199,7 @@ jobs:
       if: ${{
           !cancelled()
           && (success() || failure()
-          || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped' || needs.nginx_service.result == 'skipped')
-          && (needs.check.outputs.backend_service == 'true' || needs.check.outputs.frontend_service == 'true')
+          || needs.nginx_service.result == 'skipped')
         }}
       runs-on: ubuntu-latest
       steps:
@@ -220,8 +222,8 @@ jobs:
             *Автор тригера:* `${{ github.actor }}`
             
             Отработал процесс публикации со статусами сервисов:
-            - `backend`: ${{ needs.backend_service.result }}
-            - `frontend`: ${{ needs.frontend_service.result }}
+            - `backend`: ${{ needs.nginx_service.outputs.backend_service }}
+            - `frontend`: ${{ needs.nginx_service.outputs.frontend_service }}
             - `nginx`: ${{ needs.nginx_service.result }}
             
             [Action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
