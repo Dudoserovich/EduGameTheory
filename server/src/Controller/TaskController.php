@@ -561,12 +561,12 @@ class TaskController extends ApiController
      *     description="Task not found"
      * )
      */
-    #[Route('/{taskId}/payoff/solve',
-        name: 'solve_player_task',
+    #[Route('/{taskId}/solve/payoff',
+        name: 'solve_payoff',
         requirements: ['taskId' => '\d+'],
         methods: ['PUT']
     )]
-    public function solvePlayerTask(Request $request,
+    public function solvePayoff(Request $request,
                               int $taskId): JsonResponse
     {
         $request = $request->request->all();
@@ -585,6 +585,8 @@ class TaskController extends ApiController
             |MatrixException|MathException|Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
+        } else {
+            return $this->respondValidationError('У данного задания неверный тип матрицы.');
         }
 
         // TODO: если success, вернуть полное решение игры
@@ -594,5 +596,66 @@ class TaskController extends ApiController
 //        }
 
         return $this->response($result);
+    }
+
+    /**
+     * Найдите решение игры с матрицей последствий
+     * @OA\RequestBody(
+     *     required=true,
+     *     description="",
+     *     @OA\JsonContent(
+     *         @OA\Property(property="min_value", type="number"),
+     *         @OA\Property(property="min_index", type="number")
+     *     )
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="Решение получено"
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Task not found"
+     * )
+     */
+    #[Route('/{taskId}/solve/risk',
+        name: 'solve_risk',
+        requirements: ['taskId' => '\d+'],
+        methods: ['PUT']
+    )]
+    public function solveRisk(Request $request,
+                                    int $taskId): JsonResponse
+    {
+        $request = $request->request->all();
+
+        $task = $this->taskRepository->find($taskId);
+        if (!$task) {
+            return $this->respondNotFound("Task not found");
+        }
+
+        $resultMessage = null;
+        // Матрица последствий
+        if ($task->getFlagMatrix() == 'матрица последствий') {
+            try {
+                $resultSolve = TaskSolver::solveRiskMatrix($task->getMatrix());
+
+                if ($resultSolve['min_value'] == $request['min_value']
+                    and $resultSolve["min_index"] == $request["min_index"])
+                    $resultMessage = "Вы правильно решили задание!";
+                else $resultMessage = "Вы неправильно решили задание!";
+            } catch (BadDataException|IncorrectTypeException
+            |MatrixException|MathException|Exception $e) {
+                return $this->respondValidationError($e->getMessage());
+            }
+        } else {
+            return $this->respondValidationError('У данного задания неверный тип матрицы.');
+        }
+
+        // TODO: если задание решено правильно, вернуть полное решение игры
+
+        return $this->response($resultMessage);
     }
 }
