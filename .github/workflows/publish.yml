@@ -194,9 +194,10 @@ jobs:
             secret_chat_id: LISSEE_CHAT_ID
 
       if: ${{
-        !cancelled()
-        && (success() || failure()
-        || needs.nginx.result == 'skipped')
+          !cancelled()
+          && (success() || failure()
+          || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped')
+          && (needs.check.outputs.backend_service == 'true' || needs.check.outputs.frontend_service == 'true')
         }}
       runs-on: ubuntu-latest
       steps:
