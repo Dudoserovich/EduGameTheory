@@ -146,7 +146,7 @@ jobs:
             --verbose
             -e @vault.yml
 
-  nginx:
+  nginx_service:
     needs: [backend_service, frontend_service]
     # Условие до outputs говорит о том, что job нужно запускать независимо от того,
     #   что предыдущие job могут быть пропущены
@@ -183,7 +183,7 @@ jobs:
   # Отправка сообщений telegram-ботом, если один из образов билдился
   # P.S. Чтобы скрыть chat_id, я хитровыебнулся и добавил каждому секрету 'псевдоним'
   send_telegram:
-      needs: nginx
+      needs: nginx_service
       strategy:
         matrix:
           chat_id: [dudoser_developer, lissee_developer]
@@ -196,7 +196,7 @@ jobs:
       if: ${{
           !cancelled()
           && (success() || failure()
-          || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped' || needs.nginx.result == 'skipped')
+          || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped' || needs.nginx_service.result == 'skipped')
           && (needs.check.outputs.backend_service == 'true' || needs.check.outputs.frontend_service == 'true')
         }}
       runs-on: ubuntu-latest
@@ -222,7 +222,7 @@ jobs:
             Отработал процесс публикации со статусами сервисов:
             - `backend`: ${{ needs.backend_service.result }}
             - `frontend`: ${{ needs.frontend_service.result }}
-            - `nginx`: ${{ needs.nginx.result }}
+            - `nginx`: ${{ needs.nginx_service.result }}
             
             [Action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             [Посмотреть изменения](https://github.com/${{ github.repository }}/commit/${{github.sha}})
