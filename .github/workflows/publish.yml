@@ -58,7 +58,7 @@ jobs:
   # Собираем и публикуем образ backend части сайта
   backend_service:
     needs: [check]
-    if: needs.check.outputs.backend_service == 'true' || github.event.inputs.backend_service
+    if: needs.check.outputs.backend_service == 'true' || github.event.inputs.backend_service == 'true'
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: egt_backend
@@ -104,7 +104,7 @@ jobs:
   # Собираем и публикуем образ frontend части сайта
   frontend_service:
     needs: [check]
-    if: needs.check.outputs.frontend_service == 'true' || github.event.inputs.frontend_service
+    if: needs.check.outputs.frontend_service == 'true' || github.event.inputs.frontend_service == 'true'
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: egt_frontend
