@@ -196,7 +196,7 @@ jobs:
       if: ${{
           !cancelled()
           && (success() || failure()
-          || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped')
+          || needs.backend_service.result == 'skipped' || needs.frontend_service.result == 'skipped' || needs.nginx.result == 'skipped')
           && (needs.check.outputs.backend_service == 'true' || needs.check.outputs.frontend_service == 'true')
         }}
       runs-on: ubuntu-latest
@@ -222,6 +222,7 @@ jobs:
             Отработал процесс публикации со статусами сервисов:
             - `backend`: ${{ needs.backend_service.result }}
             - `frontend`: ${{ needs.frontend_service.result }}
+            - `nginx`: ${{ needs.nginx.result }}
             
             [Action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             [Посмотреть изменения](https://github.com/${{ github.repository }}/commit/${{github.sha}})
