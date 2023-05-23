@@ -4,17 +4,18 @@ namespace App\Tests;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-
-abstract class BaseApiTest extends ApiTestCase
+//abstract
+class BaseApiTest extends ApiTestCase
 {
     private static ?string $token = null;
 
-    abstract protected function sendRequest();
+//    abstract protected function sendRequest();
 
     protected static function createClient(array $kernelOptions = [], array $defaultOptions = []): Client
     {
@@ -37,5 +38,22 @@ abstract class BaseApiTest extends ApiTestCase
         ]);
 
         self::$token = json_decode($response->getContent(), true)['token'] ?? null;
+    }
+
+    /**
+     * @param string $requestName
+     * @return array
+     */
+    #[ArrayShape(
+        [
+            'headers' => ['Content-Type: application/json'],
+            'body' => "false|string"
+        ])]
+    protected function payload(string $requestName): array
+    {
+        return [
+            'headers' => ['Content-Type: application/json'],
+            'body' => \file_get_contents(__DIR__ . '/requests/' . $requestName)
+        ];
     }
 }
