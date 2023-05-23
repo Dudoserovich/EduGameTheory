@@ -142,7 +142,7 @@ class UserController extends ApiController
                 $user->setFio($request['fio']);
             }
             if (isset($request['roles'])) {
-                $user->setRoles($request['roles']);
+                $user->setRoles([$request['roles']]);
             }
             if (isset($request['email'])) {
                 $user->setEmail($request['email']);
