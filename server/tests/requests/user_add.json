@@ -1,0 +1,8 @@
+{
+  "login": "test",
+  "password": "test123",
+  "email": "test@test.ru",
+  "fio": "Иваненко Иван Иванович",
+  "roles": "ROLE_USER",
+  "avatar": "serious_cat.png"
+}
