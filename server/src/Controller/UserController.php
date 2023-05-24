@@ -96,7 +96,7 @@ class UserController extends ApiController
      *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/User/properties/email"),
      *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/User/properties/fio"),
      *         @OA\Property(property="roles", nullable=true, ref="#/components/schemas/UserView/properties/roles"),
-     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/User/properties/avatar"),
+     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/UserView/properties/avatar"),
      *     )
      * )
      * @OA\Response(
@@ -176,125 +176,6 @@ class UserController extends ApiController
     }
 
     /**
-     * Get self avatar
-     * @OA\Response(
-     *     response=200,
-     *     description="HTTP_OK",
-     *     @OA\MediaType(
-     *          mediaType="images/png",
-     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
-     *     )
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Avatar not found"
-     * )
-     */
-    #[Route('/self/avatar',
-        name: 'get_self_avatar',
-        methods: ['GET']
-    )]
-    public function getSelfAvatar(): BinaryFileResponse|JsonResponse
-    {
-        $user = $this->getUserEntity($this->userRepository);
-        $selfAvatar = $user->getAvatar();
-
-        $files = scandir($this->avatarDirectory);
-        $files = array_diff($files, array('.', '..'));
-
-        if (in_array($selfAvatar, $files)) {
-            $file = new File($this->avatarDirectory . "/$selfAvatar");
-
-            return new BinaryFileResponse($file);
-        } else {
-            return $this->respondNotFound("Avatar not found");
-        }
-
-    }
-
-    /**
-     * Get specific avatar
-     *
-     * @OA\Parameter(
-     *     name="avatar",
-     *     in="path",
-     *     description="avatar",
-     *     required=true,
-     *     example="angry_cat.png"
-     * )
-     *
-     * @OA\Response(
-     *     response=200,
-     *     description="HTTP_OK",
-     *     @OA\MediaType(
-     *          mediaType="images/png",
-     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
-     *     )
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Avatar not found"
-     * )
-     */
-    #[Route('/avatars/{avatar}',
-        name: 'get_spec_avatar',
-        requirements: ['avatar' => '[A-z]+\.png'],
-        methods: ['GET']
-    )]
-    public function getSpecificAvatar(string $avatar): BinaryFileResponse|JsonResponse
-    {
-        $files = scandir($this->avatarDirectory);
-        $files = array_diff($files, array('.', '..'));
-
-        if (in_array($avatar, $files)) {
-            $file = new File($this->avatarDirectory . "/$avatar");
-
-            return new BinaryFileResponse($file);
-        } else {
-            return $this->respondNotFound("Avatar not found");
-        }
-
-    }
-
-    /**
-     * Get all avatar names
-     * @OA\Response(
-     *     response=200,
-     *     description="HTTP_OK"
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Avatars not found"
-     * )
-     */
-    #[Route('/avatars',
-        name: 'get_specific_avatar',
-        methods: ['GET']
-    )]
-    public function getAllAvatars(): JsonResponse
-    {
-        $files = scandir($this->avatarDirectory);
-        $files = array_diff($files, array('.', '..'));
-
-        if (!$files)
-            return $this->respondNotFound("No avatars");
-        else return $this->response(array_values($files));
-
-    }
-
-    /**
      * User object
      * @OA\Response(
      *     response=200,
@@ -315,7 +196,10 @@ class UserController extends ApiController
         requirements: ['userId' => '\d+'],
         methods: ['GET']
     )]
-    public function getUserApi(UserPreviewer $userPreviewer, int $userId): JsonResponse
+    public function getUserObj(
+        UserPreviewer $userPreviewer,
+        int $userId
+    ): JsonResponse
     {
         $user = $this->userRepository->find($userId);
         if (!$user) {

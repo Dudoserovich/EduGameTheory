@@ -4,14 +4,10 @@ namespace App\Previewer;
 
 use App\Entity\User;
 use JetBrains\PhpStorm\ArrayShape;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UserPreviewer
 {
-
-//    public function __construct()
-//
-//    }
-
     #[ArrayShape([
         "id" => "int",
         "full_name" => "string",
