@@ -19,13 +19,6 @@ interface IData {
     full_name: string;
     email: string;
 }
-interface IAvatar {
-    avatar: {
-        data: string | null,
-        isLoading: boolean,
-        error: string | null
-    }
-}
 
 export const updateUserInfo = createAsyncThunk<Promise<{ code: number } | { error: any }>, IData>(
     '/userInfo/updateUserInfo',
