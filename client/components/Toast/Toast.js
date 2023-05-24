@@ -3,6 +3,7 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Toast = () => {
+
     useEffect(() => {
         let origin = window.location.protocol + '//' + window.location.host
 
@@ -11,22 +12,25 @@ const Toast = () => {
 
         const eventSource = new EventSource(url);
 
-        eventSource.onopen = function() {
-            console.log('Connection SSE opened');
-        };
+        const fetchData = async () => {
+            eventSource.onopen = function () {
+                console.log('Connection SSE opened');
+            };
 
-        eventSource.addEventListener('news', event => {
-            let message = JSON.parse(event.data).message
-            console.log(event)
-            notify(message)
-        })
+            eventSource.addEventListener('news', event => {
+                let message = JSON.parse(event.data).message
+                // console.log(event)
+                notify(message)
+            })
 
-        // eventSource.onmessage = e => console.log(e); // do something with the payload
-        // eventSource.onmessage = e => {
-        //     let message = JSON.parse(e.data).message
-        //     console.log(e)
-        //     notify(message)
-        // }
+            // eventSource.onmessage = e => console.log(e); // do something with the payload
+            // eventSource.onmessage = e => {
+            //     let message = JSON.parse(e.data).message
+            //     console.log(e)
+            //     notify(message)
+            // }
+        }
+        fetchData()
 
     }, [])
 
