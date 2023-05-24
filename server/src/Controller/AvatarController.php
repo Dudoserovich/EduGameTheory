@@ -67,7 +67,11 @@ class AvatarController extends ApiController
         if (in_array($selfAvatar, $files)) {
             $file = new File($this->avatarDirectory . "/$selfAvatar");
 
-            return new BinaryFileResponse($file);
+            $imageSize = getimagesize($file);
+            $imageData = base64_encode(file_get_contents($file));
+            $imageSrc = "data:{$imageSize['mime']};base64,{$imageData}";
+
+            return $this->response($imageSrc);
         } else {
             return $this->respondNotFound("Avatar not found");
         }
@@ -139,7 +143,7 @@ class AvatarController extends ApiController
      * )
      */
     #[Security(name: null)]
-    #[Route('/',
+    #[Route('',
         name: 'get_all_avatars',
         methods: ['GET']
     )]

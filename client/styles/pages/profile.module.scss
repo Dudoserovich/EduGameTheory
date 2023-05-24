@@ -154,6 +154,7 @@
     width: 100%;
 
     .user__avatar {
+      display: flex;
       align-items: center;
       justify-content: center;
       height: 100px;
@@ -162,10 +163,15 @@
       border-radius: 50%;
       border: 2px solid #aaa;
 
-      .icon {
+      .true__icon {
+        width: 100px;
+        height: 100px;
+      }
+
+      .fake__icon {
         fill: #aaa;
-        width: 64px;
-        height: 64px;
+        width: 75px;
+        height: 75px;
       }
     }
 

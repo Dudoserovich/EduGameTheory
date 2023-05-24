@@ -7,6 +7,10 @@ export const getUserInfo = createAsyncThunk<Promise<IUser[] | { error: any }>>(
     '/userInfo/getUserInfo',
     async () => getRequest('/users/self')
 );
+export const getUserAvatar = createAsyncThunk<Promise<string | { error: any }>>(
+    '/userinfo/getUserAvatar',
+    async () => getRequest('/avatars/self')
+);
 
 interface IData {
     login: string;
@@ -14,6 +18,13 @@ interface IData {
     new_password: string;
     full_name: string;
     email: string;
+}
+interface IAvatar {
+    avatar: {
+        data: string | null,
+        isLoading: boolean,
+        error: string | null
+    }
 }
 
 export const updateUserInfo = createAsyncThunk<Promise<{ code: number } | { error: any }>, IData>(
@@ -26,11 +37,21 @@ interface IUserSelfState {
         data: IUser,
         isLoading: boolean,
         error: string | null
+    },
+    avatar: {
+        data: string | null,
+        isLoading: boolean,
+        error: string | null
     }
 }
 
 const initialState: IUserSelfState = {
     info: {
+        data: null,
+        isLoading: false,
+        error: null
+    },
+    avatar: {
         data: null,
         isLoading: false,
         error: null
@@ -59,6 +80,28 @@ export const userInfoSlice = createSlice({
             })
             .addCase(getUserInfo.rejected, (state, action) => {
                 state.info = {
+                    data: null,
+                    isLoading: false,
+                    error: action.error.message
+                }
+            })
+
+            .addCase(getUserAvatar.pending, (state) => {
+                state.avatar = {
+                    data: null,
+                    isLoading: false,
+                    error: null
+                }
+            })
+            .addCase(getUserAvatar.fulfilled, (state, action) => {
+                state.avatar = {
+                    ...state.avatar,
+                    ...action.payload,
+                    isLoading: false
+                }
+            })
+            .addCase(getUserAvatar.rejected, (state, action) => {
+                state.avatar = {
                     data: null,
                     isLoading: false,
                     error: action.error.message

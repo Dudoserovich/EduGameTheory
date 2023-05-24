@@ -3,10 +3,9 @@ import ContentLoader from "react-content-loader";
 
 export function ProfileHeaderSkeleton({...props}) {
     return (
-        <ContentLoader {...props} viewBox="0 0 1148 86" title={'Загружается'}>
-            <circle cx="43" cy="43" r="43"/>
-            <rect x="102" y="0" rx="22" ry="22" width="450" height="42" />
-            <rect x="102" y="62" rx="9" ry="9" width="220" height="18" />
+        <ContentLoader viewBox="0 0 380 236">
+            <circle cx="190" cy="60" r="60" />
+            <rect x="45" y="150" rx="4" ry="4" width="300" height="40" />
         </ContentLoader>
     );
 }
