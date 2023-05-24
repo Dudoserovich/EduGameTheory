@@ -138,7 +138,6 @@ export default function profile() {
         dispatch(getUserAvatar());
 
     }, []);
-    console.log(userAvatar?.data);
 
     function onChangeHandler() {
         dispatch(getUserInfo());
