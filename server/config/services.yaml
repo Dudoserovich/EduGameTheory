@@ -54,6 +54,10 @@ services:
         arguments:
             $avatarDirectory: '%kernel.project_dir%/public/uploads/avatars'
 
+    App\Controller\AvatarController:
+        arguments:
+            $avatarDirectory: '%kernel.project_dir%/public/uploads/avatars'
+
     App\EventListener\UploadImageListener:
         arguments:
             - '@Vich\UploaderBundle\Templating\Helper\UploaderHelper'
