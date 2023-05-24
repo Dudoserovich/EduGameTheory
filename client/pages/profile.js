@@ -3,7 +3,7 @@ import s from '../styles/pages/profile.module.scss';
 import Page from "../layout/Page/Page";
 import {Controller, useForm} from "react-hook-form";
 import Input from '../components/Input/Input';
-import {getUserInfo, updateUserInfo} from '../store/slices/userSlice';
+import {getUserAvatar, getUserInfo, updateUserInfo} from '../store/slices/userSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {FormSkeleton, ProfileHeaderSkeleton, VerticalMenuSkeleton} from '../components/Skeletons/ProfileSkeleton';
 import VerticalMenu from '../components/VerticalMenu/VerticalMenu';
@@ -16,6 +16,9 @@ import Stack from '@mui/material/Stack';
 import {Grid} from "@material-ui/core";
 import BoxAnimation from "../components/BoxAnimation/BoxAnimation";
 import ContactPage from "../components/IndexPage/ContactsPage";
+import {Button} from "@mui/material";
+import {getRequest} from "../api";
+import CONFIG from "../config";
 
 function PersonalInformation({data, onChange}) {
     const {handleSubmit, control} = useForm({
@@ -128,10 +131,14 @@ export default function profile() {
     const [settingsPage, setSettingsPage] = useState(Pages.personalInfo);
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.info);
+    const userAvatar = useSelector(state => state.user.avatar)
 
     useEffect(() => {
         dispatch(getUserInfo());
+        dispatch(getUserAvatar());
+
     }, []);
+    console.log(userAvatar?.data);
 
     function onChangeHandler() {
         dispatch(getUserInfo());
@@ -190,12 +197,19 @@ export default function profile() {
                                     <ProfileHeaderSkeleton/>
                                     :
                                     <>
-                                        {/*<div className={s.user__avatar}>*/}
+                                        <div className={s.user__avatar}>
                                         {user.data?.full_name ?
                                             <Avatar
-                                                className={s.user__avatar} {...stringAvatar(user.data?.full_name)} />
-                                            : <AiOutlineUser className={s.icon}/>
+                                                className={s.true__icon}
+                                                src={userAvatar?.data}
+                                            />
+                                            : <AiOutlineUser className={s.fake__icon}/>
                                         }
+                                        </div>
+                                        {/* TODO: ДЛЯ НАСТИ - вот так может выглядеть ссылка для НЕ ТЕКУЩЕГО пользователя*/}
+                                        {/*<div>*/}
+                                        {/*    <img className={s.fake__icon} src={CONFIG.API_BASE_URL + '/avatars/' + user.data?.avatar}></img>*/}
+                                        {/*</div>*/}
                                         {/*</div>*/}
                                         <div className={s.user__main_info}>
                                             <span className={s.user__fullname}>{user.data?.full_name}</span>

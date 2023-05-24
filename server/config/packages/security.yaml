@@ -53,6 +53,8 @@ security:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/doc, roles: PUBLIC_ACCESS }
+        - { path: ^/api/avatars/self, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/avatars, roles: PUBLIC_ACCESS }
         - { path: ^/api/teacher, roles: ROLE_TEACHER }
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
