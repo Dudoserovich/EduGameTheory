@@ -8,16 +8,15 @@ use App\Repository\AchievementRepository;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Validation;
 
 /**
  * @OA\Tag(name="Achievement")
@@ -38,6 +37,7 @@ class AchievementController extends ApiController
     /**
      * Add new achievement
      * @OA\RequestBody(
+     *     description="P.S. svg загрузить не получится",
      *     required=true,
      *     @OA\MediaType(
      *         mediaType="multipart/form-data",
@@ -79,10 +79,17 @@ class AchievementController extends ApiController
     {
         $jsonRequest = $request->request->all();
 
+        /**
+         * @var $imageFile File
+         */
         $imageFile = $request->files->get('imageFile');
         if (!$imageFile) {
             return $this->respondValidationError("File for achievement not transferred");
         }
+
+        // Проверяем, что файл - изображение
+        if (!$fileUploader->isImage($imageFile))
+            return $this->respondValidationError("Incorrect image type" . $imageFile->getMimeType());
 
         $achievementByName = $this->achievementRepository
             ->findOneBy(["name" => $jsonRequest['name']]);
@@ -90,9 +97,6 @@ class AchievementController extends ApiController
         if (!$achievementByName) {
             try {
                 $achievement = new Achievement();
-                // TODO: можно задать ограничение на размер картинки,
-                //  т.к. сейчас я без понятия как сжать
-//                $movedImageFile = $fileUploader->upload($imageFile);
 
                 $achievement
                     ->setImageFile($imageFile)
@@ -103,7 +107,7 @@ class AchievementController extends ApiController
                 $this->em->flush();
 
                 return $this->respondWithSuccess("Achievement added successfully");
-            } catch (Exception) {
+            } catch (Exception $e) {
                 return $this->respondValidationError();
             }
         } else {
@@ -112,53 +116,14 @@ class AchievementController extends ApiController
     }
 
     /**
-     * Get image achievement
-     * @OA\Response(
-     *     response=200,
-     *     description="HTTP_OK",
-     *     @OA\MediaType(
-     *          mediaType="images/*",
-     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
-     *     )
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Image not found"
-     * )
-     */
-    #[Route('/{achievementId}/image',
-        name: 'get_image',
-        requirements: ['achievementId' => '\d+'],
-        methods: ['GET'])
-    ]
-    public function getImage(
-        int $achievementId,
-        FileUploader $fileUploader): BinaryFileResponse|JsonResponse
-    {
-        $image = $this->achievementRepository->find($achievementId);
-        if (!$image) {
-            return $this->respondNotFound("Image not found");
-        }
-
-        $realImage = $fileUploader->load($image->getImageName());
-
-        return new BinaryFileResponse($realImage);
-    }
-
-    /**
-     * Get achievement object without image file
+     * Get achievement object
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
      *     @OA\JsonContent(
      *         @OA\Property(property="name", ref="#/components/schemas/AchievementView/properties/name"),
      *         @OA\Property(property="description", ref="#/components/schemas/AchievementView/properties/description"),
-     *         @OA\Property(property="imageName", ref="#/components/schemas/Achievement/properties/imageName"),
-     *         @OA\Property(property="imageSize", ref="#/components/schemas/Achievement/properties/imageSize")
+     *         @OA\Property(property="imageHref", ref="#/components/schemas/AchievementView/properties/imageHref")
      *     )
      * )
      * @OA\Response(
@@ -188,17 +153,26 @@ class AchievementController extends ApiController
     }
 
     /**
-     * Change name and description for achievement
-     * @OA\RequestBody (
+     * Change achievement (this is no REST style :( )
+     * @OA\RequestBody(
+     *     description="P.S. svg загрузить не получится",
      *     required=true,
-     *     @OA\JsonContent(
-     *         @OA\Property(
-     *              property="name",
-     *              ref="#/components/schemas/AchievementView/properties/name"
-     *         ),
-     *         @OA\Property(
-     *              property="description",
-     *              ref="#/components/schemas/AchievementView/properties/description"
+     *     @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *         @OA\Schema(
+     *             @OA\Property(
+     *                  property="name",
+     *                  ref="#/components/schemas/AchievementView/properties/name"
+     *             ),
+     *             @OA\Property(
+     *                  property="description",
+     *                  ref="#/components/schemas/AchievementView/properties/description"
+     *             ),
+     *             @OA\Property(
+     *                  property="imageFile",
+     *                  nullable=false,
+     *                  ref="#/components/schemas/AchievementView/properties/imageFile"
+     *             ),
      *         )
      *     )
      * )
@@ -223,7 +197,7 @@ class AchievementController extends ApiController
     #[Route('/{achievementId}',
         name: 'put_by_id',
         requirements: ['achievementId' => '\d+'],
-        methods: ['PUT']
+        methods: ['POST']
     )]
     public function upAchievement(Request $request,
                                       int $achievementId,
@@ -251,6 +225,20 @@ class AchievementController extends ApiController
                 $achievement->setDescription($jsonRequest['description']);
             }
 
+            /**
+             * @var $imageFile File
+             */
+            $imageFile = $request->files->get('imageFile');
+            if (isset($imageFile)) {
+                // Проверяем, что файл - изображение
+                if (!$fileUploader->isImage($imageFile))
+                    return $this->respondValidationError("Incorrect image type");
+                else {
+                    $fileUploader->delete($achievement->getImageName());
+                    $achievement->setImageFile($imageFile);
+                }
+            }
+
             $this->em->persist($achievement);
             $this->em->flush();
 
@@ -260,8 +248,6 @@ class AchievementController extends ApiController
         }
     }
 
-    // TODO: изменение картинки достижения
-
     /**
      * Get all achievements except the authorized user
      * @OA\Response(
@@ -269,7 +255,11 @@ class AchievementController extends ApiController
      *     description="HTTP_OK",
      *     @OA\JsonContent(
      *         type="array",
-     *         @OA\Items(ref="#/components/schemas/AchievementView")
+     *         @OA\Items(
+     *            @OA\Property(property="name", ref="#/components/schemas/AchievementView/properties/name"),
+     *            @OA\Property(property="description", ref="#/components/schemas/AchievementView/properties/description"),
+     *            @OA\Property(property="imageHref", ref="#/components/schemas/AchievementView/properties/imageHref")
+     *         )
      *     )
      * )
      * @OA\Response(
@@ -318,8 +308,7 @@ class AchievementController extends ApiController
             return $this->respondNotFound("Achievement not found");
         }
 
-        // TODO: удаление файла
-
+        // Автоматом подписчиком Достижений удаляется и файл
         $this->em->remove($achievement);
         $this->em->flush();
 

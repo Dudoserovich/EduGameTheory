@@ -19,6 +19,7 @@ import ContactPage from "../components/IndexPage/ContactsPage";
 import {Button} from "@mui/material";
 import {getRequest} from "../api";
 import CONFIG from "../config";
+import {solvePayoff} from "../store/slices/taskSolveSlice";
 
 function PersonalInformation({data, onChange}) {
     const {handleSubmit, control} = useForm({
@@ -132,13 +133,31 @@ export default function profile() {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.info);
     const userAvatar = useSelector(state => state.user.avatar)
+    // TODO: Решение матричной игры
+    // const taskPayoff = useSelector(state => state.task.info)
 
     useEffect(() => {
         dispatch(getUserInfo());
         dispatch(getUserAvatar());
-
+        // TODO: Решение матричной игры
+        // dispatch(solvePayoff(
+        //     {
+        //         strategy: "смешанные стратегии",
+        //         first_player: [
+        //             0.8,
+        //             0.19999999999999996
+        //         ],
+        //         second_player: [
+        //             0.3999999999999999,
+        //             0.6000000000000001
+        //         ],
+        //         game_price: 4.6
+        //     })
+        // )
     }, []);
-    console.log(userAvatar?.data);
+
+    // TODO: Решение матричной игры
+    // console.log(taskPayoff)
 
     function onChangeHandler() {
         dispatch(getUserInfo());
@@ -208,8 +227,7 @@ export default function profile() {
                                         </div>
                                         {/* TODO: ДЛЯ НАСТИ - вот так может выглядеть ссылка для НЕ ТЕКУЩЕГО пользователя*/}
                                         {/*<div>*/}
-                                        {/*    <img className={s.fake__icon} src={CONFIG.API_BASE_URL + '/avatars/' + user.data?.avatar}></img>*/}
-                                        {/*</div>*/}
+                                        {/*    <img className={s.fake__icon} src={user.data?.avatar}></img>*/}
                                         {/*</div>*/}
                                         <div className={s.user__main_info}>
                                             <span className={s.user__fullname}>{user.data?.full_name}</span>

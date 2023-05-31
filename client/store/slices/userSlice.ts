@@ -9,7 +9,7 @@ export const getUserInfo = createAsyncThunk<Promise<IUser[] | { error: any }>>(
 );
 export const getUserAvatar = createAsyncThunk<Promise<string | { error: any }>>(
     '/userinfo/getUserAvatar',
-    async () => getRequest('/avatars/self')
+    async () => getRequest('/users/avatar/self')
 );
 
 interface IData {
@@ -18,13 +18,6 @@ interface IData {
     new_password: string;
     full_name: string;
     email: string;
-}
-interface IAvatar {
-    avatar: {
-        data: string | null,
-        isLoading: boolean,
-        error: string | null
-    }
 }
 
 export const updateUserInfo = createAsyncThunk<Promise<{ code: number } | { error: any }>, IData>(

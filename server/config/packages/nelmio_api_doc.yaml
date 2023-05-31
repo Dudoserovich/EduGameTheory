@@ -56,8 +56,6 @@ nelmio_api_doc:
         tags:
           - name: Login Check
             description: Аутентификация и получение JWT токена
-          - name: Avatar
-            description: Взаимодействие с доступными аватарами пользователей
           - name: User
             description: Взаимодействие с пользователями
           - name: Term
@@ -70,6 +68,8 @@ nelmio_api_doc:
             description: Взаимодействие с топиками (матричные/кооперативные игры)
           - name: Task
             description: Взаимодействие с заданиями
+          - name: Uploads
+            description: Получение загруженных изображений (аватарки пользователей/достижения)
           - name: Test
             description: Фичи, находящиеся на этапе разработки
         info:

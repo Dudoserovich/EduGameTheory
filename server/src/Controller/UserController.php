@@ -52,6 +52,51 @@ class UserController extends ApiController
     }
 
     /**
+     * Get self avatar
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\MediaType(
+     *          mediaType="images/png",
+     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Avatar not found"
+     * )
+     */
+    #[Route('/avatar/self',
+        name: 'get_self_avatar',
+        methods: ['GET']
+    )]
+    public function getSelfAvatar(): BinaryFileResponse|JsonResponse
+    {
+        $user = $this->getUserEntity($this->userRepository);
+        $selfAvatar = $user->getAvatar();
+
+        $files = scandir($this->avatarDirectory);
+        $files = array_diff($files, array('.', '..'));
+
+        if (in_array($selfAvatar, $files)) {
+            $file = new File($this->avatarDirectory . "/$selfAvatar");
+
+            $imageSize = getimagesize($file);
+            $imageData = base64_encode(file_get_contents($file));
+            $imageSrc = "data:{$imageSize['mime']};base64,{$imageData}";
+
+            return $this->response($imageSrc);
+        } else {
+            return $this->respondNotFound("Avatar not found");
+        }
+
+    }
+
+    /**
      * Get all users except the authorized user
      * @OA\Response(
      *     response=200,

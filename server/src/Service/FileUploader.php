@@ -1,59 +1,135 @@
 <?php
-// src/Service/FileUploader.php
+
 namespace App\Service;
 
-use App\Entity\Achievement;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Events;
+use Exception;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Validation;
 
-//#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Achievement::class)]
 class FileUploader
 {
-    private $targetDirectory;
-    private $slugger;
+    private string $globalDirectory;
+    private SluggerInterface $slugger;
 
-    public function __construct($targetDirectory, SluggerInterface $slugger)
+    public function __construct(
+        string           $globalDirectory,
+        SluggerInterface $slugger
+    )
     {
-        $this->targetDirectory = $targetDirectory;
+        $this->globalDirectory = $globalDirectory;
         $this->slugger = $slugger;
     }
 
-    public function upload(File $file): File | null
+    public function optimize(
+        string $targetDirectory,
+        string $fileName
+    ): void
     {
+        // Сжимаем изображение
+        $optimizerChain = OptimizerChainFactory::create();
+        $optimizerChain->optimize($targetDirectory . $fileName);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function upload(
+        File   $file,
+        string $targetDirectory = 'achievement'
+    ): File|null
+    {
+        $file->getType();
+
         $originalFilename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
-        $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
         $newFile = null;
 
         try {
-            $newFile = $file->move($this->getTargetDirectory(), $fileName);
+            $newFile = $file->move(
+                $this->getGlobalDirectory() . $targetDirectory,
+                $fileName
+            );
         } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
+            throw new Exception($e->getMessage());
         }
 
         return $newFile;
     }
 
-    public function load(string $fileName): ?File
+    /**
+     * Получение файла из директории
+     *
+     * @param string $targetDirectory Путь к директории для получения
+     * @param string $fileName Название файла
+     * @return ?File Загруженный файл
+     *
+     * @throws Exception
+     */
+    public function load(
+        string $targetDirectory,
+        string $fileName
+    ): ?File
     {
         $file = null;
         try {
-            $file = new File($this->getTargetDirectory() . "/$fileName");
-//            dd($this->getTargetDirectory() . "\{$fileName}");
+            $file = new File(
+                $this->getGlobalDirectory()
+                . $targetDirectory
+                . "/$fileName"
+            );
         } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
+            throw new Exception($e->getMessage());
         }
 
         return $file;
     }
 
-    public function getTargetDirectory()
+    /**
+     * Проверяем, что файл - изображение
+     *
+     * @param File $file
+     * @return bool
+     */
+    public function isImage(File $file): bool
     {
-        return $this->targetDirectory;
+        $validator = Validation::createValidator();
+        // Создаем ограничение на тип файла
+        $constraint = new Image([
+            'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'],
+            'mimeTypesMessage' => 'File not image',
+        ]);
+
+        // Проверяем сущность на соответствие ограничению
+        $errors = $validator->validate($file, $constraint);
+
+        // Если есть ошибки, значит не изображение
+        if (count($errors) > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function delete(
+        string $fileName,
+        string $targetDirectory = 'achievement'
+    ): void
+    {
+        unlink(
+            $this->getGlobalDirectory()
+            . $targetDirectory
+            . "/$fileName"
+        );
+    }
+
+    private function getGlobalDirectory(): string
+    {
+        return $this->globalDirectory;
     }
 }

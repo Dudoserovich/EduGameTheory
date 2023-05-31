@@ -4,10 +4,16 @@ namespace App\Previewer;
 
 use App\Entity\User;
 use JetBrains\PhpStorm\ArrayShape;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UserPreviewer
 {
+    private function getLink(string $pathImage): string
+    {
+        return 'http://localhost/api/uploads/avatar/' . $pathImage;
+    }
+
     #[ArrayShape([
         "id" => "int",
         "full_name" => "string",
@@ -24,7 +30,7 @@ class UserPreviewer
                 "login" => $user->getUserIdentifier(),
                 "roles" => $user->getRoles(),
                 "email" => $user->getEmail(),
-                "avatar" => $user->getAvatar()
+                "avatar" => $this->getLink($user->getAvatar())
             ];
     }
 
