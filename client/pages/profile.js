@@ -206,9 +206,9 @@ export default function profile() {
                                         }
                                         </div>
                                         {/* TODO: ДЛЯ НАСТИ - вот так может выглядеть ссылка для НЕ ТЕКУЩЕГО пользователя*/}
-                                        <div>
-                                            <img className={s.fake__icon} src={user.data?.avatar}></img>
-                                        </div>
+                                        {/*<div>*/}
+                                        {/*    <img className={s.fake__icon} src={user.data?.avatar}></img>*/}
+                                        {/*</div>*/}
                                         <div className={s.user__main_info}>
                                             <span className={s.user__fullname}>{user.data?.full_name}</span>
                                         </div>
