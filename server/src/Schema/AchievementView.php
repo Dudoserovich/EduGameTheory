@@ -47,4 +47,15 @@ class AchievementView
      * @Groups({"default", "imageFile"})
      */
     public ?File $imageFile;
+
+    #[Property(
+        property: "imageHref",
+        description: "Ссылка на картинку достижения",
+        type: "string",
+        example: "http://localhost/api/uploads/achievement/good_people.png"
+    )]
+    /**
+     * @Groups({"default", "imageHref"})
+     */
+    public ?string $imageHref;
 }

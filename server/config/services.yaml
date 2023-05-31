@@ -7,7 +7,7 @@ parameters:
     router.request_context.host: '%env(string:ROUTER_HOST)%'
     router.request_context.scheme: '%env(string:ROUTER_SCHEME)%'
     router.request_context.base_url: '%env(string:ROUTER_BASE_URL)%'
-#    photo_dir: "%kernel.project_dir%/public/uploads/photos"
+    upload.directory: '%kernel.project_dir%/public/uploads/'
 
 services:
     # default configuration for services in *this* file
@@ -48,15 +48,11 @@ services:
 
     App\Service\FileUploader:
         arguments:
-            $targetDirectory: '%kernel.project_dir%/public/uploads/achievement'
+            $globalDirectory: '%kernel.project_dir%/public/uploads/'
 
     App\Controller\UserController:
         arguments:
-            $avatarDirectory: '%kernel.project_dir%/public/uploads/avatars'
-
-    App\Controller\AvatarController:
-        arguments:
-            $avatarDirectory: '%kernel.project_dir%/public/uploads/avatars'
+            $avatarDirectory: '%kernel.project_dir%/public/uploads/avatar'
 
     App\EventListener\UploadImageListener:
         arguments:
@@ -64,3 +60,7 @@ services:
             - '@liip_imagine.cache.manager'
         tags:
             - { name: doctrine.event_listener, event: postPersist }
+
+    App\EventSubscriber\UploadImageSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }

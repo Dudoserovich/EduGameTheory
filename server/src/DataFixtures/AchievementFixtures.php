@@ -3,9 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Achievement;
-use App\Service\FileUploader;
-use Container485wsmx\getSluggerService;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -18,14 +15,23 @@ class AchievementFixtures extends BaseFixtureAbstract
     public function load(ObjectManager $manager): void
     {
         // Удаление файлов из директории
-        array_map('unlink', glob('public/uploads/achievement/*'));
+//        array_map('unlink', glob('public/uploads/achievement/*'));
 
         // непосредственно фикстуры
-        for ($i = 0; $i < 5; ++$i) {
+
+        $targetDirectory = "public/uploads/achievement";
+        $files = scandir($targetDirectory);
+        $nameFiles = array_diff($files, array('.', '..'));
+
+        foreach ($nameFiles as $nameFile) {
             $achievement = new Achievement();
-            $targetDirectory = "public/uploads/achievement";
-            $imageStr = $this->faker->image($targetDirectory, 360, 360, 'animals');
-            $image = new File($imageStr);
+
+//            $targetDirectory = "public/uploads/achievement";
+//            $imageStr = $this->faker->image($targetDirectory, 360, 360, 'animals');
+
+            $image = new File("$targetDirectory/$nameFile");
+
+//            $image = $this->random_pic();
 
             $achievement
                 ->setImageFile($image)

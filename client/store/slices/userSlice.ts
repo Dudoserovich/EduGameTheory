@@ -9,7 +9,7 @@ export const getUserInfo = createAsyncThunk<Promise<IUser[] | { error: any }>>(
 );
 export const getUserAvatar = createAsyncThunk<Promise<string | { error: any }>>(
     '/userinfo/getUserAvatar',
-    async () => getRequest('/avatars/self')
+    async () => getRequest('/users/avatar/self')
 );
 
 interface IData {

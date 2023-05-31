@@ -13,10 +13,18 @@ RUN if [ "${ENV}" = "dev" ] ;then \
     && echo "xdebug.discover_client_host=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 ;fi
 
+# Установка сервисов для оптимизации изображений
+RUN apt-get install jpegoptim \
+    && apt-get install optipng \
+    && apt-get install pngquant \
+    && apt-get install gifsicle \
+    && apt-get install webp
+
 WORKDIR /app
 
 LABEL org.opencontainers.image.source=https://github.com/Dudoserovich/EduGameTheory
 
+# Установка зависимостей composer
 COPY ./composer.json ./composer.lock /app/
 RUN composer install -d /app
 COPY ./ /app

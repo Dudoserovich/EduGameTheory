@@ -51,11 +51,6 @@ class Achievement
      */
     private ?string $description = null;
 
-//    /**
-//     * NOTE: This is not a mapped field of entity metadata, just a simple property.
-//     *
-//     * @Vich\UploadableField(mapping="achievement", fileNameProperty="imageName", size="imageSize")
-//     */
     #[Vich\UploadableField(mapping: "achievement", fileNameProperty: "imageName", size: "imageSize")]
     private ?File $imageFile = null;
 
@@ -85,7 +80,7 @@ class Achievement
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
      *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
+     * @param File|UploadedFile|null $imageFile
      */
     public function setImageFile(?File $imageFile = null): self
     {
