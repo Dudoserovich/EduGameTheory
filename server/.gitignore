@@ -29,7 +29,7 @@ composer.phar
 ###< temporary files ###
 
 ###> images for achievement ###
-/public/uploads/achievement/*
+#/public/uploads/achievement/*
 ###> images for achievement ###
 ###> liip/imagine-bundle ###
 /public/media/cache/
