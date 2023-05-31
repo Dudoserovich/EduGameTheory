@@ -14,11 +14,10 @@ RUN if [ "${ENV}" = "dev" ] ;then \
 ;fi
 
 # Установка сервисов для оптимизации изображений
-RUN apt-get install jpegoptim \
-    && apt-get install optipng \
-    && apt-get install pngquant \
-    && apt-get install gifsicle \
-    && apt-get install webp
+RUN apt-get update && apt-get install -y jpegoptim \
+    && apt-get install -y optipng \
+    && apt-get install -y pngquant \
+    && apt-get install -y gifsicle
 
 WORKDIR /app
 
