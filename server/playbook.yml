@@ -44,9 +44,9 @@
     - name: "start services"
       shell: docker compose -f {{ APP_PATH }}/docker-compose.yml up -d db backend backend-notifier
 
-#    - name: "create uploads/achievement"
-#      shell: |
-#        docker compose -f {{ APP_PATH }}/docker-compose.yml exec backend bash -c "mkdir -p public/uploads/achievement";
+    - name: "change rights uploads/achievement"
+      shell: |
+        docker compose -f {{ APP_PATH }}/docker-compose.yml exec backend bash -c "chown application:application public/uploads/*";
 
     - name: "set backend"
       shell: |
