@@ -110,7 +110,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return $this->login;
+//        return $this->login;
+        return (string) $this->id;
     }
 
     /**
@@ -119,7 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return $this->getUserIdentifier();
+        return $this->login;
     }
 
     public function setUsername(string $login): self
