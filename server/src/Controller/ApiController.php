@@ -57,7 +57,7 @@ class ApiController extends AbstractController
     protected function getUserEntity(UserRepository $userRepository): User
     {
         return $userRepository
-            ->findOneBy(['login' => parent::getUser()->getUserIdentifier()]);
+            ->findOneBy(['id' => (int)parent::getUser()->getUserIdentifier()]);
     }
 
     protected function setSoftDeleteable(EntityManagerInterface $em, bool $enabled = true): void

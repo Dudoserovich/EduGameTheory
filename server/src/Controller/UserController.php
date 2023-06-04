@@ -307,9 +307,7 @@ class UserController extends ApiController
         try {
             if (isset($request['login'])) {
                 $login = $request['login'];
-                if (!$login) {
-                    throw new Exception();
-                }
+
                 if ($this->userRepository->findOneBy(['login' => $request['login']])) {
                     return $this->respondValidationError('User with this login is already exist');
                 }
@@ -318,9 +316,7 @@ class UserController extends ApiController
             }
             if (isset($request['password'])) {
                 $password = $request['password'];
-                if (!$password) {
-                    throw new Exception();
-                }
+
                 $user->setPassword($password);
             }
             if (isset($request['fio'])) {
@@ -412,7 +408,11 @@ class UserController extends ApiController
     public function getSelf(UserPreviewer $userPreviewer): JsonResponse
     {
 //        $this->setSoftDeleteable($this->em, false);
-        return $this->response($userPreviewer->preview($this->getUserEntity($this->userRepository)));
+        try {
+            return $this->response($userPreviewer->preview($this->getUserEntity($this->userRepository)));
+        } catch (Exception $e) {
+            return $this->respondValidationError($e->getMessage());
+        }
     }
 
     /**

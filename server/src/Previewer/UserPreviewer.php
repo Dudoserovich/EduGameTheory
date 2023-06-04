@@ -27,7 +27,7 @@ class UserPreviewer
         return [
                 "id" => $user->getId(),
                 "full_name" => $user->getFio(),
-                "login" => $user->getUserIdentifier(),
+                "login" => $user->getUsername(),
                 "roles" => $user->getRoles(),
                 "email" => $user->getEmail(),
                 "avatar" => $this->getLink($user->getAvatar())
