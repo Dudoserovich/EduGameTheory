@@ -8,6 +8,34 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class AchievementFixtures extends BaseFixtureAbstract
 {
+    public const ACHIEVEMENTS = [
+        [
+            "name" => "Интересующийся",
+            "description" => "Перейти по 5 ссылкам на сторонние ресурсы",
+            "imageName" => "interested.png"
+        ],
+        [
+            "name" => "Догадливый",
+            "description" => "Пройти задание с первого раза",
+            "imageName" => "shrewd.png"
+        ],
+        [
+            "name" => "Наугад",
+            "description" => "Пройти задание с 5-го раза",
+            "imageName" => "at_random.png"
+        ],
+        [
+            "name" => "Первый блин - комом?",
+            "description" => "Создать 1-ое задание",
+            "imageName" => "first_task.png"
+        ],
+        [
+            "name" => "Профессор",
+            "description" => "Создать 4 задания",
+            "imageName" => "professor.png"
+        ],
+    ];
+
     /**
      * @param ObjectManager $manager
      * @return void
@@ -24,6 +52,14 @@ class AchievementFixtures extends BaseFixtureAbstract
         $nameFiles = array_diff($files, array('.', '..'));
 
         foreach ($nameFiles as $nameFile) {
+            $nameFileWithoutSalt = preg_replace("/(-[A-z0-9]+)+.png$/", "", $nameFile);
+
+            $foundKeyByImage =
+            array_search(
+                "$nameFileWithoutSalt.png",
+                array_column(self::ACHIEVEMENTS, 'imageName')
+            );
+
             $achievement = new Achievement();
 
 //            $targetDirectory = "public/uploads/achievement";
@@ -31,12 +67,13 @@ class AchievementFixtures extends BaseFixtureAbstract
 
             $image = new File("$targetDirectory/$nameFile");
 
-//            $image = $this->random_pic();
+            echo($nameFileWithoutSalt . PHP_EOL);
+            echo($foundKeyByImage . PHP_EOL);
 
             $achievement
                 ->setImageFile($image)
-                ->setName($this->faker->unique()->word())
-                ->setDescription($this->faker->sentence())
+                ->setName(self::ACHIEVEMENTS[$foundKeyByImage]['name'])
+                ->setDescription(self::ACHIEVEMENTS[$foundKeyByImage]['description'])
                 ->setImageSize($image->getSize())
                 ->setImageName($image->getFilename());
             $manager->persist($achievement);
