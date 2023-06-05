@@ -44,6 +44,13 @@ class Literature
      * @OA\Property()
      * @Groups({"default"})
      */
+    private ?string $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
     #[Assert\Regex(
         pattern: "/^(?:http(s)?:\/\/)?[\w.-]{2,}(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/",
         message: 'Invalid link',
@@ -72,6 +79,17 @@ class Literature
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
         return $this;
     }
 

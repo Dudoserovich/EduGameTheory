@@ -25,6 +25,7 @@ class LiteratureFixtures extends BaseFixtureAbstract implements DependentFixture
             $literature = new Literature();
             $literature
                 ->setName($this->faker->unique()->word())
+                ->setDescription($this->faker->paragraph(1))
                 ->setLink($this->faker->url());
             $manager->persist($literature);
 

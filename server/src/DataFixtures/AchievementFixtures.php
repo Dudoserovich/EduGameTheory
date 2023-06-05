@@ -22,12 +22,12 @@ class AchievementFixtures extends BaseFixtureAbstract
         [
             "name" => "Наугад",
             "description" => "Пройти задание с 5-го раза",
-            "imageName" => "at_random.png"
+            "imageName" => "atRandom.png"
         ],
         [
             "name" => "Первый блин - комом?",
             "description" => "Создать 1-ое задание",
-            "imageName" => "first_task.png"
+            "imageName" => "firstTask.png"
         ],
         [
             "name" => "Профессор",
