@@ -69,7 +69,7 @@ class TaskController extends ApiController
     {
         $taskPreviewers = array_map(
             fn(Task $task): array => $taskPreviewer->preview($task),
-            $this->taskRepository->findBy([], ["name" => "ASC"])
+            $this->taskRepository->findBy([])
         );
 
         return $this->response($taskPreviewers);
@@ -499,7 +499,7 @@ class TaskController extends ApiController
             try {
                 $solve = TaskSolver::solveRiskMatrix($task->getMatrix());
             } catch (BadDataException | IncorrectTypeException
-            | MatrixException | MathException $e) {
+            | MatrixException | MathException | Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
         } else {
@@ -507,12 +507,43 @@ class TaskController extends ApiController
             try {
                 $solve = TaskSolver::solvePayoffMatrix($task->getMatrix());
             } catch (BadDataException|IncorrectTypeException
-            |MatrixException|MathException $e) {
+            | MatrixException | MathException | Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
         }
 
         return $this->response($solve);
+    }
+
+    /**
+     * Получение возможных стратегий платёжной матрицы
+     * @OA\Response(
+     *     response=200,
+     *     description="Решение получено"
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Task not found"
+     * )
+     */
+    #[Route('/payoff/strategy',
+        name: 'get_all_strategy',
+        requirements: ['taskId' => '\d+'],
+        methods: ['GET']
+    )]
+    public function getPayoffStrategy(Request $request,
+                                int $taskId): JsonResponse
+    {
+        return $this->response(
+            array(
+                "чистые стратегии",
+                "смешанные стратегии"
+            )
+        );
     }
 
     /**
@@ -590,9 +621,15 @@ class TaskController extends ApiController
         }
 
         // TODO: если success, вернуть полное решение игры
+        //  Всё уже написано, нужно только отдавать фронту
 //        if ($result['success'])
 //        {
-//
+//            try {
+//                return $this->response(TaskSolver::solvePayoffMatrix($task->getMatrix(), true));
+//            } catch (BadDataException|IncorrectTypeException
+//                        |MatrixException|MathException|Exception $e) {
+//                return $this->respondValidationError($e->getMessage());
+//            }
 //        }
 
         return $this->response($result);

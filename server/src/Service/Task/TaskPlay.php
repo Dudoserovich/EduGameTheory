@@ -65,7 +65,7 @@ class TaskPlay
     {
         // Заполнение массива весов единицами, если вес не задан
         if (!$weights)
-            $weights = self::fillArray(count($matrix[$numRow]), null);
+            $weights = self::fillArray(count($matrix[$numRow]), 1);
 
         // Выбор элемента на основе выбранной пользователем строки и
         //      случайной колонки компьютером
