@@ -2,14 +2,15 @@
 
 namespace App\Schema;
 
-use OpenApi\Annotations as OA;
+use App\Entity\Topic;
 use OpenApi\Attributes\Property;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 class LiteratureView
 {
     /**
-     * @OA\Property(property="id", ref="#/components/schemas/LiteratureView/properties/id")
+     * @OA\Property(property="id", ref="#/components/schemas/Task/properties/id")
      * @Groups({"default", "id"})
      */
     public int $id;
@@ -27,4 +28,11 @@ class LiteratureView
      */
     #[Property(example: "https://elar.urfu.ru/bitstream/10995/43897/1/978-5-7996-1940-4_2016.pdf")]
     public string $link;
+
+    /**
+     * @OA\Property(property="topic", ref="#/components/schemas/TopicView")
+     * @Groups({"default", "link"})
+     */
+//    #[Property()]
+    public Topic $topic;
 }
