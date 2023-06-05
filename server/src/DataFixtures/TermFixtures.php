@@ -19,7 +19,7 @@ class TermFixtures extends BaseFixtureAbstract
         for ($i = 0; $i < 10; ++$i) {
             $term = new Term();
             $term
-                ->setName($this->faker->word())
+                ->setName($this->faker->unique()->word())
                 ->setDescription($this->faker->paragraph(2))
                 ->setTopic($this->faker->randomElement($topics));
             $manager->persist($term);
