@@ -25,6 +25,7 @@ class TopicLiteraturePreviewer
         "literature" => [
             "id" => "int",
             "name" => "string",
+            "description" => "string",
             "link" => "string",
             "topic" => [[
                 "id" => "int",
@@ -46,6 +47,7 @@ class TopicLiteraturePreviewer
             [
                 "id" => $literature->getId(),
                 "name" => $literature->getName(),
+                "description" => $literature->getDescription(),
                 "link" => $literature->getLink(),
                 "topic" => $topics
             ]
