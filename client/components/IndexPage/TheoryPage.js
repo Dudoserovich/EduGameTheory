@@ -43,7 +43,7 @@ export default function TheoryPage() {
                         Мы расскажем как решать задачки про матричные игры таких, таких и таких типов.</h4>
                     <Hidden smDown>
                         <h4 data-aos="fade-left"
-                            data-aos-anchor-placement="bottom-bottom">После чего вас ждет проходение заданий для
+                            data-aos-anchor-placement="bottom-bottom">После чего вас ждет прохождение заданий для
                             закрепления материала.</h4>
                     </Hidden>
                         <Hidden mdDown>
@@ -60,7 +60,7 @@ export default function TheoryPage() {
                              dangerouslySetInnerHTML={{__html: catSvg}}/>
                     </Grid>
                     <h4 data-aos="fade-top"
-                        data-aos-anchor-placement="bottom-bottom">После чего вас ждет проходение заданий для
+                        data-aos-anchor-placement="bottom-bottom">После чего вас ждет прохождение заданий для
                         закрепления материала.</h4>
                 </Hidden>
                 <Hidden lgUp>

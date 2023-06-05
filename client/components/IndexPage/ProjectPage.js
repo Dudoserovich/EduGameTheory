@@ -43,7 +43,7 @@ export default function ProjectPage() {
                     <Hidden mdDown>
                         <Grid item lg={12} data-aos="fade-up"
                               data-aos-anchor-placement="bottom-bottom">
-                            <h4>Мы попытались создать комфорную и понятную среду обучения, так что жмякай на кнопку и
+                            <h4>Мы попытались создать комфортную и понятную среду обучения, так что жмякай на кнопку и
                                 скорее
                                 начнем!</h4>
                         </Grid>
@@ -60,7 +60,7 @@ export default function ProjectPage() {
                 <Hidden lgUp>
                     <Grid item sm={12} md={12} data-aos="fade-up"
                           data-aos-anchor-placement="center-bottom" data-aos-delay='200'>
-                        <h4>Мы попытались создать комфорную и понятную среду обучения, так что жмякай на кнопку и
+                        <h4>Мы попытались создать комфортную и понятную среду обучения, так что жмякай на кнопку и
                             скорее
                             начнем!</h4>
                     </Grid>

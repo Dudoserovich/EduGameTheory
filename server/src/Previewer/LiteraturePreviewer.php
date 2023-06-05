@@ -10,6 +10,7 @@ class LiteraturePreviewer
     #[ArrayShape([
         "id" => "int",
         "name" => "string",
+        "description" => "string",
         "link" => "string"
     ])]
     public function preview(Literature $literature): array
@@ -17,6 +18,7 @@ class LiteraturePreviewer
         return [
             "id" => $literature->getId(),
             "name" => $literature->getName(),
+            "description" => $literature->getDescription(),
             "link" => $literature->getLink()
         ];
     }

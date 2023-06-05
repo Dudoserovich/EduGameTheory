@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Literature;
 use App\Entity\TopicLiterature;
 use App\Previewer\LiteraturePreviewer;
+use App\Previewer\TopicLiteraturePreviewer;
 use App\Repository\LiteratureRepository;
 use App\Repository\TopicLiteratureRepository;
 use App\Repository\TopicRepository;
@@ -27,10 +28,16 @@ class LiteratureController extends ApiController
 {
     private LiteratureRepository $literatureRepository;
     private EntityManagerInterface $em;
+    private TopicLiteratureRepository $topicLiteratureRepository;
 
-    public function __construct(LiteratureRepository $literatureRepository, EntityManagerInterface $em)
+    public function __construct(
+        LiteratureRepository $literatureRepository,
+        TopicLiteratureRepository $topicLiteratureRepository,
+        EntityManagerInterface $em
+    )
     {
         $this->literatureRepository = $literatureRepository;
+        $this->topicLiteratureRepository = $topicLiteratureRepository;
         $this->em = $em;
     }
 
@@ -52,10 +59,13 @@ class LiteratureController extends ApiController
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
-    public function getLiteratures(LiteraturePreviewer $literaturePreviewer): JsonResponse
+    public function getLiteratures(
+        LiteraturePreviewer $literaturePreviewer,
+        TopicLiteraturePreviewer $topicLiteraturePreviewer
+    ): JsonResponse
     {
         $literaturePreviewers = array_map(
-            fn(Literature $literature): array => $literaturePreviewer->preview($literature),
+            fn(Literature $literature): array => $topicLiteraturePreviewer->preview($literature),
             $this->literatureRepository->findBy([], ["name" => "ASC"])
         );
 
@@ -86,7 +96,10 @@ class LiteratureController extends ApiController
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
-    public function postLiterature(Request $request, TopicRepository $topicRepository): JsonResponse
+    public function postLiterature(
+        Request $request,
+        TopicRepository $topicRepository
+    ): JsonResponse
     {
         $request = $request->request->all();
 
@@ -142,15 +155,16 @@ class LiteratureController extends ApiController
         methods: ['GET'])
     ]
     public function getLiterature(
-        LiteraturePreviewer $literaturePreviewer,
-        int $literatureId): JsonResponse
+        TopicLiteraturePreviewer $topicLiteraturePreviewer,
+        int $literatureId
+    ): JsonResponse
     {
         $literature = $this->literatureRepository->find($literatureId);
         if (!$literature) {
             return $this->respondNotFound("Literature not found");
         }
 
-        return $this->response($literaturePreviewer->preview($literature));
+        return $this->response($topicLiteraturePreviewer->preview($literature));
     }
 
     /**
