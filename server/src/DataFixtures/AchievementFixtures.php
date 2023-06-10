@@ -87,8 +87,8 @@ class AchievementFixtures extends BaseFixtureAbstract
 
             $image = new File("$targetDirectory/$nameFile");
 
-            echo($nameFileWithoutSalt . PHP_EOL);
-            echo($foundKeyByImage . PHP_EOL);
+//            echo($nameFileWithoutSalt . PHP_EOL);
+//            echo($foundKeyByImage . PHP_EOL);
             $foundAchievement = self::ACHIEVEMENTS[$foundKeyByImage];
 
             $achievement
@@ -100,7 +100,7 @@ class AchievementFixtures extends BaseFixtureAbstract
                 ->setNeedScore($foundAchievement['needScore'])
                 ->setNeedTries($foundAchievement['needTries'])
                 ->setRating($foundAchievement['rating'])
-                ->setTypeOfInteraction()
+                ->setTypeOfInteraction($foundAchievement['typeOfInteraction'])
             ;
 
             $manager->persist($achievement);
