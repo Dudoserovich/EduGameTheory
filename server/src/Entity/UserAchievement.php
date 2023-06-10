@@ -136,8 +136,6 @@ class UserAchievement
         return $this;
     }
 
-    // TODO: Возможно, нужно поле status для того, чтобы знать получено достижение или ещё нет
-
     /**
      * Gets triggered only on insert
      *
