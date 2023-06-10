@@ -87,8 +87,6 @@ class AchievementFixtures extends BaseFixtureAbstract
 
             $image = new File("$targetDirectory/$nameFile");
 
-//            echo($nameFileWithoutSalt . PHP_EOL);
-//            echo($foundKeyByImage . PHP_EOL);
             $foundAchievement = self::ACHIEVEMENTS[$foundKeyByImage];
 
             $achievement
