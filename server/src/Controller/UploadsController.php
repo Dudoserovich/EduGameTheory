@@ -22,9 +22,11 @@ class UploadsController extends ApiController
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
-     *     @OA\MediaType(
-     *          mediaType="images/*",
-     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *            type="string"
+     *         )
      *     )
      * )
      * @OA\Response(
@@ -68,6 +70,50 @@ class UploadsController extends ApiController
                 }, $nameFiles)
             )
         );
+
+    }
+
+    /**
+     * Get all name images by entityName
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *            type="string"
+     *         )
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Image not found"
+     * )
+     */
+    #[Security(name: null)]
+    #[Route('/{entityName}/names',
+        name: 'get_names_by_entity_name',
+        requirements: ['entityName' => '[A-z]+'],
+        methods: ['GET'])
+    ]
+    public function getNameImagesByEntityName(
+        string $entityName,
+        FileUploader $fileUploader): BinaryFileResponse|JsonResponse
+    {
+        $parentDir = $this->getParameter('upload.directory');
+        $childrenDir = $entityName;
+        $files = scandir($parentDir . $childrenDir);
+        $nameFiles = array_diff($files, array('.', '..'));
+
+        if (!is_dir($parentDir . $childrenDir))
+            return $this->respondNotFound("No entity");
+        elseif (!$nameFiles)
+            return $this->respondNotFound("No images");
+        else return $this->response(array_values($nameFiles));
 
     }
 
