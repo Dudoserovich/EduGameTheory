@@ -23,7 +23,7 @@ class UploadImageSubscriber implements EventSubscriberInterface
         $this->messageBus = $messageBus;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             Events::POST_UPLOAD => 'postPersist',
@@ -34,7 +34,7 @@ class UploadImageSubscriber implements EventSubscriberInterface
     /**
      * @throws Exception
      */
-    public function postPersist(Event $event)
+    public function postPersist(Event $event): void
     {
         $object = $event->getObject();
         $mapping = $event->getMapping();
@@ -45,7 +45,7 @@ class UploadImageSubscriber implements EventSubscriberInterface
     /**
      * @throws Exception
      */
-    public function preRemove(Event $event)
+    public function preRemove(Event $event): void
     {
         $mapping = $event->getMapping();
         $mappingName = $mapping->getMappingName();

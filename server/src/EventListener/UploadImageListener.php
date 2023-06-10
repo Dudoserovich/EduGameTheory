@@ -9,7 +9,7 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
@@ -35,7 +35,7 @@ class UploadImageListener
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
 
         if (!$entity instanceof Achievement) {
             return;
@@ -66,6 +66,8 @@ class UploadImageListener
             ->setImageFile($movedImageFile)
             ->setThumbnail($imagePath);
 
-        $args->getEntityManager()->flush();
+        $args->getObjectManager()->flush();
+
+//        $args->getEntityManager()->getRepository();
     }
 }

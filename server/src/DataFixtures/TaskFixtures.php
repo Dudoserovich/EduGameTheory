@@ -2,10 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Achievement;
 use App\Entity\Task;
 use App\Entity\TaskMark;
 use App\Entity\Topic;
 use App\Entity\User;
+use App\Entity\UserAchievement;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -197,6 +199,27 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                 ->setChance($task['chance']);
             $manager->persist($taskEntity);
             $this->saveReference($taskEntity);
+
+//            $taskMark = new TaskMark();
+//            $taskMark
+//                ->setTask($taskEntity)
+//                ->setUser($this->faker->randomElement($owners))
+//                ->setRating(5);
+//            $manager->persist($taskMark);
+//            $this->saveReference($taskMark);
+
+
+            // TODO: Я думаю, прогресс по всем достижениям
+            //  всех пользователей должен создаваться при записе фикстур или при первом прогрессе по достижению.
+            //  По мере выполнения определённых действий, прогресс достижения увеличивается
+            $achievements = $this->getReferencesByEntityClass(Achievement::class);
+
+            $userAchievement = new UserAchievement();
+            $userAchievement
+                ->setUser($this->faker->randomElement($owners))
+                ->setAchievement($this->faker->randomElement($achievements));
+            $manager->persist($userAchievement);
+            $this->saveReference($userAchievement);
         }
 
         $manager->flush();
@@ -211,7 +234,8 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
     {
         return [
             TopicFixtures::class,
-            UserFixtures::class
+            UserFixtures::class,
+            AchievementFixtures::class
         ];
     }
 

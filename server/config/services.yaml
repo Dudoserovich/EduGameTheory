@@ -61,6 +61,16 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
 
+    App\EventListener\UserAchievementListener:
+        arguments:
+            - '@Symfony\Component\Mercure\HubInterface'
+        tags:
+            - { name: doctrine.event_listener, event: postUpdate }
+
     App\EventSubscriber\UploadImageSubscriber:
         tags:
             - { name: kernel.event_subscriber }
+
+    App\EventSubscriber\TaskMarkSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber }

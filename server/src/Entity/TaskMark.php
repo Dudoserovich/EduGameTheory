@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TaskMarkRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,6 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity(repositoryClass=TaskMarkRepository::class)
  * @Gedmo\SoftDeleteable
+ * @ORM\HasLifecycleCallbacks
  */
 class TaskMark
 {
@@ -48,7 +50,14 @@ class TaskMark
      * @OA\Property(minimum=2, maximum=5)
      * @Groups({"default"})
      */
-    private ?int $rating;
+    private ?int $rating = null;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private ?int $countTries;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -56,6 +65,16 @@ class TaskMark
      * @Groups({"default"})
      */
     private ?DateTimeInterface $deletedAt;
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    protected datetime $createdAt;
+
+    /**
+     *@ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    protected datetime $updatedAt;
 
     public function getId(): ?int
     {
@@ -95,6 +114,23 @@ class TaskMark
         return $this;
     }
 
+    public function getCountTries(): ?int
+    {
+        return $this->countTries;
+    }
+
+    public function setCountTries(?int $countTries): self
+    {
+        $this->countTries = $countTries;
+        return $this;
+    }
+
+    public function incCountTries(): self
+    {
+        $this->countTries++;
+        return $this;
+    }
+
     public function getDeletedAt(): ?DateTimeInterface
     {
         return $this->deletedAt;
@@ -103,6 +139,28 @@ class TaskMark
     public function setDeletedAt(?DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+        return $this;
+    }
+
+    /**
+     * Gets triggered only on insert
+     *
+     * @ORM\PrePersist
+     */
+    public function onPrePersist(): self
+    {
+        $this->createdAt = new \DateTime("now");
+        return $this;
+    }
+
+    /**
+     * Gets triggered every time on update
+     *
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate(): self
+    {
+        $this->updatedAt = new \DateTime("now");
         return $this;
     }
 }
