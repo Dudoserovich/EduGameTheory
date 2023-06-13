@@ -24,10 +24,9 @@ class TaskSolver
 
         $X = [];
         foreach ($solution as $x) {
-            if ($x != 0) {
-                $X[] = $x / $Z;
-            }
+            $X[] = $x / $Z;
         }
+        array_pop($X);
 
         return $X;
     }
