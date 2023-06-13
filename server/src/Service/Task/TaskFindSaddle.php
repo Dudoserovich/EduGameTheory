@@ -50,7 +50,7 @@ class TaskFindSaddle
         $rows = count($this->matrix);
         $cols = count($this->matrix[0]);
 
-        list($minInRows, $maxInCols) = $this->getMinInRowsMaxInCols($this->matrix);
+        list($minInRows, $maxInCols) = $this->getMinInRowsMaxInCols();
 
         // Ищем седловую точку
         for ($i = 0; $i < $rows; $i++) {

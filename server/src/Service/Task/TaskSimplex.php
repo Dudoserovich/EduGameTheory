@@ -16,6 +16,8 @@ class TaskSimplex
     private array $c;
     private array $A;
     private array $b;
+
+    private array $fullResult;
     public function __construct($A, $c, $b)
     {
         $this->A = $A;
@@ -110,8 +112,19 @@ class TaskSimplex
      */
     function simplex(): array
     {
+        // Составляем симплекс-таблицу(табло) вида:
+        // a11 a12 a13 b1
+        // a21 a22 a23 b2
+        // ...
+        // c1  c2  c3  0
         $tableau = $this->to_tableau();
         $count = 0;
+
+        $this->fullResult = [];
+        $this->fullResult[] = [
+            "matrix" => $tableau,
+            "solution" => $this->get_solution($tableau)
+        ];
 
         while ($this->can_be_improved($tableau)) {
 
@@ -125,11 +138,19 @@ class TaskSimplex
             $pivot_position = $this->get_pivot_position($tableau);
             $tableau = $this->pivot_step($tableau, $pivot_position);
 
+            $this->fullResult[] = [
+                "matrix" => $tableau,
+                "solution" => $this->get_solution($tableau)
+            ];
+
             $count += 1;
         }
 
         return $this->get_solution($tableau);
     }
 
-
+    public function getFullResult(): array
+    {
+        return $this->fullResult;
+    }
 }

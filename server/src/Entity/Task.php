@@ -3,24 +3,26 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+
+use DateTime;
+use DateTimeInterface;
+
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-use DateTimeInterface;
-
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
-
-# TODO: default value е работает для array и flagMatrix так просто не задаётся
 
 /**
  * @ORM\Entity(repositoryClass=TaskRepository::class)
  * @UniqueEntity(fields={"name"}, message="A task with this name already exists")
  * @Gedmo\SoftDeleteable
+ * @ORM\HasLifecycleCallbacks
  */
 class Task
 {
@@ -106,6 +108,13 @@ class Task
      * @Groups({"default"})
      */
     private ?DateTimeInterface $deletedAt;
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default" : "1970-01-02 00:00:00"})
+     * @OA\Property(format="date-time")
+     * @Groups({"default"})
+     */
+    protected datetime $createdAt;
 
     public function getId(): ?int
     {
@@ -231,6 +240,17 @@ class Task
     public function setDeletedAt(?DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+        return $this;
+    }
+
+    /**
+     * Gets triggered only on insert
+     *
+     * @ORM\PrePersist
+     */
+    public function onPrePersist(): self
+    {
+        $this->createdAt = new \DateTime("now");
         return $this;
     }
 }

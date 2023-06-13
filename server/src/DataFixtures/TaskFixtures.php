@@ -2,10 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Achievement;
 use App\Entity\Task;
 use App\Entity\TaskMark;
 use App\Entity\Topic;
 use App\Entity\User;
+use App\Entity\UserAchievement;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -211,7 +213,8 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
     {
         return [
             TopicFixtures::class,
-            UserFixtures::class
+            UserFixtures::class,
+            AchievementFixtures::class
         ];
     }
 

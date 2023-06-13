@@ -69,6 +69,58 @@ class Achievement
     private ?int $imageSize = null;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     **/
+    private string $thumbnail;
+
+    /**
+     * @var ?string $subjectOfInteraction название объекта, взаимодействие над которым будет отслеживаться.
+     *
+     * @ORM\Column(type="string", length=255, options={"default" : "задание"})
+     * @OA\Property(enum={"задание", "обучение" , "литература", "термины"})
+     * @Groups({"default"})
+     */
+    private ?string $subjectOfInteraction = "задание";
+
+    /**
+     * @var ?string $typeOfInteraction тип взаимодействия с объектом.
+     *
+     * @ORM\Column(type="string", length=255, options={"default" : "прохождение"})
+     * @OA\Property(enum={"создание", "прохождение", "переходы(клики)"})
+     * @Groups({"default"})
+     */
+    private ?string $typeOfInteraction = "прохождение";
+
+    /**
+     * Необходимое количество повторений (Пример: Необходимо пройти 10 заданий).
+     *
+     * @ORM\Column(type="integer", options={"default": 1})
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private ?int $needScore = 1;
+
+    /**
+     * Необходимое количество попыток выполнения.
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private ?int $needTries = null;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @OA\Property(minimum=2, maximum=5)
+     * @Groups({"default"})
+     */
+    private ?int $rating;
+
+    // TODO: На будущее - нужно поле,
+    //  которое будет говорить к каким ролям пользователей относятся достижения.
+    //  Пока можно создавать достижения только для всех.
+
+    /**
      * @ORM\Column(nullable="true")
      */
     private ?\DateTimeImmutable $updatedAt = null;
@@ -96,9 +148,11 @@ class Achievement
     }
 
     /**
-    * @ORM\Column(type="string", length=255, nullable=true)
-    **/
-    private string $thumbnail;
+     * @ORM\Column(type="datetime", nullable=true)
+     * @OA\Property(format="date-time")
+     * @Groups({"default"})
+     */
+    private ?DateTimeInterface $deletedAt;
 
     public function setThumbnail(string $thumbnail): self
     {
@@ -143,13 +197,6 @@ class Achievement
         return $this->imageSize;
     }
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @OA\Property(format="date-time")
-     * @Groups({"default"})
-     */
-    private ?DateTimeInterface $deletedAt;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -185,6 +232,61 @@ class Achievement
     public function setDeletedAt(?DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+        return $this;
+    }
+
+    public function setSubjectOfInteraction(?string $subjectOfInteraction): self
+    {
+        $this->subjectOfInteraction = $subjectOfInteraction;
+        return $this;
+    }
+
+    public function getSubjectOfInteraction(): ?string
+    {
+        return $this->subjectOfInteraction;
+    }
+
+    public function setNeedScore(?int $needScore): self
+    {
+        $this->needScore = $needScore;
+        return $this;
+    }
+
+    public function getNeedScore(): ?int
+    {
+        return $this->needScore;
+    }
+
+    public function setTypeOfInteraction(?string $typeOfInteraction): self
+    {
+        $this->typeOfInteraction = $typeOfInteraction;
+        return $this;
+    }
+
+    public function getTypeOfInteraction(): ?string
+    {
+        return $this->typeOfInteraction;
+    }
+
+    public function setNeedTries(?int $needTries): self
+    {
+        $this->needTries = $needTries;
+        return $this;
+    }
+
+    public function getNeedTries(): ?int
+    {
+        return $this->needTries;
+    }
+
+    public function getRating(): ?int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(?int $rating): self
+    {
+        $this->rating = $rating;
         return $this;
     }
 }

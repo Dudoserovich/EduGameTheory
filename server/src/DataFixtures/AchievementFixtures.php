@@ -12,27 +12,47 @@ class AchievementFixtures extends BaseFixtureAbstract
         [
             "name" => "Интересующийся",
             "description" => "Перейти по 5 ссылкам на сторонние ресурсы",
-            "imageName" => "interested.png"
+            "imageName" => "interested.png",
+            "typeOfInteraction" => "переходы(клики)",
+            "needScore" => 5,
+            "needTries" => null,
+            "rating" => null
         ],
         [
             "name" => "Догадливый",
             "description" => "Пройти задание с первого раза",
-            "imageName" => "shrewd.png"
+            "imageName" => "shrewd.png",
+            "typeOfInteraction" => "прохождение",
+            "needScore" => 1,
+            "needTries" => 1,
+            "rating" => null
         ],
         [
             "name" => "Наугад",
             "description" => "Пройти задание с 5-го раза",
-            "imageName" => "atRandom.png"
+            "imageName" => "atRandom.png",
+            "typeOfInteraction" => "прохождение",
+            "needScore" => 1,
+            "needTries" => 5,
+            "rating" => null
         ],
         [
-            "name" => "Первый блин - комом?",
-            "description" => "Создать 1-ое задание",
-            "imageName" => "firstTask.png"
+            "name" => "Упорный",
+            "description" => "Пройти 5 заданий",
+            "imageName" => "professor.png",
+            "typeOfInteraction" => "прохождение",
+            "needScore" => 5,
+            "needTries" => null,
+            "rating" => null
         ],
         [
-            "name" => "Профессор",
-            "description" => "Создать 4 задания",
-            "imageName" => "professor.png"
+            "name" => "Трипл",
+            "description" => "Пройти 3 задания на оценку 5",
+            "imageName" => "firstTask.png",
+            "typeOfInteraction" => "прохождение",
+            "needScore" => 3,
+            "needTries" => null,
+            "rating" => 5
         ],
     ];
 
@@ -67,17 +87,21 @@ class AchievementFixtures extends BaseFixtureAbstract
 
             $image = new File("$targetDirectory/$nameFile");
 
-            echo($nameFileWithoutSalt . PHP_EOL);
-            echo($foundKeyByImage . PHP_EOL);
+            $foundAchievement = self::ACHIEVEMENTS[$foundKeyByImage];
 
             $achievement
                 ->setImageFile($image)
-                ->setName(self::ACHIEVEMENTS[$foundKeyByImage]['name'])
-                ->setDescription(self::ACHIEVEMENTS[$foundKeyByImage]['description'])
+                ->setName($foundAchievement['name'])
+                ->setDescription($foundAchievement['description'])
                 ->setImageSize($image->getSize())
-                ->setImageName($image->getFilename());
-            $manager->persist($achievement);
+                ->setImageName($image->getFilename())
+                ->setNeedScore($foundAchievement['needScore'])
+                ->setNeedTries($foundAchievement['needTries'])
+                ->setRating($foundAchievement['rating'])
+                ->setTypeOfInteraction($foundAchievement['typeOfInteraction'])
+            ;
 
+            $manager->persist($achievement);
             $this->saveReference($achievement);
         }
 

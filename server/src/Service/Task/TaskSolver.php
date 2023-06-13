@@ -24,10 +24,9 @@ class TaskSolver
 
         $X = [];
         foreach ($solution as $x) {
-            if ($x != 0) {
-                $X[] = $x / $Z;
-            }
+            $X[] = $x / $Z;
         }
+        array_pop($X);
 
         return $X;
     }
@@ -47,7 +46,7 @@ class TaskSolver
      * @throws MathException
      * @throws Exception
      */
-    static public function solvePayoffMatrix(array $matrix): array
+    static public function solvePayoffMatrix(array $matrix, bool $fullResult = false): array
     {
         if (!$matrix) {
             throw new Exception('Matrix cannot be empty');
@@ -55,20 +54,31 @@ class TaskSolver
 
         # 1. Поиск седловой точки
         # Если седловая точка есть, то найдено решение в частных стратегиях.
-        # TODO: на этом этапе можно возвращать
-        #   с помощью yield промежуточные этапы решения
         $taskFindSaddle = new TaskFindSaddle($matrix);
         $saddlePoint = $taskFindSaddle->findSaddlePoint();
 
         // Возвращаем оптимальную стратегию первого и второго игрока
         if ($saddlePoint) {
             list($i, $j) = $saddlePoint;
-            return array(
+
+            $result = array(
                 "strategy" => "чистые стратегии",
                 "first_player" => $i,
                 "second_player" => $j,
                 "game_price" => $matrix[$i][$j]
             );
+
+            // Если получаем полное решение - добавляем промежуточный шаг в результат
+            if ($fullResult) {
+                list($minInRows, $maxInCols) = $taskFindSaddle->getMinInRowsMaxInCols();
+                $result[] =
+                    [
+                        "min_in_rows" => $minInRows,
+                        "max_in_cols" => $maxInCols
+                    ];
+            }
+
+            return $result;
         }
 
         # 2. Упрощение матрицы.
@@ -108,12 +118,20 @@ class TaskSolver
         # Оптимальная стратегия второго игрока
         $Q = self::calcOptimalStrategy($solution);
 
-        return array(
+        $result = array(
             "strategy" => "смешанные стратегии",
             "first_player" => $P,
             "second_player" => $Q,
             "game_price" => $V
         );
+
+        // TODO: Полное решение игры с промежуточными шагами
+        if ($fullResult) {
+            $result["turns_first"] = $taskSimplexFirstPlayer->getFullResult();
+            $result["turns_second"] = $taskSimplexSecondPlayer->getFullResult();
+        }
+
+        return $result;
     }
 
     // TODO: возможно, ещё нужен метод,

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Achievement;
+use App\Entity\User;
 use App\Entity\UserAchievement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +39,19 @@ class UserAchivementRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByUserAndNotNullAchieve(User $user): array
+    {
+        return $this->createQueryBuilder('ua')
+            ->join('ua.user', 'user')
+            ->join('ua.achievement', 'achievement')
+            ->where('ua.user = :user_id')
+            ->andWhere('ua.achievementDate IS NOT NULL')
+            ->orderBy('ua.achievementDate')
+            ->setParameter('user_id', $user->getId())
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

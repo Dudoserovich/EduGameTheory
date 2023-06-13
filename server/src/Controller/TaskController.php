@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\TaskMark;
 use App\Previewer\TaskPreviewer;
+use App\Repository\TaskMarkRepository;
 use App\Repository\TaskRepository;
 use App\Repository\TopicRepository;
 use App\Repository\UserRepository;
 use App\Service\Task\TaskPlay;
 use App\Service\Task\TaskSolver;
+use App\Service\TaskMarkService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -36,15 +39,18 @@ class TaskController extends ApiController
     private EntityManagerInterface $em;
     private UserRepository $userRepository;
     private RequestStack $requestStack;
+    private TaskMarkRepository $taskMarkRepository;
 
     public function __construct(
-        TaskRepository $taskRepository,
-        UserRepository $userRepository,
+        TaskRepository         $taskRepository,
+        UserRepository         $userRepository,
+        TaskMarkRepository     $taskMarkRepository,
         EntityManagerInterface $em,
-        RequestStack $requestStack)
+        RequestStack           $requestStack)
     {
         $this->taskRepository = $taskRepository;
         $this->userRepository = $userRepository;
+        $this->taskMarkRepository = $taskMarkRepository;
         $this->em = $em;
         $this->requestStack = $requestStack;
     }
@@ -119,7 +125,7 @@ class TaskController extends ApiController
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
-    public function postTask(Request $request,
+    public function postTask(Request         $request,
                              TopicRepository $topicRepository): JsonResponse
     {
         $request = $request->request->all();
@@ -151,8 +157,7 @@ class TaskController extends ApiController
                 ->setFlagMatrix($request['flag_matrix'])
                 // TODO: Добавить проверку, что в сумме элементы дают 1
                 //  или они все равны 1
-                ->setChance($request['chance'] ?? null)
-            ;
+                ->setChance($request['chance'] ?? null);
             $this->em->persist($task);
 
             $this->em->flush();
@@ -185,7 +190,7 @@ class TaskController extends ApiController
     ]
     public function getTask(
         TaskPreviewer $taskPreviewer,
-        int $taskId): JsonResponse
+        int           $taskId): JsonResponse
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
@@ -241,9 +246,9 @@ class TaskController extends ApiController
         requirements: ['taskId' => '\d+'],
         methods: ['PUT']
     )]
-    public function upTask(Request $request,
-                                 int $taskId,
-                                 TopicRepository $topicRepository): JsonResponse
+    public function upTask(Request         $request,
+                           int             $taskId,
+                           TopicRepository $topicRepository): JsonResponse
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task)
@@ -498,8 +503,8 @@ class TaskController extends ApiController
         if ($task->getFlagMatrix() != 'платёжная матрица') {
             try {
                 $solve = TaskSolver::solveRiskMatrix($task->getMatrix());
-            } catch (BadDataException | IncorrectTypeException
-            | MatrixException | MathException | Exception $e) {
+            } catch (BadDataException|IncorrectTypeException
+            |MatrixException|MathException|Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
         } else {
@@ -507,7 +512,7 @@ class TaskController extends ApiController
             try {
                 $solve = TaskSolver::solvePayoffMatrix($task->getMatrix());
             } catch (BadDataException|IncorrectTypeException
-            | MatrixException | MathException | Exception $e) {
+            |MatrixException|MathException|Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
         }
@@ -536,7 +541,7 @@ class TaskController extends ApiController
         methods: ['GET']
     )]
     public function getPayoffStrategy(Request $request,
-                                int $taskId): JsonResponse
+                                      int     $taskId): JsonResponse
     {
         return $this->response(
             array(
@@ -597,14 +602,34 @@ class TaskController extends ApiController
         requirements: ['taskId' => '\d+'],
         methods: ['PUT']
     )]
-    public function solvePayoff(Request $request,
-                              int $taskId): JsonResponse
+    public function solvePayoff(
+        Request         $request,
+        int             $taskId
+    ): JsonResponse
     {
         $request = $request->request->all();
 
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
             return $this->respondNotFound("Task not found");
+        }
+
+        $user = $this->getUserEntity($this->userRepository);
+        $taskMark = $this->taskMarkRepository
+            ->findOneBy(["user" => $user, "task" => $task]);
+        if (!$taskMark) {
+            $taskMark = new TaskMark();
+            $taskMark
+                ->setTask($task)
+                ->setUser($user)
+                ->setCountTries(0)
+            ;
+            $this->em->persist($taskMark);
+            $this->em->flush();
+        }
+
+        if ($taskMark->getRating()) {
+            return $this->response("Вы уже прошли это задание");
         }
 
         $result = null;
@@ -620,17 +645,30 @@ class TaskController extends ApiController
             return $this->respondValidationError('У данного задания неверный тип матрицы.');
         }
 
-        // TODO: если success, вернуть полное решение игры
-        //  Всё уже написано, нужно только отдавать фронту
-//        if ($result['success'])
-//        {
+        $taskMark->incCountTries();
+
+        if ($result['success']) {
+            $tries = $taskMark->getCountTries();
+
+            try {
+                $rating = TaskMarkService::get($tries);
+            } catch (Exception $e) {
+                return $this->respondWithErrors($e->getMessage());
+            }
+
+            $taskMark->setRating($rating);
+
+            // TODO: Получение полного решения при успешном прохождении
 //            try {
 //                return $this->response(TaskSolver::solvePayoffMatrix($task->getMatrix(), true));
 //            } catch (BadDataException|IncorrectTypeException
 //                        |MatrixException|MathException|Exception $e) {
 //                return $this->respondValidationError($e->getMessage());
 //            }
-//        }
+        }
+
+        $this->em->persist($taskMark);
+        $this->em->flush();
 
         return $this->response($result);
     }
@@ -664,7 +702,7 @@ class TaskController extends ApiController
         methods: ['PUT']
     )]
     public function solveRisk(Request $request,
-                                    int $taskId): JsonResponse
+                              int     $taskId): JsonResponse
     {
         $request = $request->request->all();
 
