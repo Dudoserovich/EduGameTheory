@@ -147,6 +147,13 @@ class Achievement
         return $this;
     }
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @OA\Property(format="date-time")
+     * @Groups({"default"})
+     */
+    private ?DateTimeInterface $deletedAt;
+
     public function setThumbnail(string $thumbnail): self
     {
         $this->thumbnail = $thumbnail;
@@ -189,13 +196,6 @@ class Achievement
     {
         return $this->imageSize;
     }
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @OA\Property(format="date-time")
-     * @Groups({"default"})
-     */
-    private ?DateTimeInterface $deletedAt;
 
     public function getId(): ?int
     {

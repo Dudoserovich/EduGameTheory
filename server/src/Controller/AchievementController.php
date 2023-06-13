@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Achievement;
 use App\Entity\UserAchievement;
 use App\Previewer\AchievementPreviewer;
+use App\Previewer\UserAchievementPreviewer;
 use App\Repository\AchievementRepository;
 use App\Repository\UserAchivementRepository;
 use App\Repository\UserRepository;
@@ -34,10 +35,10 @@ class AchievementController extends ApiController
     private UserRepository $userRepository;
 
     public function __construct(
-        UserRepository $userRepository,
-        AchievementRepository $achievementRepository,
+        UserRepository           $userRepository,
+        AchievementRepository    $achievementRepository,
         UserAchivementRepository $userAchivementRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface   $em
     )
     {
         $this->userRepository = $userRepository;
@@ -128,7 +129,7 @@ class AchievementController extends ApiController
 //    }
 
     /**
-     * Get achievement object
+     * Получение конкретного объекта достижения
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -153,7 +154,7 @@ class AchievementController extends ApiController
         methods: ['GET'])
     ]
     public function getAchievement(
-        int $achievementId,
+        int                  $achievementId,
         AchievementPreviewer $achievementPreviewer): JsonResponse
     {
         $achievement = $this->achievementRepository->find($achievementId);
@@ -261,7 +262,7 @@ class AchievementController extends ApiController
 //    }
 
     /**
-     * Get all achievements
+     * Получение всех существующий достижений
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -294,16 +295,57 @@ class AchievementController extends ApiController
     }
 
     /**
-     * Get all self achievements
+     * Получение всех достижений текущего пользователя (даже ещё не полученных)
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
      *     @OA\JsonContent(
      *         type="array",
      *         @OA\Items(
-     *            @OA\Property(property="name", ref="#/components/schemas/AchievementView/properties/name"),
-     *            @OA\Property(property="description", ref="#/components/schemas/AchievementView/properties/description"),
-     *            @OA\Property(property="imageHref", ref="#/components/schemas/AchievementView/properties/imageHref")
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 description="The ID of the achievement"
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement",
+     *                 type="object",
+     *                 description="The achievement details",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     description="The ID of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     description="The name of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     description="The description of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="image_href",
+     *                     type="string",
+     *                     description="The URL of the image for the achievement"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="progress",
+     *                 type="array",
+     *                 description="The progress towards the achievement",
+     *                 @OA\Items(
+     *                     type="integer"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement_date",
+     *                 type="string",
+     *                 format="date-time",
+     *                 description="The date and time when the achievement was earned"
+     *             )
      *         )
      *     )
      * )
@@ -313,24 +355,266 @@ class AchievementController extends ApiController
      * )
      */
     #[Route(
-        '/self',
+        '/users/self',
         name: 'get_self',
         methods: ['GET']
     )]
     public function getSelfAchievements(
-        AchievementPreviewer $achievementPreviewer): JsonResponse
+        AchievementPreviewer     $achievementPreviewer,
+        UserAchievementPreviewer $userAchievementPreviewer
+    ): JsonResponse
     {
         $user = $this->getUserEntity($this->userRepository);
         $userAchievements = $this->userAchivementRepository->findBy(["user" => $user]);
 
-        $achievements = array_map(
-            fn(UserAchievement $achievement): Achievement => $achievement->getAchievement(),
+        $achievementPreviews = array_map(
+            fn(UserAchievement $userAchievement): array => $userAchievementPreviewer->previewWithoutUser($userAchievement),
             $userAchievements
         );
 
+        return $this->response($achievementPreviews);
+    }
+
+    /**
+     * Получение только всех полученных достижений текущего пользователя
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 description="The ID of the achievement"
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement",
+     *                 type="object",
+     *                 description="The achievement details",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     description="The ID of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     description="The name of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     description="The description of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="image_href",
+     *                     type="string",
+     *                     description="The URL of the image for the achievement"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="progress",
+     *                 type="array",
+     *                 description="The progress towards the achievement",
+     *                 @OA\Items(
+     *                     type="integer"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement_date",
+     *                 type="string",
+     *                 format="date-time",
+     *                 description="The date and time when the achievement was earned"
+     *             )
+     *         )
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied"
+     * )
+     */
+    #[Route(
+        '/users/self/completed',
+        name: 'get_self_completed',
+        methods: ['GET']
+    )]
+    public function getSelfCompletedAchievements(
+        AchievementPreviewer     $achievementPreviewer,
+        UserAchievementPreviewer $userAchievementPreviewer
+    ): JsonResponse
+    {
+        $user = $this->getUserEntity($this->userRepository);
+        $userAchievements = $this->userAchivementRepository->findByUserAndNotNullAchieve($user);
+
         $achievementPreviews = array_map(
-            fn(Achievement $achievement): array => $achievementPreviewer->preview($achievement),
-            $achievements
+            fn(UserAchievement $userAchievement): array => $userAchievementPreviewer->previewWithoutUser($userAchievement),
+            $userAchievements
+        );
+
+        return $this->response($achievementPreviews);
+    }
+
+    /**
+     * Получение всех достижений пользователя по id (даже ещё не полученных)
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 description="The ID of the achievement"
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement",
+     *                 type="object",
+     *                 description="The achievement details",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     description="The ID of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     description="The name of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     description="The description of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="image_href",
+     *                     type="string",
+     *                     description="The URL of the image for the achievement"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="progress",
+     *                 type="array",
+     *                 description="The progress towards the achievement",
+     *                 @OA\Items(
+     *                     type="integer"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement_date",
+     *                 type="string",
+     *                 format="date-time",
+     *                 description="The date and time when the achievement was earned"
+     *             )
+     *         )
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied"
+     * )
+     */
+    #[Route(
+        '/users/{userId}',
+        name: 'get_by_id',
+        requirements: ['taskId' => '\d+'],
+        methods: ['GET']
+    )]
+    public function getAchievementsById(
+        UserAchievementPreviewer $userAchievementPreviewer,
+        int                      $userId
+    ): JsonResponse
+    {
+        $user = $this->userRepository->find($userId);
+        $userAchievements = $this->userAchivementRepository->findBy(["user" => $user]);
+
+        $achievementPreviews = array_map(
+            fn(UserAchievement $userAchievement): array => $userAchievementPreviewer->previewWithoutUser($userAchievement),
+            $userAchievements
+        );
+
+        return $this->response($achievementPreviews);
+    }
+
+    /**
+     * Получение только всех полученных достижений пользователя по id
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 description="The ID of the achievement"
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement",
+     *                 type="object",
+     *                 description="The achievement details",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     description="The ID of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     description="The name of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     description="The description of the achievement"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="image_href",
+     *                     type="string",
+     *                     description="The URL of the image for the achievement"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="progress",
+     *                 type="array",
+     *                 description="The progress towards the achievement",
+     *                 @OA\Items(
+     *                     type="integer"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="achievement_date",
+     *                 type="string",
+     *                 format="date-time",
+     *                 description="The date and time when the achievement was earned"
+     *             )
+     *         )
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied"
+     * )
+     */
+    #[Route(
+        '/users/{userId}/completed',
+        name: 'get_completed_by_id',
+        requirements: ['taskId' => '\d+'],
+        methods: ['GET']
+    )]
+    public function getAchievementsCompletedById(
+        UserAchievementPreviewer $userAchievementPreviewer,
+        int                      $userId
+    ): JsonResponse
+    {
+        $user = $this->userRepository->find($userId);
+        $userAchievements = $this->userAchivementRepository->findByUserAndNotNullAchieve($user);
+
+        $achievementPreviews = array_map(
+            fn(UserAchievement $userAchievement): array => $userAchievementPreviewer->previewWithoutUser($userAchievement),
+            $userAchievements
         );
 
         return $this->response($achievementPreviews);
