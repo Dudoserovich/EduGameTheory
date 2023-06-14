@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Service\Task\TaskBrownRobinson;
 use App\Service\Task\TaskSolver;
 use MathPHP\Exception\BadDataException;
 use MathPHP\Exception\IncorrectTypeException;
@@ -11,11 +12,11 @@ use PHPUnit\Framework\TestCase;
 
 class TaskSolverTest extends TestCase
 {
-    private function normalizeArr(array|int &$arr): void
+    private function normalizeArr(array|int &$arr, int $precision = 4): void
     {
         if (gettype($arr) == 'array') {
             foreach ($arr as &$element) {
-                $element = round($element, 4);
+                $element = round($element, $precision);
             }
         }
     }
@@ -49,8 +50,8 @@ class TaskSolverTest extends TestCase
         // проверка на правильность всех данных
         self::assertEquals(
             ["strategy" => "смешанные стратегии",
-                "first_player" => [0.8, 0.2],
-                "second_player" => [0.4, 0.6],
+                "first_player" => [0.4, 0.6],
+                "second_player" => [0.8, 0.2],
                 "game_price" => 4.6
             ],
             $solve
@@ -61,9 +62,9 @@ class TaskSolverTest extends TestCase
         // === Второй тест с матрицей 3 на 3. ===
         // Седловой точки нет.
         $matrix = [
-            [4,	7, 2],
-            [7,	3, 2],
-            [2,	1, 8]
+            [4, 7, 2],
+            [7, 3, 2],
+            [2, 1, 8]
         ];
 
         $solve = TaskSolver::solvePayoffMatrix($matrix);
@@ -80,8 +81,8 @@ class TaskSolverTest extends TestCase
         // проверка на правильность всех данных
         self::assertEquals(
             ["strategy" => "смешанные стратегии",
-                "first_player" => [0.3529, 0.2647, 0.3824],
-                "second_player" => [0.4265, 0.2353, 0.3382],
+                "first_player" => [0.4265, 0.2353, 0.3382],
+                "second_player" => [0.3529, 0.2647, 0.3824],
                 "game_price" => 4.03
             ],
             $solve
@@ -93,7 +94,7 @@ class TaskSolverTest extends TestCase
         // Седловой точки нет.
         $matrix = [
             [10, 7],
-            [8,	11]
+            [8, 11]
         ];
 
         $solve = TaskSolver::solvePayoffMatrix($matrix);
@@ -110,8 +111,8 @@ class TaskSolverTest extends TestCase
         // проверка на правильность всех данных
         self::assertEquals(
             ["strategy" => "смешанные стратегии",
-                "first_player" => [round(2/3, 4), round(1/3, 4)],
-                "second_player" => [0.5, 0.5],
+                "first_player" => [0.5, 0.5],
+                "second_player" => [round(2 / 3, 4), round(1 / 3, 4)],
                 "game_price" => 9
             ],
             $solve
@@ -121,6 +122,7 @@ class TaskSolverTest extends TestCase
     }
 
     // Нумерация строк идёт с 0
+
     /**
      * @throws IncorrectTypeException
      * @throws MatrixException
@@ -253,6 +255,7 @@ class TaskSolverTest extends TestCase
     }
 
     // Нумерация с нуля
+
     /**
      * @throws IncorrectTypeException
      * @throws MatrixException
@@ -348,4 +351,117 @@ class TaskSolverTest extends TestCase
         // ======
     }
 
+    /**
+     * @throws IncorrectTypeException
+     * @throws MatrixException
+     * @throws BadDataException
+     * @throws MathException
+     */
+    public function testBrownRobinson()
+    {
+        // === Тест на нулевую матрицу ===
+        // В этом случае всегда выбирается первая попавшаяся стратегия,
+        //  потому что неважно, что выбирать
+        $matrix = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+
+        $br = new TaskBrownRobinson();
+        $br->BraunRobinson($matrix);
+
+        self::assertEquals(
+            [
+                "P" => [1, 0, 0],
+                "Q" => [1, 0, 0],
+                "V" => 0
+            ],
+            [
+                "P" => $br->getP(),
+                "Q" => $br->getQ(),
+                "V" => $br->getV(),
+            ]
+        );
+
+        // ======
+
+        // === Тест на игру в камень-ножницы-бумагу
+        //  (не ограниченное количество решений для симплекс-метода) ===
+        $matrix = [
+            [0, 1, -1],
+            [-1, 0, 1],
+            [1, -1, 0]
+        ];
+        $br->BraunRobinson($matrix);
+
+        $arrOneThree = [1 / 3, 1 / 3, 1 / 3];
+        $this->normalizeArr($arrOneThree, 1);
+        $expected = [
+            "P" => $arrOneThree,
+            "Q" => $arrOneThree,
+            "V" => 0
+        ];
+
+        $p = $br->getP();
+        $this->normalizeArr($p, 1);
+        $q = $br->getP();
+        $this->normalizeArr($q, 1);
+
+        $actual = [
+            "P" => $p,
+            "Q" => $q,
+            "V" => $br->getV(),
+        ];
+
+        self::assertEquals(
+            $expected,
+            $actual
+        );
+
+        // ======
+
+        // === Тест на примерное равенство результатов Симплекс-метода и Брауна-Робинсона ===
+        // Смешанные стратегии
+        $matrix = [
+            [4, 7, 2],
+            [7, 3, 2],
+            [2, 1, 8]
+        ];
+
+        // Решение симплекс-методом
+        $solve = TaskSolver::solvePayoffMatrix($matrix);
+
+        // Решение методом Брауна-Робинсона
+        $br->BraunRobinson($matrix);
+
+        // Нормализация результатов
+        $p = $br->getP();
+        $q = $br->getQ();
+        $this->normalizeArr($p, 1);
+        $this->normalizeArr($q, 1);
+        $actual = [
+            "P" => $p,
+            "Q" => $q,
+            "V" => round($br->getV()),
+        ];
+
+        $p = $solve['first_player'];
+        $this->normalizeArr($p, 1);
+        $q = $solve['second_player'];
+        $this->normalizeArr($q, 1);
+        $v = round($solve['game_price']);
+        $expected = [
+            "P" => $p,
+            "Q" => $q,
+            "V" => $v
+        ];
+
+        self::assertEquals(
+            $expected,
+            $actual
+        );
+
+        // ======
+    }
 }

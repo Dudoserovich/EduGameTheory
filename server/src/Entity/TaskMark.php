@@ -166,4 +166,9 @@ class TaskMark
         $this->updatedAt = new \DateTime("now");
         return $this;
     }
+
+    public function getUpdatedAt(): ?DateTime
+    {
+        return $this->updatedAt;
+    }
 }

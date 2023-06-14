@@ -30,24 +30,38 @@ class TaskPlay
      * @param array $weights индексный массив соответствующих весов
      * @return float|null случайный элемент
      */
-    static private function weightedRandomSimple(array $values, array $weights): float|null
+    static private function weightedRandomSimple(array $values, array $weights): ?float
     {
-        $total = array_sum($weights);
+        $weights = self::normalizeWeights($weights);
+        $count = count($values);
+        $i = 0;
         $n = 0;
-
-        $num = mt_rand(1, $total);
-
-        foreach ($values as $i => $value)
-        {
+        $num = mt_rand(1, (int)array_sum($weights));
+        while($i < $count){
             $n += $weights[$i];
-
-            if ($n >= $num)
-            {
-                return $value;
+            if($n >= $num){
+                break;
             }
+            $i++;
         }
+        return $values[$i];
+    }
 
-        return null;
+    /**
+     * Так как массив вероятностей - число меньшее 1,
+     * причём иногда очень маленькое, необходимо скорректировать веса.
+     *
+     * @param array $weights
+     * @return array
+     */
+    static private function normalizeWeights(array $weights): array
+    {
+        $salt = 100;
+        $count = count($weights);
+        foreach ($weights as &$weight) {
+            $weight *= $count*$salt;
+        }
+        return $weights;
     }
 
     /**
