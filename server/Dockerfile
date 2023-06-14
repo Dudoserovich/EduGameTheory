@@ -3,7 +3,7 @@ FROM webdevops/php-nginx:8.1
 ARG ENV=dev
 
 # set timezone
-RUN echo date.timezone = ASIA >> /opt/docker/etc/php/php.ini
+RUN echo date.timezone = Asia/Vladivostok >> /opt/docker/etc/php/php.ini
 # install xdebug
 # disable xdebug for prod (multi-stage build)
 RUN if [ "${ENV}" = "dev" ] ;then \
