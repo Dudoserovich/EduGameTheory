@@ -12,5 +12,5 @@
     - name: "login docker"
       shell: echo "{{ DOCKER_PASSWORD }}" | docker login ghcr.io -u "{{ DOCKER_LOGIN }}" --password-stdin
 
-    - name: "prune older dangling images"
-      shell: docker image prune
+#    - name: "prune older dangling images"
+#      shell: docker image prune
