@@ -8,3 +8,9 @@
 
     - name: "start services"
       shell: docker compose -f {{ APP_PATH }}/docker-compose.yml up --no-deps -d nginx
+
+    - name: "login docker"
+      shell: echo "{{ DOCKER_PASSWORD }}" | docker login ghcr.io -u "{{ DOCKER_LOGIN }}" --password-stdin
+
+    - name: "prune older dangling images"
+      shell: docker image prune
