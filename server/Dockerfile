@@ -28,16 +28,7 @@ WORKDIR /app
 LABEL org.opencontainers.image.source=https://github.com/Dudoserovich/EduGameTheory
 
 # Установка зависимостей composer
-ENV COMPOSER_ALLOW_SUPERUSER 1
-COPY ./composer.json ./composer.lock ./.env /app/
+COPY ./composer.json ./composer.lock /app/
 
-RUN set -xe && \
-    echo APP_ENV="$ENV" > .env.local && \
-    if [ "${ENV}" = "prod" ] ;then \
-    composer install --optimize-autoloader --no-dev \
-    ;else \
-    composer install --optimize-autoloader \
-    ;fi  && \
-    composer dump-autoload --classmap-authoritative --optimize && \
-    composer dump-env "$ENV"
+RUN composer install -d /app
 COPY ./ /app
