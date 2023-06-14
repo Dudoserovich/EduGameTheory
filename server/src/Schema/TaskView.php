@@ -45,12 +45,6 @@ class TaskView
     public UserView $owner;
 
     /**
-     * @OA\Property(property="initScores", ref="#/components/schemas/Task/properties/initScores")
-     * @Groups({"default", "initScores"})
-     */
-    public int $initScores;
-
-    /**
      * @OA\Property(property="matrix", ref="#/components/schemas/Task/properties/matrix")
      * @Groups({"default", "matrix"})
      */
@@ -61,10 +55,4 @@ class TaskView
      * @Groups({"default", "flagMatrix"})
      */
     public ?string $flagMatrix;
-
-    /**
-     * @OA\Property(property="chance", ref="#/components/schemas/Task/properties/chance")
-     * @Groups({"default", "chance"})
-     */
-    public ?array $chance;
 }

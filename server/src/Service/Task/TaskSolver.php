@@ -120,8 +120,8 @@ class TaskSolver
 
         $result = array(
             "strategy" => "смешанные стратегии",
-            "first_player" => $P,
-            "second_player" => $Q,
+            "first_player" => $Q,
+            "second_player" => $P,
             "game_price" => $V
         );
 

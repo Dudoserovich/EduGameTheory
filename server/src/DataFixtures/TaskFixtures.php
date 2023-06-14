@@ -31,10 +31,8 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
             
             Данная игра относится к играм, не имеющим конечного числа оптимальных стратегий.
             Играем до 3-х побед, посмотрим кто сможет выиграть.',
-            'initScores' => 3,
             'matrix' => [[0, 1, -1], [-1, 0, 1], [1, -1, 0]],
-            'flagMatrix' => self::FLAGS_MATRIX[0],
-            'chance' => null
+            'flagMatrix' => self::FLAGS_MATRIX[0]
         ],
         [ 'name' => 'Камень-Ножницы-Бумага-Ящерица-Спок',
             'description' => '
@@ -43,11 +41,9 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
             
             Данная игра относится к играм, не имеющим конечного числа оптимальных стратегий.
             Играем до 3-х побед, посмотрим кто сможет выиграть.',
-            'initScores' => 3,
             'matrix' => [[0, -1, 1, 1, -1], [1, 0, -1, -1, 1], [-1, 1, 0, 1, -1],
                             [-1, 1, -1, 0, 1], [1, -1, 1, -1, 0]],
-            'flagMatrix' => self::FLAGS_MATRIX[0],
-            'chance' => null
+            'flagMatrix' => self::FLAGS_MATRIX[0]
         ],
         ['name' => 'Конкуренция на рынке',
             'description' => '
@@ -55,15 +51,13 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                 
                 Требуется найти оптимальное решение для 1-го и 2-го предприятия, а так же цену игры.
             ',
-            'initScores' => 0,
             'matrix' =>
                 [
                     [0.1, 0.4, 0.2],
                     [0.5, 0.4, 0.3],
                     [0.3, 0.2, 0.1]
                 ],
-            'flagMatrix' => self::FLAGS_MATRIX[0],
-            'chance' => null
+            'flagMatrix' => self::FLAGS_MATRIX[0]
         ],
         ['name' => 'Битва за сокровище',
             'description' => '
@@ -72,14 +66,12 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                 
                 Требуется найти оптимальное решение для 1-го и 2-го игрока, а так же цену игры.
             ',
-            'initScores' => 0,
             'matrix' =>
                 [
                     [4, 7],
                     [5, 3]
                 ],
-            'flagMatrix' => self::FLAGS_MATRIX[0],
-            'chance' => null
+            'flagMatrix' => self::FLAGS_MATRIX[0]
         ],
         ['name' => 'Акционерное общество',
             'description' => '
@@ -88,15 +80,13 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                 
                 Требуется найти оптимальное решение для первого и второго игроков, а также цену игры. Контекст игры - поиск сокровищ.
             ',
-            'initScores' => 0,
             'matrix' =>
                 [
                     [4, 7, 2],
                     [7, 3, 2],
                     [2, 1, 8]
                 ],
-            'flagMatrix' => self::FLAGS_MATRIX[0],
-            'chance' => null
+            'flagMatrix' => self::FLAGS_MATRIX[0]
         ],
         ['name' => 'Страхование груза',
             'description' => '
@@ -107,14 +97,12 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                 
                 Требуется определить, стоит ли страховать груз?
             ',
-            'initScores' => 0,
             'matrix' =>
                 [
                     [0, -1500000],
                     [-100000, -100000]
                 ],
-            'flagMatrix' => self::FLAGS_MATRIX[1],
-            'chance' => null
+            'flagMatrix' => self::FLAGS_MATRIX[1]
         ],
         ['name' => 'SpaceX',
             'description' => '
@@ -123,7 +111,6 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                 
                 Какое решение стоит принять на основе матрицы последствий, чтобы снизить риски?
             ',
-            'initScores' => 0,
             'matrix' =>
                 [
                     [2, 5, 8, 4],
@@ -131,8 +118,7 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                     [8, 5, 3, 10],
                     [1, 4, 2, 8]
                 ],
-            'flagMatrix' => self::FLAGS_MATRIX[1],
-            'chance' => null
+            'flagMatrix' => self::FLAGS_MATRIX[1]
         ]
     ];
 
@@ -193,10 +179,9 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
                 ->setType($type)
                 ->setTopic($matrixTopic)
                 ->setOwner($type == self::TYPES[1] ? $this->faker->randomElement($owners) : null)
-                ->setInitScores($task['initScores'])
                 ->setMatrix($task['matrix'])
                 ->setFlagMatrix($task['flagMatrix'])
-                ->setChance($task['chance']);
+                ;
             $manager->persist($taskEntity);
             $this->saveReference($taskEntity);
         }

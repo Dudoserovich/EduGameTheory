@@ -74,14 +74,6 @@ class Task
     private ?User $owner;
 
     /**
-     * @ORM\Column(type="integer", options={"default": 0})
-     * @Assert\Positive
-     * @OA\Property()
-     * @Groups({"default"})
-     */
-    private int $initScores = 0;
-
-    /**
      * @ORM\Column(type="json", nullable=true)
      * @OA\Property(type="array", @OA\Items(type="array", @OA\Items(type="number")))
      * @Groups({"default"})
@@ -94,13 +86,6 @@ class Task
      * @Groups({"default"})
      */
     private ?string $flagMatrix;
-
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     * @OA\Property(type="array", @OA\Items(type="array", @OA\Items(type="number")))
-     * @Groups({"default"})
-     */
-    private ?array $chance = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -180,18 +165,6 @@ class Task
         return $this;
     }
 
-    public function setInitScores(int $initScores): self
-    {
-        $this->initScores = $initScores;
-
-        return $this;
-    }
-
-    public function getInitScores(): int
-    {
-        return $this->initScores;
-    }
-
     /** @param array|null $matrix The JSON to set.
      */
     public function setMatrix(?array $matrix): self
@@ -216,20 +189,6 @@ class Task
         $this->flagMatrix = $flagMatrix;
 
         return $this;
-    }
-
-    /** @param array|null $chance The JSON to set.
-     */
-    public function setChance(?array $chance): self
-    {
-        $this->chance = $chance;
-
-        return $this;
-    }
-
-    public function getChance(): ?array
-    {
-        return $this->chance;
     }
 
     public function getDeletedAt(): ?DateTimeInterface
