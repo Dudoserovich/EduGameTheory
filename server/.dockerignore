@@ -25,4 +25,8 @@ composer.phar
 *~
 ###< temporary files ###
 
+# deploy
 playbook.yml
+
+# Exclude git history and configuration.
+.gitignore
