@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Term;
 use App\Repository\TermRepository;
+use App\Repository\TopicRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,9 +65,10 @@ class TermController extends ApiController
      * @OA\RequestBody (
      *     required=true,
      *     @OA\JsonContent(
-     *         example={"name": "Игрок", "description": "Одна из сторон в игровой ситуации"},
+     *         example={"name": "Игрок", "description": "Одна из сторон в игровой ситуации", "topic_id": 1},
      *         @OA\Property(property="name", ref="#/components/schemas/Term/properties/name"),
-     *         @OA\Property(property="description", ref="#/components/schemas/Term/properties/description")
+     *         @OA\Property(property="description", ref="#/components/schemas/Term/properties/description"),
+     *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
      * @OA\Response(
@@ -83,7 +85,10 @@ class TermController extends ApiController
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
-    public function postTerm(Request $request): JsonResponse
+    public function postTerm(
+        Request $request,
+        TopicRepository $topicRepository
+    ): JsonResponse
     {
         $request = $request->request->all();
 
@@ -92,11 +97,18 @@ class TermController extends ApiController
         if ($term)
             return $this->respondValidationError('A term with such name has already been created');
 
+        $topic = $topicRepository->find($request['topic_id']);
+        if (!$topic) {
+            return $this->respondNotFound("Topic not found");
+        }
+
         $term = new Term();
         try {
             $term
                 ->setName($request['name'])
-                ->setDescription($request['description']);
+                ->setDescription($request['description'])
+                ->setTopic($topic)
+            ;
             $this->em->persist($term);
             $this->em->flush();
             return $this->respondWithSuccess("Term added successfully");
@@ -122,7 +134,10 @@ class TermController extends ApiController
      * )
      */
     #[Route('/{termId}', name: 'get_by_id', requirements: ['termId' => '\d+'], methods: ['GET'])]
-    public function getTerm(TermPreviewer $termPreviewer, int $termId): JsonResponse
+    public function getTerm(
+        TermPreviewer $termPreviewer,
+        int $termId
+    ): JsonResponse
     {
         $term = $this->termRepository->find($termId);
         if (!$term) {
@@ -138,7 +153,8 @@ class TermController extends ApiController
      *     required=true,
      *     @OA\JsonContent(
      *         @OA\Property(property="name", nullable=true, ref="#/components/schemas/Term/properties/name"),
-     *         @OA\Property(property="description", nullable=true, ref="#/components/schemas/Term/properties/description")
+     *         @OA\Property(property="description", nullable=true, ref="#/components/schemas/Term/properties/description"),
+     *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
      * @OA\Response(
@@ -159,7 +175,11 @@ class TermController extends ApiController
      * )
      */
     #[Route('/{termId}', name: 'put_by_id', requirements: ['termId' => '\d+'], methods: ['PUT'])]
-    public function upTerm(Request $request, int $termId): JsonResponse
+    public function upTerm(
+        Request $request,
+        int $termId,
+        TopicRepository $topicRepository
+    ): JsonResponse
     {
         $term = $this->termRepository->find($termId);
         if (!$term) {
@@ -174,6 +194,14 @@ class TermController extends ApiController
             }
             if (isset($request['description'])) {
                 $term->setDescription($request['description']);
+            }
+            if (isset($request['topic_id'])) {
+                $newTopic = $topicRepository->find($request['topic_id']);
+                if (!$newTopic) {
+                    return $this->respondNotFound("Topic not found");
+                }
+
+                $term->setTopic($newTopic);
             }
 
             $this->em->flush();
