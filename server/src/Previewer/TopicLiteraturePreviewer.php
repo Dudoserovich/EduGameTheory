@@ -14,7 +14,7 @@ class TopicLiteraturePreviewer
 
     public function __construct(
         TopicLiteratureRepository $topicLiteratureRepository,
-        TopicPreviewer $topicPreviewer
+        TopicPreviewer            $topicPreviewer
     )
     {
         $this->topicLiteratureRepository = $topicLiteratureRepository;
@@ -22,16 +22,14 @@ class TopicLiteraturePreviewer
     }
 
     #[ArrayShape([
-        "literature" => [
+        "id" => "int",
+        "name" => "string",
+        "description" => "string",
+        "link" => "string",
+        "topic" => [[
             "id" => "int",
-            "name" => "string",
-            "description" => "string",
-            "link" => "string",
-            "topic" => [[
-                "id" => "int",
-                "name" => "string"
-            ]]
-        ]
+            "name" => "string"
+        ]]
     ])]
     public function preview(Literature $literature): array
     {
@@ -43,14 +41,11 @@ class TopicLiteraturePreviewer
         );
 
         return [
-            "literature" =>
-            [
-                "id" => $literature->getId(),
-                "name" => $literature->getName(),
-                "description" => $literature->getDescription(),
-                "link" => $literature->getLink(),
-                "topic" => $topics
-            ]
+            "id" => $literature->getId(),
+            "name" => $literature->getName(),
+            "description" => $literature->getDescription(),
+            "link" => $literature->getLink(),
+            "topic" => $topics
         ];
     }
 
