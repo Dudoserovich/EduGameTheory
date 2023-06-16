@@ -283,18 +283,18 @@ export default function profile() {
                 </div>*/}
 
                 </div>
-                <ul className={s.boxArea}>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
-                <BoxAnimation/>
+                {/*<ul className={s.boxArea}>*/}
+                {/*    <li></li>*/}
+                {/*    <li></li>*/}
+                {/*    <li></li>*/}
+                {/*    <li></li>*/}
+                {/*    <li></li>*/}
+                {/*    <li></li>*/}
+                {/*</ul>*/}
+                {/*<BoxAnimation/>*/}
                 <div className={s.contact}>
                     <ContactPage/>
-            </div>
+                </div>
 
             </div>
         </Page>

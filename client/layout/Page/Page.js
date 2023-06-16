@@ -8,10 +8,15 @@ import { getJWT } from "../../scripts/jwtService";
 import router from "../../polyfills/router";
 import { getHeaderConfigByRole, headerConfig } from "../../scripts/headerConfig";
 import { getUserRole } from "../../scripts/rolesConfig";
+import BoxAnimation from "../../components/BoxAnimation/BoxAnimation";
+import sp from '../../styles/pages/profile.module.scss';
+import ContactPage from "../../components/IndexPage/ContactsPage";
+import {useSelector} from "react-redux";
 
 export default function Page({children, pageTitle = ''}) {
     const [ decodedToken, setDecodedToken ] = useState(null);
     const [ navConfig, setNavConfig ] = useState(headerConfig.user);
+    const user = useSelector(state => state.user.info);
 
     useEffect(() => {
         const token = getJWT()
@@ -30,6 +35,8 @@ export default function Page({children, pageTitle = ''}) {
         }
     }, []);
 
+    // console.log(user?.data?.login)
+
     return (
         <>
             <Head>
@@ -38,12 +45,21 @@ export default function Page({children, pageTitle = ''}) {
             </Head>
             <div className={s.Page}>
                 <header>
-                    <Header username={decodedToken?.username} navConfig={navConfig}/>
+                    <Header username={user?.data?.login} navConfig={navConfig}/>
                 </header>
 
                 <main>
                     {children}
                 </main>
+                <ul className={sp.boxArea}>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <BoxAnimation/>
 
                 <footer>
                     <Footer/>

@@ -124,6 +124,11 @@
   }
 }
 
+.filter {
+  min-width: 200px;
+  margin-right: 12px;
+}
+
 .catSVG{
   background: var(--dark-illumination);
   max-width: 260px !important;

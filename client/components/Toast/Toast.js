@@ -1,38 +1,50 @@
 import React, {useEffect} from 'react';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {useDispatch, useSelector} from "react-redux";
 
 const Toast = () => {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.user.info);
 
-    useEffect(() => {
+    function getEventSource() {
         let origin = window.location.protocol + '//' + window.location.host
 
         const url = new URL(`${origin}/.well-known/mercure`);
         url.searchParams.append('topic', '/news');
+        url.searchParams.append('topic', '/achievements');
 
-        const eventSource = new EventSource(url);
+        return new EventSource(url);
+    }
 
-        const fetchData = async () => {
-            eventSource.onopen = function () {
-                console.log('Connection SSE opened');
-            };
+    const fetchData = async (type = 'news') => {
+        const eventSource = getEventSource();
 
-            eventSource.addEventListener('news', event => {
-                let message = JSON.parse(event.data).message
-                // console.log(event)
-                notify(message)
-            })
+        eventSource.onopen = function () {
+            console.log('Connection SSE opened');
+        };
 
-            // eventSource.onmessage = e => console.log(e); // do something with the payload
-            // eventSource.onmessage = e => {
-            //     let message = JSON.parse(e.data).message
-            //     console.log(e)
-            //     notify(message)
-            // }
-        }
-        fetchData()
+        eventSource.addEventListener(type, event => {
+            let message = JSON.parse(event.data).message
+            // console.log(event)
+            notify(message)
+        })
 
-    }, [])
+        // eventSource.onmessage = e => console.log(e); // do something with the payload
+        // eventSource.onmessage = e => {
+        //     let message = JSON.parse(e.data).message
+        //     console.log(e)
+        //     notify(message)
+        // }
+    }
+
+    // useEffect(() => {
+    //     fetchData()
+    // }, [])
+
+    useEffect(() => {
+        fetchData(user?.data?.login)
+    }, [user.data])
 
     return (
         <ToastContainer
