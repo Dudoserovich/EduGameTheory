@@ -45,4 +45,18 @@ class UserPreviewer
             "fio" => $user->getFio(),
         ];
     }
+
+    #[ArrayShape([
+        "id" => "int",
+        "fio" => "string",
+        "avatar" => "string",
+    ])]
+    public function previewFioAndAvatar(User $user): array
+    {
+        return [
+            "id" => $user->getId(),
+            "fio" => $user->getFio(),
+            "avatar" => $this->getLink($user->getAvatar()),
+        ];
+    }
 }
