@@ -46,7 +46,8 @@ class FileUploader
 
         $originalFilename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $safeFilenameWithoutSalt = preg_replace("/(-[A-z0-9]+)+$/", "", $safeFilename);
+        $fileName = $safeFilenameWithoutSalt . '-' . uniqid() . '.' . $file->guessExtension();
 
         $newFile = null;
 

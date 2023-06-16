@@ -28,6 +28,10 @@ class UserFixtures extends BaseFixtureAbstract
      */
     public function load(ObjectManager $manager): void
     {
+        $targetDirectory = "public/uploads/avatar";
+        $files = scandir($targetDirectory);
+        $nameAvatars = array_diff($files, array('.', '..'));
+
         // Создание администратора.
         $admin = new User();
         $admin
@@ -35,7 +39,9 @@ class UserFixtures extends BaseFixtureAbstract
             ->setPassword($this->passwordHasher->hashPassword($admin, "admin"))
             ->setFio($this->faker->name())
             ->setEmail($this->faker->email())
-            ->setRoles([self::ROLE_ADMIN]);
+            ->setRoles([self::ROLE_ADMIN])
+            ->setAvatar($this->faker->randomElement($nameAvatars))
+        ;
         $manager->persist($admin);
         $this->saveReference($admin);
 
@@ -47,7 +53,9 @@ class UserFixtures extends BaseFixtureAbstract
                 ->setUsername("login$i")
                 ->setPassword($this->passwordHasher->hashPassword($user, "password$i"))
                 ->setFio($this->faker->name())
-                ->setEmail($this->faker->email());
+                ->setEmail($this->faker->email())
+                ->setAvatar($this->faker->randomElement($nameAvatars))
+            ;
             $manager->persist($user);
             $this->saveReference($user);
         }

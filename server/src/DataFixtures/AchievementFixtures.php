@@ -3,7 +3,9 @@
 namespace App\DataFixtures;
 
 use App\Entity\Achievement;
+use Attribute;
 use Doctrine\Persistence\ObjectManager;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\HttpFoundation\File\File;
 
 class AchievementFixtures extends BaseFixtureAbstract
@@ -72,7 +74,7 @@ class AchievementFixtures extends BaseFixtureAbstract
         $nameFiles = array_diff($files, array('.', '..'));
 
         foreach ($nameFiles as $nameFile) {
-            $nameFileWithoutSalt = preg_replace("/(-[A-z0-9]+)+.png$/", "", $nameFile);
+            $nameFileWithoutSalt = preg_replace("/(-[A-z0-9]+)+?\.png$/", "", $nameFile);
 
             $foundKeyByImage =
             array_search(

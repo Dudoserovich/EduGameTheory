@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Entity\TaskMark;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +40,17 @@ class TaskRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findSelfTasks(User $user)
+    {
+        return $this->createQueryBuilder('t')
+            ->select('tm')
+            ->leftJoin(TaskMark::class, 'tm', Join::WITH, 'tm.task = t.id')
+            ->where('t.owner = :user_id')
+            ->setParameter('user_id', $user->getId())
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**
