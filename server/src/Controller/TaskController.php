@@ -102,7 +102,7 @@ class TaskController extends ApiController
      *         @OA\Property(property="name", ref="#/components/schemas/TaskView/properties/name"),
      *         @OA\Property(property="description", ref="#/components/schemas/TaskView/properties/description"),
      *         @OA\Property(property="matrix", ref="#/components/schemas/TaskView/properties/matrix"),
-     *         @OA\Property(property="flag_matrix", ref="#/components/schemas/TaskView/properties/flagMatrix"),
+     *         @OA\Property(property="flag_matrix", ref="#/components/schemas/TaskView/properties/flag_matrix"),
      *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
@@ -206,7 +206,7 @@ class TaskController extends ApiController
      *         @OA\Property(property="name", ref="#/components/schemas/TaskView/properties/name"),
      *         @OA\Property(property="description", ref="#/components/schemas/TaskView/properties/description"),
      *         @OA\Property(property="matrix", ref="#/components/schemas/TaskView/properties/matrix"),
-     *         @OA\Property(property="flag_matrix", ref="#/components/schemas/TaskView/properties/flagMatrix"),
+     *         @OA\Property(property="flag_matrix", ref="#/components/schemas/TaskView/properties/flag_matrix"),
      *         @OA\Property(property="new_topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
