@@ -74,9 +74,9 @@ class AchievementFixtures extends BaseFixtureAbstract
         $nameFiles = array_diff($files, array('.', '..'));
 
         foreach ($nameFiles as $nameFile) {
-            $nameFileWithoutSalt = preg_replace("/(-[A-z0-9]+)+.png$/", "", $nameFile);
+            $nameFileWithoutSalt = preg_replace("/(-[A-z0-9]+)+?\.png$/", "", $nameFile);
 
-            echo $nameFileWithoutSalt;
+//            echo $nameFileWithoutSalt;
 
             $foundKeyByImage =
             array_search(
