@@ -3,7 +3,8 @@ table {
   height: fit-content;
   overflow-y: auto;
   border: 1px solid var(--dark-accent);
-  border-radius: 6px;
+  border-radius: 20px;
+  background: #ffffff;
 }
 
 thead {
@@ -21,5 +22,5 @@ th, td {
 }
 
 tbody tr:nth-child(even) {
-  background: var(--light-accent);
+  background: var(--active-light-color);
 }

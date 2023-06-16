@@ -51,7 +51,7 @@ class TaskView
     public ?array $matrix;
 
     /**
-     * @OA\Property(property="flagMatrix", ref="#/components/schemas/Task/properties/flagMatrix")
+     * @OA\Property(property="flag_matrix", ref="#/components/schemas/Task/properties/flagMatrix")
      * @Groups({"default", "flagMatrix"})
      */
     public ?string $flagMatrix;

@@ -2,10 +2,10 @@ import { Roles } from "./rolesConfig"
 
 export const headerConfig = {
     user: [
-        {
-            name: 'Пройти компанию',
-            href: '/company'
-        },
+        // {
+        //     name: 'Пройти компанию',
+        //     href: '/company'
+        // },
         {
             name: 'Пройти обучение',
             href: '/education'
@@ -20,10 +20,6 @@ export const headerConfig = {
                 {
                     name: 'Литература',
                     href: '/materials/literature'
-                },
-                {
-                    name: 'Методы',
-                    href: '/materials/methods'
                 }
             ],
             href: '/materials'
@@ -49,10 +45,6 @@ export const headerConfig = {
                 {
                     name: 'Литература',
                     href: '/materials/literature'
-                },
-                {
-                    name: 'Методы',
-                    href: '/materials/methods'
                 }
             ],
             href: '/materials'
@@ -74,17 +66,13 @@ export const headerConfig = {
                 {
                     name: 'Литература',
                     href: '/materials/literature'
-                },
-                {
-                    name: 'Методы',
-                    href: '/materials/methods'
                 }
             ],
             href: '/materials'
         },
         {
             name: 'Пользователи',
-            href: '/selfAttestations'
+            href: '/users'
         },
     ]
 }

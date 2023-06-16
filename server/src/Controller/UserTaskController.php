@@ -61,7 +61,7 @@ class UserTaskController extends ApiController
      * Игра по ходам. Получение изначальной информации по игре
      * @OA\Response(
      *     response=200,
-     *     description="Ход сделан"
+     *     description="HTTP_OK"
      * )
      * @OA\Response(
      *     response=403,
@@ -78,8 +78,8 @@ class UserTaskController extends ApiController
         methods: ['GET']
     )]
     public function playTaskInfo(
-        Request $request,
-        int $taskId,
+        Request           $request,
+        int               $taskId,
         TaskBrownRobinson $taskBrownRobinson
     ): JsonResponse
     {
@@ -119,7 +119,7 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Ход сделан"
+     *     description="HTTP_OK"
      * )
      * @OA\Response(
      *     response=403,
@@ -136,8 +136,8 @@ class UserTaskController extends ApiController
         methods: ['PUT']
     )]
     public function playTask(
-        Request $request,
-        int $taskId,
+        Request           $request,
+        int               $taskId,
         TaskBrownRobinson $taskBrownRobinson
     ): JsonResponse
     {
@@ -201,7 +201,7 @@ class UserTaskController extends ApiController
             // Вычисление самого максимального числа очков
             $max = null;
             foreach ($task->getMatrix() as $row) {
-                if(!$max)
+                if (!$max)
                     $max = max($row);
                 elseif ($max < max($row))
                     $max = max($row);
@@ -240,7 +240,7 @@ class UserTaskController extends ApiController
      *
      * @OA\Response(
      *     response=200,
-     *     description="Ход сделан"
+     *     description="HTTP_OK"
      * )
      * @OA\Response(
      *     response=403,
@@ -273,7 +273,7 @@ class UserTaskController extends ApiController
      * Получение короткого результата задания (платёжная матрица/матрица последствий)
      * @OA\Response(
      *     response=200,
-     *     description="Решение получено"
+     *     description="HTTP_OK"
      * )
      * @OA\Response(
      *     response=403,
@@ -321,7 +321,13 @@ class UserTaskController extends ApiController
      * Получение возможных стратегий платёжной матрицы
      * @OA\Response(
      *     response=200,
-     *     description="Решение получено"
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *          type="array",
+     *          @OA\Items(
+     *              type="string"
+     *          )
+     *      )
      * )
      * @OA\Response(
      *     response=403,
@@ -344,6 +350,42 @@ class UserTaskController extends ApiController
             array(
                 "чистые стратегии",
                 "смешанные стратегии"
+            )
+        );
+    }
+
+    /**
+     * Получение возможных типов платёжной матрицы
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *          type="array",
+     *          @OA\Items(
+     *              type="string"
+     *          )
+     *      )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Permission denied!"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Task not found"
+     * )
+     */
+    #[Route('/payoff/flagMatrix',
+        name: 'get_flag',
+        requirements: ['taskId' => '\d+'],
+        methods: ['GET']
+    )]
+    public function getPayoffFlag(): JsonResponse
+    {
+        return $this->response(
+            array(
+                "платёжная матрица",
+                "матрица последствий"
             )
         );
     }
@@ -481,7 +523,7 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Решение получено"
+     *     description="HTTP_OK"
      * )
      * @OA\Response(
      *     response=403,
