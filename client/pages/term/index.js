@@ -7,6 +7,7 @@ import {Typography} from "@material-ui/core";
 import {getTerms} from "../../store/slices/termSlice";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import {getTopics} from "../../store/slices/topicSlice";
+import {CardSkeleton} from "../../components/Skeletons/CardSkeleton";
 
 export default function term() {
     const dispatch = useDispatch();
@@ -106,7 +107,13 @@ export default function term() {
                                         </Card>
                                     );
                                 })
-                                : "Loading..."
+                                :
+                                <>
+                                    <CardSkeleton/>
+                                    <CardSkeleton/>
+                                    <CardSkeleton/>
+                                    <CardSkeleton/>
+                                </>
                         }
                     </div>
                 </div>
