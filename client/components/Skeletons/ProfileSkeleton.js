@@ -10,6 +10,14 @@ export function ProfileHeaderSkeleton({...props}) {
     );
 }
 
+export function AvatarSkeleton({...props}) {
+    return (
+        <ContentLoader viewBox="0 0 380 236">
+            <circle cx="190" cy="60" r="60" />
+        </ContentLoader>
+    );
+}
+
 export function FormSkeleton({...props}) {
     return (
         <ContentLoader {...props} viewBox="0 0 384 394" title={'Загружается'}>

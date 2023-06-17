@@ -5,21 +5,22 @@ import {Controller, useForm} from "react-hook-form";
 import Input from '../components/Input/Input';
 import {getUserAvatar, getUserInfo, updateUserInfo} from '../store/slices/userSlice';
 import {useDispatch, useSelector} from 'react-redux';
-import {FormSkeleton, ProfileHeaderSkeleton, VerticalMenuSkeleton} from '../components/Skeletons/ProfileSkeleton';
+import {
+    AvatarSkeleton,
+    FormSkeleton,
+    ProfileHeaderSkeleton,
+    VerticalMenuSkeleton
+} from '../components/Skeletons/ProfileSkeleton';
 import VerticalMenu from '../components/VerticalMenu/VerticalMenu';
 import {AiOutlineUser} from "react-icons/ai";
 import classNames from 'classnames';
 import ProfileInput from "../components/Input/ProfileInput";
 import catSvg from  "../public/svg/circleCat.svg"
 import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
 import {Grid} from "@material-ui/core";
-import BoxAnimation from "../components/BoxAnimation/BoxAnimation";
 import ContactPage from "../components/IndexPage/ContactsPage";
-import {Button} from "@mui/material";
-import {getRequest} from "../api";
-import CONFIG from "../config";
-import {solvePayoff} from "../store/slices/taskSolveSlice";
+import { styled } from '@mui/material/styles';
+import Badge from '@mui/material/Badge';
 
 function PersonalInformation({data, onChange}) {
     const {handleSubmit, control} = useForm({
@@ -133,31 +134,11 @@ export default function profile() {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.info);
     const userAvatar = useSelector(state => state.user.avatar)
-    // TODO: Решение матричной игры
-    // const taskPayoff = useSelector(state => state.task.info)
 
     useEffect(() => {
         dispatch(getUserInfo());
         dispatch(getUserAvatar());
-        // TODO: Решение матричной игры
-        // dispatch(solvePayoff(
-        //     {
-        //         strategy: "смешанные стратегии",
-        //         first_player: [
-        //             0.8,
-        //             0.19999999999999996
-        //         ],
-        //         second_player: [
-        //             0.3999999999999999,
-        //             0.6000000000000001
-        //         ],
-        //         game_price: 4.6
-        //     })
-        // )
     }, []);
-
-    // TODO: Решение матричной игры
-    // console.log(taskPayoff)
 
     function onChangeHandler() {
         dispatch(getUserInfo());
@@ -192,6 +173,35 @@ export default function profile() {
         };
     }
 
+    const StyledBadge = styled(Badge)(({ theme }) => ({
+        '& .MuiBadge-badge': {
+            backgroundColor: '#44b700',
+            color: '#44b700',
+            boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+            '&::after': {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                animation: 'ripple 1.2s infinite ease-in-out',
+                border: '1px solid currentColor',
+                content: '""',
+            },
+        },
+        '@keyframes ripple': {
+            '0%': {
+                transform: 'scale(.8)',
+                opacity: 1,
+            },
+            '100%': {
+                transform: 'scale(2.4)',
+                opacity: 0,
+            },
+        },
+    }));
+
     return (
         <Page pageTitle={'Профиль'}>
             <div className={s.backgroundStyle}>
@@ -216,19 +226,21 @@ export default function profile() {
                                     <ProfileHeaderSkeleton/>
                                     :
                                     <>
-                                        <div className={s.user__avatar}>
-                                        {user.data?.full_name ?
+                                        <StyledBadge
+                                            overlap="circular"
+                                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                            variant="dot"
+                                            className={s.user__avatar}
+                                        >
+                                        {userAvatar.isLoading ?
+                                            <AvatarSkeleton/>
+                                            :
                                             <Avatar
                                                 className={s.true__icon}
                                                 src={userAvatar?.data}
                                             />
-                                            : <AiOutlineUser className={s.fake__icon}/>
                                         }
-                                        </div>
-                                        {/* TODO: ДЛЯ НАСТИ - вот так может выглядеть ссылка для НЕ ТЕКУЩЕГО пользователя*/}
-                                        {/*<div>*/}
-                                        {/*    <img className={s.fake__icon} src={user.data?.avatar}></img>*/}
-                                        {/*</div>*/}
+                                        </StyledBadge>
                                         <div className={s.user__main_info}>
                                             <span className={s.user__fullname}>{user.data?.full_name}</span>
                                         </div>
@@ -237,61 +249,52 @@ export default function profile() {
                         </Grid>
                     </Grid>
 
-                    {/*                <div className={classNames(s.content, {[s.loading]: user.isLoading})}>
-                    {
-                        user.isLoading
-                            ?
-                            <div className={s.form}>
-                                <FormSkeleton/>
-                            </div>
-                            :
-                            <>
-                                {settingsPage === Pages.personalInfo &&
-                                    <PersonalInformation data={user.data} onChange={() => onChangeHandler()}/>}
-                                {settingsPage === Pages.security && <Security onChange={() => onChangeHandler()}/>}
-                            </>
-                    }
+                {/*    <div className={classNames(s.content, {[s.loading]: user.isLoading})}>*/}
+                {/*    {*/}
+                {/*        user.isLoading*/}
+                {/*            ?*/}
+                {/*            <div className={s.form}>*/}
+                {/*                <FormSkeleton/>*/}
+                {/*            </div>*/}
+                {/*            :*/}
+                {/*            <>*/}
+                {/*                {settingsPage === Pages.personalInfo &&*/}
+                {/*                    <PersonalInformation data={user.data} onChange={() => onChangeHandler()}/>}*/}
+                {/*                {settingsPage === Pages.security && <Security onChange={() => onChangeHandler()}/>}*/}
+                {/*            </>*/}
+                {/*    }*/}
 
-                    <div className={s.menu}>
-                        {
-                            user.isLoading
-                                ?
-                                <VerticalMenuSkeleton/>
-                                :
-                                <VerticalMenu
-                                    header={'Настройки аккаунта'}
-                                    onChange={item => setSettingsPage(item)}
-                                    selected={settingsPage}
-                                    position={'right'}>
-                                <span
-                                    className={classNames(s.item, {[s.selected]: settingsPage === Pages.personalInfo})}
-                                    onClick={() => {
-                                        setSettingsPage(Pages.personalInfo)
-                                    }}>
-                                        Личная информация
-                                </span>
-                                    <span
-                                        className={classNames(s.item, {[s.selected]: settingsPage === Pages.security})}
-                                        onClick={() => {
-                                            setSettingsPage(Pages.security)
-                                        }}>
-                                        Изменить пароль
-                                </span>
-                                </VerticalMenu>
-                        }
-                    </div>
-                </div>*/}
+                {/*    <div className={s.menu}>*/}
+                {/*        {*/}
+                {/*            user.isLoading*/}
+                {/*                ?*/}
+                {/*                <VerticalMenuSkeleton/>*/}
+                {/*                :*/}
+                {/*                <VerticalMenu*/}
+                {/*                    header={'Настройки аккаунта'}*/}
+                {/*                    onChange={item => setSettingsPage(item)}*/}
+                {/*                    selected={settingsPage}*/}
+                {/*                    position={'right'}>*/}
+                {/*                <span*/}
+                {/*                    className={classNames(s.item, {[s.selected]: settingsPage === Pages.personalInfo})}*/}
+                {/*                    onClick={() => {*/}
+                {/*                        setSettingsPage(Pages.personalInfo)*/}
+                {/*                    }}>*/}
+                {/*                        Личная информация*/}
+                {/*                </span>*/}
+                {/*                    <span*/}
+                {/*                        className={classNames(s.item, {[s.selected]: settingsPage === Pages.security})}*/}
+                {/*                        onClick={() => {*/}
+                {/*                            setSettingsPage(Pages.security)*/}
+                {/*                        }}>*/}
+                {/*                        Изменить пароль*/}
+                {/*                </span>*/}
+                {/*                </VerticalMenu>*/}
+                {/*        }*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 </div>
-                {/*<ul className={s.boxArea}>*/}
-                {/*    <li></li>*/}
-                {/*    <li></li>*/}
-                {/*    <li></li>*/}
-                {/*    <li></li>*/}
-                {/*    <li></li>*/}
-                {/*    <li></li>*/}
-                {/*</ul>*/}
-                {/*<BoxAnimation/>*/}
                 <div className={s.contact}>
                     <ContactPage/>
                 </div>
