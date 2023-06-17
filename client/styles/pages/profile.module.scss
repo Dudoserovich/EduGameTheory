@@ -207,6 +207,10 @@
         color: darkgray;
         width: fit-content;
         align-self: center;
+
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        user-select: none;
       }
 
       .user__specs, .user__teams {
