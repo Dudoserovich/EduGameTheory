@@ -6,7 +6,6 @@ import ColumnGroupingTable from "../../components/Table";
 import {Typography} from "@material-ui/core";
 import {getUsers} from "../../store/slices/generalSlice";
 import {getUserRole} from "../../scripts/rolesConfig";
-import Spinner from "../../components/Spinner/Spinner";
 
 export default function users() {
     const dispatch = useDispatch();
@@ -38,7 +37,6 @@ export default function users() {
             <div className={s.backgroundStyle}>
                 <div className={s.ctn}>
                     <div>
-                        {/*<ColumnGroupingTable/>*/}
                         {
                             users.isLoading ?
                                 "Loading..."
@@ -56,7 +54,6 @@ export default function users() {
                                     })
                                 }
                                 buttons={true}
-                                // isLoading={users.isLoading}
                             />
                         }
                     </div>
