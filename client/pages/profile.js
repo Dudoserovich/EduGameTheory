@@ -21,6 +21,11 @@ import {Grid} from "@material-ui/core";
 import ContactPage from "../components/IndexPage/ContactsPage";
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
+import {getUserRole} from "../scripts/rolesConfig";
+import {Chip} from "@mui/material";
+
+import FaceIcon from '@mui/icons-material/Face';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 
 function PersonalInformation({data, onChange}) {
     const {handleSubmit, control} = useForm({
@@ -202,6 +207,8 @@ export default function profile() {
         },
     }));
 
+    console.log(user.data?.roles)
+
     return (
         <Page pageTitle={'Профиль'}>
             <div className={s.backgroundStyle}>
@@ -243,6 +250,11 @@ export default function profile() {
                                         </StyledBadge>
                                         <div className={s.user__main_info}>
                                             <span className={s.user__fullname}>{user.data?.full_name}</span>
+                                            <Chip
+                                                className={s.user__role}
+                                                icon={<AssignmentIndIcon />}
+                                                label={user.data ? getUserRole(user.data?.roles).label : ''}
+                                            />
                                         </div>
                                     </>
                             }
