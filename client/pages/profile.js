@@ -12,7 +12,6 @@ import {
     VerticalMenuSkeleton
 } from '../components/Skeletons/ProfileSkeleton';
 import VerticalMenu from '../components/VerticalMenu/VerticalMenu';
-import {AiOutlineUser} from "react-icons/ai";
 import classNames from 'classnames';
 import ProfileInput from "../components/Input/ProfileInput";
 import catSvg from  "../public/svg/circleCat.svg"
@@ -23,8 +22,6 @@ import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import {getUserRole} from "../scripts/rolesConfig";
 import {Chip} from "@mui/material";
-
-import FaceIcon from '@mui/icons-material/Face';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 
 function PersonalInformation({data, onChange}) {
@@ -167,15 +164,6 @@ export default function profile() {
         /* eslint-enable no-bitwise */
 
         return color;
-    }
-
-    function stringAvatar(name) {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-            },
-            children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-        };
     }
 
     const StyledBadge = styled(Badge)(({ theme }) => ({
