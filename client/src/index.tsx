@@ -15,6 +15,10 @@ import Literature from "../pages/literature";
 import Users from "../pages/users";
 import Term from "../pages/term";
 import Page404 from "../pages/404";
+import CreatTask from  "../pages/tasks/creatTask";
+import Tasks from  "../pages/tasks/Tasks";
+import Task from  "../pages/tasks/Task";
+import EditTask from  "../pages/tasks/editTask";
 import Toast from "../components/Toast/Toast";
 
 const App = () => {
@@ -32,6 +36,10 @@ const App = () => {
                                 <Route path="terms" element={<Term/>}/>
                             </Route>
                             <Route path="users" element={<Users/>}/>
+                            <Route path="tasks/creatTask" element={<CreatTask/>}/>
+                            <Route path="tasks/allTasks" element={<Tasks/>}/>
+                            <Route path="tasks/task" element={<Task/>}/>
+                            <Route path="tasks/editTask" element={<EditTask/>}/>
                         </Route>
                         <Route path="*" element={<Page404 />} />
                     </Routes>

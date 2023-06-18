@@ -1,54 +1,51 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {getRequest, putRequest} from "../../api";
+import {getRequest} from "../../api";
+import {Topics} from "../../models/response/topic";
 
 
-export const getTopics = createAsyncThunk<Promise<string | { error: any }>>(
-    '/terms/getTopics',
+export const getTopicsInfo = createAsyncThunk<Promise<Topics[] | { error: any }>>(
+    '/topicsInfo/getTopicsInfo',
     async () => getRequest('/topics')
 );
 
-interface IData {
-    id: number;
-    name: string;
-}
 
-interface ITopicsSlice {
+interface TopicsSelfState {
     info: {
-        data: IData,
+        data: Topics,
         isLoading: boolean,
         error: string | null
-    }
+    },
 }
 
-const initialState: ITopicsSlice = {
+const initialState: TopicsSelfState = {
     info: {
         data: null,
         isLoading: false,
         error: null
-    }
+    },
 };
 
-export const topicSlice = createSlice({
-    name: 'topics',
+export const topicsInfoSlice = createSlice({
+    name: 'topicsInfo',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTopics.pending, (state) => {
+            .addCase(getTopicsInfo.pending, (state) => {
                 state.info = {
                     data: null,
                     isLoading: true,
                     error: null
                 }
             })
-            .addCase(getTopics.fulfilled, (state, action) => {
+            .addCase(getTopicsInfo.fulfilled, (state, action) => {
                 state.info = {
                     ...state.info,
                     ...action.payload,
                     isLoading: false
                 }
             })
-            .addCase(getTopics.rejected, (state, action) => {
+            .addCase(getTopicsInfo.rejected, (state, action) => {
                 state.info = {
                     data: null,
                     isLoading: false,
@@ -58,4 +55,4 @@ export const topicSlice = createSlice({
     }
 });
 
-export default topicSlice.reducer;
+export default topicsInfoSlice.reducer;
