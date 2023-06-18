@@ -57,12 +57,12 @@ export default function ProjectPage() {
             <button onClick={handleClickOpen}>
                 <div className={s.authSVG} dangerouslySetInnerHTML={{__html: authSvg}}/>
             </button>
-            <Dialog open={open} onClose={handleClose} aria-lablledby='form-dialog-title' fullWidth={true} >
+            <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title' fullWidth={true} >
                 <DialogTitle id='form-dialog-title' className={s.back}>
                     <Button onClick={handleClose}>
                         <div className={s.closeSVG} dangerouslySetInnerHTML={{__html: closeSvg}}/>
                     </Button>
-                    <h1 className={s.title}>Авторизация</h1>
+                    <div className={s.title}>Авторизация</div>
                 </DialogTitle>
                 <DialogContent className={s.contents}>
                     <form onSubmit={handleSubmit(onSubmit)} >
