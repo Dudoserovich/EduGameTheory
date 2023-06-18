@@ -4,7 +4,8 @@ export interface IUser1 {
 }
 
 export interface IUser extends IUser1 {
-    avatar: string,
+    avatar_name: string,
+    avatar_base64: string,
     login: string,
     email: string,
     roles: string[]

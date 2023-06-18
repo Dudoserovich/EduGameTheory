@@ -7,10 +7,6 @@ export const getUserInfo = createAsyncThunk<Promise<IUser[] | { error: any }>>(
     '/userInfo/getUserInfo',
     async () => getRequest('/users/self')
 );
-export const getSelfUserAvatar = createAsyncThunk<Promise<string | { error: any }>>(
-    '/userinfo/getUserAvatar',
-    async () => getRequest('/users/avatar/self')
-);
 
 interface IData {
     login: string;
@@ -30,21 +26,11 @@ interface IUserSelfState {
         data: IUser,
         isLoading: boolean,
         error: string | null
-    },
-    avatar: {
-        data: string | null,
-        isLoading: boolean,
-        error: string | null
     }
 }
 
 const initialState: IUserSelfState = {
     info: {
-        data: null,
-        isLoading: false,
-        error: null
-    },
-    avatar: {
         data: null,
         isLoading: false,
         error: null
@@ -79,27 +65,6 @@ export const userInfoSlice = createSlice({
                 }
             })
 
-            .addCase(getSelfUserAvatar.pending, (state) => {
-                state.avatar = {
-                    data: null,
-                    isLoading: false,
-                    error: null
-                }
-            })
-            .addCase(getSelfUserAvatar.fulfilled, (state, action) => {
-                state.avatar = {
-                    ...state.avatar,
-                    ...action.payload,
-                    isLoading: false
-                }
-            })
-            .addCase(getSelfUserAvatar.rejected, (state, action) => {
-                state.avatar = {
-                    data: null,
-                    isLoading: false,
-                    error: action.error.message
-                }
-            })
     }
 });
 
