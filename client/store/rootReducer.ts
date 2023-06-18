@@ -5,7 +5,6 @@ import userInfoSlice from "./slices/userSlice";
 import generalSlice from "./slices/generalSlice";
 import literatureSlice from "./slices/literatureSlice";
 import termSlice from "./slices/termSlice";
-import topicSlice from "./slices/topicSlice";
 import taskSlice from "./slices/taskSolveSlice";
 import tasksInfoSlice from "./slices/tasksSlice";
 import topicsInfoSlice from "./slices/topicSlice";
@@ -19,7 +18,6 @@ export const rootReducer = combineReducers({
     general: generalSlice,
     literature: literatureSlice,
     term: termSlice,
-    topic: topicSlice,
     tasks: tasksInfoSlice,
     newTask: newTaskSlice,
     topics: topicsInfoSlice

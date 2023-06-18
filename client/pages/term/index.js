@@ -6,20 +6,20 @@ import {Button, Card, CardActions, CardContent, CardMedia, Chip, TextField} from
 import {Typography} from "@material-ui/core";
 import {getTerms} from "../../store/slices/termSlice";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import {getTopics} from "../../store/slices/topicSlice";
 import {CardSkeleton} from "../../components/Skeletons/CardSkeleton";
+import {getTopicsInfo} from "../../store/slices/topicSlice";
 
 export default function term() {
     const dispatch = useDispatch();
     const terms = useSelector(state => state.term.info);
-    const topics = useSelector(state => state.topic.info);
+    const topics = useSelector(state => state.topics.info);
     const [filters, setFilters] = useState({
         topics: []
     });
 
     useEffect(() => {
         dispatch(getTerms());
-        dispatch(getTopics());
+        dispatch(getTopicsInfo());
     }, [])
 
     function onChangeHandler(options) {

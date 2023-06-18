@@ -8,21 +8,21 @@ import {Typography} from "@material-ui/core";
 // import ogs from 'open-graph-scraper';
 import {getLinkPreview, getPreviewFromContent} from "link-preview-js";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import {getTopics} from "../../store/slices/topicSlice";
+import {getTopics, getTopicsInfo} from "../../store/slices/topicSlice";
 import {LiteratureCardSkeleton} from "../../components/Skeletons/CardSkeleton";
 
 export default function literature() {
     // const ogs = require('open-graph-scraper');
     const dispatch = useDispatch();
     const literatures = useSelector(state => state.literature.info);
-    const topics = useSelector(state => state.topic.info);
+    const topics = useSelector(state => state.topics.info);
     const [filters, setFilters] = useState({
         topics: []
     });
 
     useEffect(() => {
         dispatch(getLiteratures());
-        dispatch(getTopics());
+        dispatch(getTopicsInfo());
     }, [])
 
     function onChangeHandler(options) {
