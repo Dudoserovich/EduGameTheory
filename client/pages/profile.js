@@ -199,7 +199,7 @@ export default function profile() {
             <div className={s.backgroundStyle}>
                 <div className={s.ctn}>
                     <Grid container className={s.contentName}>
-                        <Grid container xs={12} sm={12} md={8} lg={9} className={s.hello}>
+                        <Grid container item xs={12} sm={12} md={8} lg={9} className={s.hello}>
                             <Grid item xs={4} sm={4} md={4} lg={4}>
                                 <div className={s.catSVG} dangerouslySetInnerHTML={{__html: catSvg}}/>
                             </Grid>
@@ -209,7 +209,6 @@ export default function profile() {
                                     <h4 className={s.h4Text}>Мы ждем твоих новых свершений!</h4>
                                 </div>
                             </Grid>
-
                         </Grid>
                         <Grid item xs={12} sm={12} md={4} lg={3} className={s.user}>
                             {
