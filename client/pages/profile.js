@@ -228,7 +228,7 @@ export default function profile() {
                                         {/*    :*/}
                                             <Avatar
                                                 className={s.true__icon}
-                                                src={user?.data?.avatar}
+                                                src={user?.data?.avatar_base64}
                                             />
                                         {/*}*/}
                                         </StyledBadge>

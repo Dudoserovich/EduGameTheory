@@ -45,9 +45,9 @@ export default function users() {
                             <ColumnGroupingTable
                                 header={['', 'ФИО', 'Роли', 'Email']}
                                 data={
-                                    users.data.map(({full_name, login, roles, email, avatar}) => {
+                                    users.data.map(({full_name, login, roles, email, avatar_base64}) => {
                                         return {
-                                            login: getLoginWithAvatar(login, avatar),
+                                            login: getLoginWithAvatar(login, avatar_base64),
                                             full_name,
                                             role: getUserRole(roles).label,
                                             email
