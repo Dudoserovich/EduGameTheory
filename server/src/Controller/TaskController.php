@@ -254,7 +254,7 @@ class TaskController extends ApiController
                 $task->setMatrix($request['matrix']);
             }
             if (isset($request['flag_matrix'])) {
-                $task->setMatrix($request['flag_matrix']);
+                $task->setFlagMatrix($request['flag_matrix']);
             }
 
             if (isset($request['new_topic_id'])) {
