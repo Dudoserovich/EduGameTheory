@@ -139,7 +139,7 @@ export default function profile() {
 
     useEffect(() => {
         dispatch(getUserInfo());
-        dispatch(getSelfUserAvatar());
+        // dispatch(getSelfUserAvatar());
     }, []);
 
     function onChangeHandler() {
@@ -223,14 +223,14 @@ export default function profile() {
                                             variant="dot"
                                             className={s.user__avatar}
                                         >
-                                        {userAvatar.isLoading ?
-                                            <AvatarSkeleton/>
-                                            :
+                                        {/*{userAvatar.isLoading ?*/}
+                                        {/*    <AvatarSkeleton/>*/}
+                                        {/*    :*/}
                                             <Avatar
                                                 className={s.true__icon}
-                                                src={userAvatar?.data}
+                                                src={user?.data?.avatar}
                                             />
-                                        }
+                                        {/*}*/}
                                         </StyledBadge>
                                         <div className={s.user__main_info}>
                                             <span className={s.user__fullname}>{user.data?.full_name}</span>
