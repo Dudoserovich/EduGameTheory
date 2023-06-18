@@ -105,8 +105,8 @@ export default function literature() {
                                         >
                                             <CardMedia
                                                 sx={{height: 140}}
-                                                image="https://cataas.com/cat"
-                                                title="cats"
+                                                component="img"
+                                                image="https://cataas.com/cat?type=sm"
                                             />
                                             <CardContent>
                                                 <Typography gutterBottom variant="h5" component="div">

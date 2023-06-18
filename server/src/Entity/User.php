@@ -80,7 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: 'Invalid avatar',
         match: true,
     )]
-    private ?string $avatar = 'serious_cat.png';
+    private ?string $avatar = 'serious_cat.jpg';
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
