@@ -64,9 +64,11 @@ class LiteratureController extends ApiController
         TopicLiteraturePreviewer $topicLiteraturePreviewer
     ): JsonResponse
     {
+        $literatures = $this->literatureRepository->findBy([], ["name" => "ASC"]);
+
         $literaturePreviewers = array_map(
             fn(Literature $literature): array => $topicLiteraturePreviewer->preview($literature),
-            $this->literatureRepository->findBy([], ["name" => "ASC"])
+            $literatures
         );
 
         return $this->response($literaturePreviewers);
@@ -98,19 +100,42 @@ class LiteratureController extends ApiController
     #[Route(name: 'post', methods: ['POST'])]
     public function postLiterature(
         Request $request,
-        TopicRepository $topicRepository
+        TopicRepository $topicRepository,
+        TopicLiteratureRepository $topicLiteratureRepository,
     ): JsonResponse
     {
         $request = $request->request->all();
 
-//        $this->setSoftDeleteable(false);
-        $literature = $this->literatureRepository->findOneBy(['name' => $request['name']]);
-        if ($literature)
-            return $this->respondValidationError('A literature with such name has already been created');
-
         $topic = $topicRepository->find($request['topic_id']);
         if (!$topic) {
             return $this->respondNotFound("Topic not found");
+        }
+
+        $this->setSoftDeleteable($this->em, false);
+        $literature = $this->literatureRepository->findOneBy(['name' => $request['name']]);
+
+        if ($literature) {
+            if ($literature->getDeletedAt()) {
+                $literature->setDeletedAt(null);
+                $literature
+                    ->setLink($request['link']);
+
+                $topicLiterature = $topicLiteratureRepository->findOneBy(
+                    ["topic" => $topic,
+                        "literature" => $literature]
+                );
+                $topicLiterature = $topicLiterature ?? new TopicLiterature();
+                $topicLiterature
+                    ->setLiterature($literature)
+                    ->setTopic($topic);
+                $this->em->persist($topicLiterature);
+
+                $this->em->flush();
+                $this->setSoftDeleteable($this->em);
+                return $this->respondWithSuccess("Literature added successfully");
+            }
+
+            return $this->respondValidationError('A literature with such name has already been created');
         }
 
         $literature = new Literature();

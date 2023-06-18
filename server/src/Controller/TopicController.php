@@ -94,12 +94,14 @@ class TopicController extends ApiController
     {
         $request = $request->request->all();
 
-//        $this->setSoftDeleteable(false);
+        $this->setSoftDeleteable(false);
         $topic = $this->topicRepository->findOneBy(['name' => $request['name']]);
         if ($topic)
-            return $this->respondValidationError('A topic with such name has already been created');
+            if (!$topic->getDeletedAt())
+                return $this->respondValidationError('A topic with such name has already been created');
+            else $topic->setDeletedAt(null);
 
-        $topic = new Topic();
+        $topic = $topic ?? new Topic();
         try {
             $topic
                 ->setName($request['name']);

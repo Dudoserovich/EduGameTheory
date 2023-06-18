@@ -125,17 +125,19 @@ class TaskController extends ApiController
     {
         $request = $request->request->all();
 
-//        $this->setSoftDeleteable(false);
+        $this->setSoftDeleteable($this->em, false);
         $task = $this->taskRepository->findOneBy(['name' => $request['name']]);
         if ($task)
-            return $this->respondValidationError('A Task with such name has already been created');
+            if (!$task->getDeletedAt())
+                return $this->respondValidationError('A Task with such name has already been created');
+            else $task->setDeletedAt(null);
 
         $topic = $topicRepository->find($request['topic_id']);
         if (!$topic) {
             return $this->respondNotFound("Topic not found");
         }
 
-        $task = new Task();
+        $task = $task ?? new Task();
         try {
             $creatorUser = $this->getUserEntity($this->userRepository);
 

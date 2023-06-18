@@ -70,7 +70,7 @@ class UserController extends ApiController
     public function getUsers(UserPreviewer $userPreviewer): JsonResponse
     {
         $users = $this->userRepository->findNotUser($this->getUserEntity($this->userRepository)->getId());
-//        $this->setSoftDeleteable($this->em, false);
+        $this->setSoftDeleteable($this->em, false);
 
         $userPreviews = array_map(
             fn(User $user): array => $userPreviewer->preview($user),
@@ -200,7 +200,7 @@ class UserController extends ApiController
             return $this->respondNotFound("User not found");
         }
 
-//        $this->setSoftDeleteable($this->em, false);
+        $this->setSoftDeleteable($this->em, false);
 
         return $this->response($userPreviewer->preview($user));
     }
@@ -357,7 +357,7 @@ class UserController extends ApiController
     )]
     public function getSelf(UserPreviewer $userPreviewer): JsonResponse
     {
-//        $this->setSoftDeleteable($this->em, false);
+        $this->setSoftDeleteable($this->em, false);
         try {
             return $this->response($userPreviewer->preview($this->getUserEntity($this->userRepository)));
         } catch (Exception $e) {

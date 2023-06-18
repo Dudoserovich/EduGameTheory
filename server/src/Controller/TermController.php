@@ -92,17 +92,19 @@ class TermController extends ApiController
     {
         $request = $request->request->all();
 
-//        $this->setSoftDeleteable(false);
+        $this->setSoftDeleteable(false);
         $term = $this->termRepository->findOneBy(['name' => $request['name']]);
         if ($term)
-            return $this->respondValidationError('A term with such name has already been created');
+            if (!$term->getDeletedAt())
+                return $this->respondValidationError('A term with such name has already been created');
+            else $term->setDeletedAt(null);
 
         $topic = $topicRepository->find($request['topic_id']);
         if (!$topic) {
             return $this->respondNotFound("Topic not found");
         }
 
-        $term = new Term();
+        $term = $term ?? new Term();
         try {
             $term
                 ->setName($request['name'])
