@@ -1,4 +1,4 @@
-import { Roles } from "./rolesConfig"
+import {Roles} from "./rolesConfig"
 
 export const headerConfig = {
     user: [
@@ -61,8 +61,23 @@ export const headerConfig = {
 
     admin: [
         {
-            name: 'Конструктор заданий',
-            href: '/selfAttestations'
+            name: 'Задания',
+            submenus: [
+                {
+                    name: 'Задания',
+                    href: '/tasks/allTasks'
+                },
+                {
+                    name: 'Конструктор заданий',
+                    href: '/tasks/creatTask'
+                },
+                {
+                    name: 'Мои задания',
+                    href: '/tasks/myTasks'
+                },
+
+            ],
+            href: '/tasks'
         },
         {
             name: 'Дополнительные материалы',
@@ -90,11 +105,11 @@ export const headerConfig = {
 }
 
 export function getHeaderConfigByRole(role) {
-    if(role === Roles.ADMIN) {
+    if (role === Roles.ADMIN) {
         return headerConfig.admin;
     }
 
-    if(role === Roles.TEACHER) {
+    if (role === Roles.TEACHER) {
         return headerConfig.teacher;
     }
 
