@@ -45,11 +45,11 @@ class EducationTasks
     private ?Task $task;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text", nullable=true)
      * @OA\Property()
      * @Groups({"default"})
      */
-    private ?string $text;
+    private ?string $theoryText;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -85,14 +85,14 @@ class EducationTasks
         return $this;
     }
 
-    public function getText(): ?string
+    public function getTheoryText(): ?string
     {
-        return $this->text;
+        return $this->theoryText;
     }
 
-    public function setText(?string $text): self
+    public function setTheoryText(?string $theoryText): self
     {
-        $this->text = $text;
+        $this->theoryText = $theoryText;
         return $this;
     }
 

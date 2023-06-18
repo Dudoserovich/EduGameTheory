@@ -112,7 +112,7 @@ export default function literature() {
                                                 <Typography gutterBottom variant="h5" component="div">
                                                     {literature.name}
                                                 </Typography>
-                                                <Typography variant="body2" color="secondary">
+                                                <Typography variant="body2" style={{color: "dimgray"}}>
                                                     {literature.description}
                                                 </Typography>
                                                 {literature?.topic?.map(topic => {

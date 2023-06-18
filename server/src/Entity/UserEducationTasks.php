@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\EducationRepository;
+use App\Repository\UserEducationTasksRepository;
 use Doctrine\DBAL\Types\Types;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,11 +14,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Entity(repositoryClass=EducationRepository::class)
- * @UniqueEntity(fields={"name"}, message="A education with this name already exists")
+ * @ORM\Entity(repositoryClass=UserEducationTasksRepository::class)
  * @Gedmo\SoftDeleteable
  */
-class Education
+class UserEducationTasks
 {
     /**
      * @ORM\Id
@@ -30,33 +29,34 @@ class Education
     private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @OA\Property()
-     * @Groups({"default"})
-     */
-    private string $name;
-
-    /**
-     * @ORM\Column(type="text", nullable=false)
-     * @OA\Property()
-     * @Groups({"default"})
-     */
-    private string $description;
-
-    /**
-     * @ORM\Column(type="text", nullable=false)
-     * @OA\Property()
-     * @Groups({"default"})
-     */
-    private string $conclusion;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Topic::class)
+     * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
-     * @OA\Property(ref=@Model(type=Topic::class))
+     * @OA\Property(ref=@Model(type=User::class))
      * @Groups({"default"})
      */
-    private ?Topic $topic;
+    private ?User $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EducationTasks::class)
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
+     * @OA\Property(ref=@Model(type=EducationTasks::class))
+     * @Groups({"default"})
+     */
+    private ?EducationTasks $eduTasks;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private bool $success = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private bool $isCurrentBlock = false;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -70,49 +70,47 @@ class Education
         return $this->id;
     }
 
-    public function getName(): string
+    public function getUser(): ?User
     {
-        return $this->name;
+        return $this->user;
     }
 
-    public function setName(string $name): self
+    public function setUser(?User $user): self
     {
-        $this->name = $name;
-
+        $this->user = $user;
         return $this;
     }
 
-    public function getDescription(): string
+    public function getEduTasks(): ?EducationTasks
     {
-        return $this->description;
+        return $this->eduTasks;
     }
 
-    public function setDescription(string $description): self
+    public function setEduTasks(?EducationTasks $eduTasks): self
     {
-        $this->description = $description;
+        $this->eduTasks = $eduTasks;
         return $this;
     }
 
-    public function getConclusion(): string
+    public function getSuccess(): bool
     {
-        return $this->conclusion;
+        return $this->success;
     }
 
-    public function setConclusion(string $conclusion): self
+    public function setSuccess(bool $success): self
     {
-        $this->conclusion = $conclusion;
+        $this->success = $success;
         return $this;
     }
 
-    public function getTopic(): ?Topic
+    public function getIsCurrentBlock(): bool
     {
-        return $this->topic;
+        return $this->isCurrentBlock;
     }
 
-    public function setTopic(?Topic $topic): self
+    public function setCurrentBlock(bool $isCurrentBlock): self
     {
-        $this->topic = $topic;
-
+        $this->isCurrentBlock = $isCurrentBlock;
         return $this;
     }
 

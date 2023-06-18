@@ -95,7 +95,7 @@ export default function term() {
                                                 <Typography gutterBottom variant="h5" component="div">
                                                     {term.name}
                                                 </Typography>
-                                                <Typography variant="body2" color="secondary">
+                                                <Typography variant="body2"  style={{color: "dimgray"}}>
                                                     {term.description}
                                                 </Typography>
                                                 <Chip
