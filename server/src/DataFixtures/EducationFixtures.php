@@ -29,17 +29,17 @@ class EducationFixtures extends BaseFixtureAbstract implements DependentFixtureI
             $this->saveReference($education);
 
             // EduTasks
-            $countTasks = $this->faker->numberBetween(3, count($tasks));
-            for ($j = 0; $j < $countTasks; $j++) {
-                $educationTasks = new EducationTasks();
-                $educationTasks
-                    ->setTheoryText($this->faker->paragraph(2))
-                    ->setTask($this->faker->unique()->randomElement($tasks))
-                    ->setEdu($education);
-
-                $manager->persist($education);
-                $this->saveReference($education);
-            }
+//            $countTasks = $this->faker->numberBetween(3, count($tasks));
+//            for ($j = 0; $j < $countTasks; $j++) {
+//                $educationTasks = new EducationTasks();
+//                $educationTasks
+//                    ->setTheoryText($this->faker->paragraph(2))
+//                    ->setTask($this->faker->unique()->randomElement($tasks))
+//                    ->setEdu($education);
+//
+//                $manager->persist($education);
+//                $this->saveReference($education);
+//            }
         }
 
         $manager->flush();
