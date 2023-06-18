@@ -340,11 +340,9 @@ class UserTaskController extends ApiController
      */
     #[Route('/payoff/strategy',
         name: 'get_all_strategy',
-        requirements: ['taskId' => '\d+'],
         methods: ['GET']
     )]
-    public function getPayoffStrategy(Request $request,
-                                      int     $taskId): JsonResponse
+    public function getPayoffStrategy(): JsonResponse
     {
         return $this->response(
             array(
@@ -377,7 +375,6 @@ class UserTaskController extends ApiController
      */
     #[Route('/payoff/flagMatrix',
         name: 'get_flag',
-        requirements: ['taskId' => '\d+'],
         methods: ['GET']
     )]
     public function getPayoffFlag(): JsonResponse
