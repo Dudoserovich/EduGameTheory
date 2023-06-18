@@ -28,8 +28,8 @@ class EducationTasksView
     public ?Task $task;
 
     /**
-     * @OA\Property(property="text", ref="#/components/schemas/EducationTasks/properties/text")
-     * @Groups({"default", "text"})
+     * @OA\Property(property="theory_text", ref="#/components/schemas/EducationTasks/properties/theoryText")
+     * @Groups({"default", "theory_text"})
      */
     public ?string $text;
 }
