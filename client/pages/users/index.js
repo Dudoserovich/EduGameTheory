@@ -6,6 +6,8 @@ import ColumnGroupingTable from "../../components/Table";
 import {Typography} from "@material-ui/core";
 import {getUsers} from "../../store/slices/generalSlice";
 import {getUserRole} from "../../scripts/rolesConfig";
+import {Box} from "@mui/material";
+import {AvatarSkeleton} from "../../components/Skeletons/ProfileSkeleton";
 
 export default function users() {
     const dispatch = useDispatch();
@@ -26,8 +28,9 @@ export default function users() {
                 <img
                     style={{width: "50px", height: "50px", borderRadius: "50%", minWidth: "fit-content"}}
                     src={avatar}
-                ></img>
-                <Typography variant="body2" color="secondary">{login}</Typography>
+                    loading="lazy"
+                />
+                <Typography variant="body2" style={{color: "dimgray"}}>{login}</Typography>
             </div>
         )
     }

@@ -7,7 +7,7 @@ export const getUserInfo = createAsyncThunk<Promise<IUser[] | { error: any }>>(
     '/userInfo/getUserInfo',
     async () => getRequest('/users/self')
 );
-export const getUserAvatar = createAsyncThunk<Promise<string | { error: any }>>(
+export const getSelfUserAvatar = createAsyncThunk<Promise<string | { error: any }>>(
     '/userinfo/getUserAvatar',
     async () => getRequest('/users/avatar/self')
 );
@@ -79,21 +79,21 @@ export const userInfoSlice = createSlice({
                 }
             })
 
-            .addCase(getUserAvatar.pending, (state) => {
+            .addCase(getSelfUserAvatar.pending, (state) => {
                 state.avatar = {
                     data: null,
                     isLoading: false,
                     error: null
                 }
             })
-            .addCase(getUserAvatar.fulfilled, (state, action) => {
+            .addCase(getSelfUserAvatar.fulfilled, (state, action) => {
                 state.avatar = {
                     ...state.avatar,
                     ...action.payload,
                     isLoading: false
                 }
             })
-            .addCase(getUserAvatar.rejected, (state, action) => {
+            .addCase(getSelfUserAvatar.rejected, (state, action) => {
                 state.avatar = {
                     data: null,
                     isLoading: false,
