@@ -55,5 +55,5 @@ class UserView
      * @Groups({"default", "avatar_name"})
      */
     #[Property(example: "serious_cat.jpg")]
-    public string $avatar;
+    public string $avatarName;
 }

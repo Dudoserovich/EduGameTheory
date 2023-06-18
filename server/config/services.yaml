@@ -88,3 +88,7 @@ services:
     App\Controller\UserController:
         arguments:
             $avatarDirectory: '%kernel.project_dir%/public/uploads/avatar'
+
+    App\Previewer\UserPreviewer:
+        arguments:
+            $avatarDirectory: '%kernel.project_dir%/public/uploads/avatar'

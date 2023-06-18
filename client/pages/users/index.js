@@ -6,8 +6,8 @@ import ColumnGroupingTable from "../../components/Table";
 import {Typography} from "@material-ui/core";
 import {getUsers} from "../../store/slices/generalSlice";
 import {getUserRole} from "../../scripts/rolesConfig";
-import {Box} from "@mui/material";
-import {AvatarSkeleton} from "../../components/Skeletons/ProfileSkeleton";
+import Avatar from "@mui/material/Avatar";
+import MuiCircularProgress from "../../components/Spinner/MuiCircularProgress";
 
 export default function users() {
     const dispatch = useDispatch();
@@ -25,10 +25,8 @@ export default function users() {
                 justifyContent: "center",
                 flexDirection: "column"
             }}>
-                <img
-                    style={{width: "50px", height: "50px", borderRadius: "50%", minWidth: "fit-content"}}
+                <Avatar
                     src={avatar}
-                    loading="lazy"
                 />
                 <Typography variant="body2" style={{color: "dimgray"}}>{login}</Typography>
             </div>
@@ -42,7 +40,7 @@ export default function users() {
                     <div>
                         {
                             users.isLoading ?
-                                "Loading..."
+                                <MuiCircularProgress/>
                                 :
                             <ColumnGroupingTable
                                 header={['', 'ФИО', 'Роли', 'Email']}

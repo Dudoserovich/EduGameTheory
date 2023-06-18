@@ -71,12 +71,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email;
 
     /**
-     * @ORM\Column(type="string", length=255, options={"default" : "serious_cat.png"})
+     * @ORM\Column(type="string", length=255, options={"default" : "serious_cat.jpg"})
      * @OA\Property()
      * @Groups({"default"})
      */
     #[Assert\Regex(
-        pattern: "/[A-z]+\.png$/",
+        pattern: "/[A-z]+\.(png|jpg)$/",
         message: 'Invalid avatar',
         match: true,
     )]

@@ -85,18 +85,12 @@ class UserController extends ApiController
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
-     *         example={"login": "pupil",
-     *                  "password": "pupil123",
-     *                  "email": "pupil@mail.ru",
-     *                  "fio": "Иваненко Иван Иванович",
-     *                  "roles": "ROLE_USER",
-     *                  "avatar": "serious_cat.png"},
-     *         @OA\Property(property="login", ref="#/components/schemas/User/properties/login"),
+     *         @OA\Property(property="login", ref="#/components/schemas/UserView/properties/login"),
      *         @OA\Property(property="password", ref="#/components/schemas/User/properties/password"),
-     *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/User/properties/email"),
-     *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/User/properties/fio"),
+     *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/UserView/properties/email"),
+     *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/UserView/properties/fio"),
      *         @OA\Property(property="roles", nullable=true, ref="#/components/schemas/UserView/properties/roles"),
-     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/UserView/properties/avatar"),
+     *         @OA\Property(property="avatar_name", nullable=true, ref="#/components/schemas/UserView/properties/avatarName"),
      *     )
      * )
      * @OA\Response(
@@ -147,14 +141,14 @@ class UserController extends ApiController
             if (isset($request['email'])) {
                 $user->setEmail($request['email']);
             }
-            if (isset($request['avatar'])) {
+            if (isset($request['avatar_name'])) {
                 $files = scandir($this->avatarDirectory);
                 $files = array_diff($files, array('.', '..'));
 
-                if (!in_array($request['avatar'], $files))
+                if (!in_array($request['avatar_name'], $files))
                     return $this->respondNotFound("Avatar not found");
 
-                $user->setAvatar($request['avatar']);
+                $user->setAvatar($request['avatar_name']);
             }
 
             $validator->validate($user);
@@ -170,8 +164,8 @@ class UserController extends ApiController
             $this->em->flush();
 
             return $this->respondWithSuccess("User added successfully");
-        } catch (Exception) {
-            return $this->respondValidationError();
+        } catch (Exception $e) {
+            return $this->respondValidationError($e->getMessage());
         }
     }
 
@@ -217,18 +211,12 @@ class UserController extends ApiController
      *     required=true,
      *     description="Получить существующие названия аватаров с бэка можно по запросу: `/api/uploads/avatar/names`",
      *     @OA\JsonContent(
-     *         example={"login": "pupil",
-     *                  "password": "pupil123",
-     *                  "email": "pupil@mail.ru",
-     *                  "fio": "Иваненко Иван Иванович",
-     *                  "roles": "ROLE_USER",
-     *                  "avatar": "serious_cat.png"},
      *         @OA\Property(property="login", nullable=true, ref="#/components/schemas/UserView/properties/login"),
      *         @OA\Property(property="password", nullable=true, ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/UserView/properties/fio"),
      *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/UserView/properties/email"),
      *         @OA\Property(property="roles", nullable=true, ref="#/components/schemas/UserView/properties/roles"),
-     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/UserView/properties/avatar")
+     *         @OA\Property(property="avatar_name", nullable=true, ref="#/components/schemas/UserView/properties/avatarName")
      *     )
      * )
      * @OA\Response(
@@ -290,14 +278,14 @@ class UserController extends ApiController
             if (isset($request['email'])) {
                 $user->setEmail($request['email']);
             }
-            if (isset($request['avatar'])) {
+            if (isset($request['avatar_name'])) {
                 $files = scandir($this->avatarDirectory);
                 $files = array_diff($files, array('.', '..'));
 
-                if (!in_array($request['avatar'], $files))
+                if (!in_array($request['avatar_name'], $files))
                     return $this->respondNotFound("Avatar not found");
 
-                $user->setAvatar($request['avatar']);
+                $user->setAvatar($request['avatar_name']);
             }
 
             $validator->validate($user);
