@@ -30,11 +30,25 @@ class Education
     private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=32, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @OA\Property()
      * @Groups({"default"})
      */
     private string $name;
+
+    /**
+     * @ORM\Column(type="text", nullable=false)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private string $description;
+
+    /**
+     * @ORM\Column(type="text", nullable=false)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private string $conclusion;
 
     /**
      * @ORM\ManyToOne(targetEntity=Topic::class)
@@ -65,6 +79,28 @@ class Education
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getConclusion(): string
+    {
+        return $this->conclusion;
+    }
+
+    public function setConclusion(string $conclusion): self
+    {
+        $this->conclusion = $conclusion;
         return $this;
     }
 
