@@ -3,15 +3,22 @@
 namespace App\Previewer;
 
 use App\Entity\User;
+use App\Service\FileUploader;
 use JetBrains\PhpStorm\ArrayShape;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\File\File;
 
 class UserPreviewer
 {
-    private function getLink(string $pathImage): string
+    private string $avatarDirectory;
+    private FileUploader $fileUploader;
+
+    public function __construct(
+        string $avatarDirectory,
+        FileUploader $fileUploader
+    )
     {
-        return 'http://localhost/api/uploads/avatar/' . $pathImage;
+        $this->avatarDirectory = $avatarDirectory;
+        $this->fileUploader = $fileUploader;
     }
 
     #[ArrayShape([
@@ -20,17 +27,24 @@ class UserPreviewer
         "login" => "string",
         "roles" => "string[]",
         "email" => "string",
-        "avatar" => "string",
+        "avatar_name" => "string",
+        "avatar_base64" => "string"
     ])]
     public function preview(User $user): array
     {
+        $avatar = $this->fileUploader->getImageBase64(
+            $this->avatarDirectory,
+            $user->getAvatar()
+        );
+
         return [
                 "id" => $user->getId(),
                 "full_name" => $user->getFio(),
                 "login" => $user->getUsername(),
                 "roles" => $user->getRoles(),
                 "email" => $user->getEmail(),
-                "avatar" => $this->getLink($user->getAvatar())
+                "avatar_name" => $user->getAvatar(),
+                "avatar_base64" => $avatar
             ];
     }
 
@@ -49,14 +63,21 @@ class UserPreviewer
     #[ArrayShape([
         "id" => "int",
         "fio" => "string",
-        "avatar" => "string",
+        "avatar_name" => "string",
+        "avatar_base64" => "string",
     ])]
     public function previewFioAndAvatar(User $user): array
     {
+        $avatar = $this->fileUploader->getImageBase64(
+            $this->avatarDirectory,
+            $user->getAvatar()
+        );
+
         return [
             "id" => $user->getId(),
             "fio" => $user->getFio(),
-            "avatar" => $this->getLink($user->getAvatar()),
+            "avatar_name" => $avatar,
+            "avatar_base64" => $avatar
         ];
     }
 }

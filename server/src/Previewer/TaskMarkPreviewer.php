@@ -42,7 +42,8 @@ class TaskMarkPreviewer
         "users" => [[
             "id" => "int",
             "full_name" => "string",
-            "avatar" => "string",
+            "avatar_name" => "string",
+            "avatar_base64" => "string",
             "rating" => "int",
             "count_tries" => "int",
             "updated_at" => "datetime"
@@ -73,7 +74,8 @@ class TaskMarkPreviewer
             "login" => "string",
             "roles" => "string[]",
             "email" => "string",
-            "avatar" => "string",
+            "avatar_name" => "string",
+            "avatar_base64" => "string"
         ],
         "rating" => "int",
         "count_tries" => "int",

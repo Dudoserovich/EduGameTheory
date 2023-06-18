@@ -64,6 +64,29 @@ class FileUploader
     }
 
     /**
+     * Получение картинки в формате base64
+     * @param string $dir
+     * @param string $name
+     * @return string
+     */
+    public function getImageBase64(string $dir, string $name): string
+    {
+        $files = scandir($dir);
+        $files = array_diff($files, array('.', '..'));
+
+        $imageSrc = null;
+        if (in_array($name, $files)) {
+            $file = new File($dir . "/$name");
+
+            $imageSize = getimagesize($file);
+            $imageData = base64_encode(file_get_contents($file));
+            $imageSrc = "data:{$imageSize['mime']};base64,{$imageData}";
+        }
+
+        return $imageSrc;
+    }
+
+    /**
      * Получение файла из директории
      *
      * @param string $targetDirectory Путь к директории для получения

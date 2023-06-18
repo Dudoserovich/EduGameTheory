@@ -44,9 +44,16 @@ class UserView
     public array $roles;
 
     /**
-     * @OA\Property(property="avatar", ref="#/components/schemas/User/properties/avatar")
-     * @Groups({"default", "avatar"})
+     * @OA\Property(property="avatar_base64")
+     * @Groups({"default", "avatar_base64"})
      */
-    #[Property(example: "serious_cat.png")]
+    #[Property(example: "data:image/jpeg;base64...")]
+    public string $avatarBase64;
+
+    /**
+     * @OA\Property(property="avatar_name", ref="#/components/schemas/User/properties/avatar")
+     * @Groups({"default", "avatar_name"})
+     */
+    #[Property(example: "serious_cat.jpg")]
     public string $avatar;
 }

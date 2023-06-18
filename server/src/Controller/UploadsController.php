@@ -46,27 +46,32 @@ class UploadsController extends ApiController
     ]
     public function getImagesByEntityName(
         string $entityName,
-        FileUploader $fileUploader): BinaryFileResponse|JsonResponse
+        FileUploader $fileUploader
+    ): BinaryFileResponse|JsonResponse
     {
         $parentDir = $this->getParameter('upload.directory');
         $childrenDir = $entityName;
+
+        if (!is_dir($parentDir . $childrenDir))
+            return $this->respondNotFound("Not found this entity");
+
         $files = scandir($parentDir . $childrenDir);
         $nameFiles = array_diff($files, array('.', '..'));
 
-        if (!is_dir($parentDir . $childrenDir))
-            return $this->respondNotFound("No entity");
-        elseif (!$nameFiles)
+        if (!$nameFiles)
             return $this->respondNotFound("No images");
         else return $this->response(
             array_values(
                 array_map(function($file) use ($entityName, $fileUploader) {
-                    $realImage = $fileUploader->load($entityName, $file);
+                    try {
+                        $realImage = $fileUploader->load($entityName, $file);
+                    } catch (Exception $e) {
+                        return $this->respondValidationError("Failed load files");
+                    }
 
                     $imageSize = getimagesize($realImage);
                     $imageData = base64_encode(file_get_contents($realImage));
-                    $imageSrc = "data:{$imageSize['mime']};base64,{$imageData}";
-
-                    return $imageSrc;
+                    return "data:{$imageSize['mime']};base64,{$imageData}";
                 }, $nameFiles)
             )
         );
@@ -101,18 +106,20 @@ class UploadsController extends ApiController
         methods: ['GET'])
     ]
     public function getNameImagesByEntityName(
-        string $entityName,
-        FileUploader $fileUploader): BinaryFileResponse|JsonResponse
+        string $entityName
+    ): BinaryFileResponse|JsonResponse
     {
         $parentDir = $this->getParameter('upload.directory');
         $childrenDir = $entityName;
+
+        if (!is_dir($parentDir . $childrenDir))
+            return $this->respondNotFound("Not found this entity");
+
         $files = scandir($parentDir . $childrenDir);
         $nameFiles = array_diff($files, array('.', '..'));
 
-        if (!is_dir($parentDir . $childrenDir))
-            return $this->respondNotFound("No entity");
-        elseif (!$nameFiles)
-            return $this->respondNotFound("No images");
+        if (!$nameFiles)
+            return $this->respondNotFound("Not found images");
         else return $this->response(array_values($nameFiles));
 
     }
@@ -145,7 +152,8 @@ class UploadsController extends ApiController
     public function getImage(
         string $entityName,
         string $imageName,
-        FileUploader $fileUploader): BinaryFileResponse|JsonResponse
+        FileUploader $fileUploader
+    ): BinaryFileResponse|JsonResponse
     {
         try {
             $realImage = $fileUploader->load($entityName, $imageName);
@@ -153,11 +161,6 @@ class UploadsController extends ApiController
             return $this->respondValidationError("This image or entity not found!");
         }
 
-//        $imageSize = getimagesize($realImage);
-//        $imageData = base64_encode(file_get_contents($realImage));
-//        $imageSrc = "data:{$imageSize['mime']};base64,{$imageData}";
-//
-//        return $this->response($imageSrc);
         return new BinaryFileResponse($realImage);
     }
 

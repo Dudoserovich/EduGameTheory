@@ -52,52 +52,7 @@ class UserController extends ApiController
     }
 
     /**
-     * Get self avatar
-     * @OA\Response(
-     *     response=200,
-     *     description="HTTP_OK",
-     *     @OA\MediaType(
-     *          mediaType="images/png",
-     *          @OA\Schema(ref="#/components/schemas/AchievementView/properties/imageFile")
-     *     )
-     * )
-     * @OA\Response(
-     *     response=403,
-     *     description="Permission denied!"
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Avatar not found"
-     * )
-     */
-    #[Route('/avatar/self',
-        name: 'get_self_avatar',
-        methods: ['GET']
-    )]
-    public function getSelfAvatar(): BinaryFileResponse|JsonResponse
-    {
-        $user = $this->getUserEntity($this->userRepository);
-        $selfAvatar = $user->getAvatar();
-
-        $files = scandir($this->avatarDirectory);
-        $files = array_diff($files, array('.', '..'));
-
-        if (in_array($selfAvatar, $files)) {
-            $file = new File($this->avatarDirectory . "/$selfAvatar");
-
-            $imageSize = getimagesize($file);
-            $imageData = base64_encode(file_get_contents($file));
-            $imageSrc = "data:{$imageSize['mime']};base64,{$imageData}";
-
-            return $this->response($imageSrc);
-        } else {
-            return $this->respondNotFound("Avatar not found");
-        }
-
-    }
-
-    /**
-     * Get all users except the authorized user
+     * Получение всех существующих пользователей
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -126,7 +81,7 @@ class UserController extends ApiController
     }
 
     /**
-     * Add new user
+     * Добавление нового пользователя
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -221,7 +176,7 @@ class UserController extends ApiController
     }
 
     /**
-     * User object
+     * Получение пользователя по id
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -257,10 +212,17 @@ class UserController extends ApiController
     }
 
     /**
-     * Change fields for user
+     * Изменение полей пользователя
      * @OA\RequestBody (
      *     required=true,
+     *     description="Получить существующие названия аватаров с бэка можно по запросу: `/api/uploads/avatar/names`",
      *     @OA\JsonContent(
+     *         example={"login": "pupil",
+     *                  "password": "pupil123",
+     *                  "email": "pupil@mail.ru",
+     *                  "fio": "Иваненко Иван Иванович",
+     *                  "roles": "ROLE_USER",
+     *                  "avatar": "serious_cat.png"},
      *         @OA\Property(property="login", nullable=true, ref="#/components/schemas/UserView/properties/login"),
      *         @OA\Property(property="password", nullable=true, ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/UserView/properties/fio"),
@@ -353,7 +315,7 @@ class UserController extends ApiController
     }
 
     /**
-     * Delete user
+     * Удаление пользователя
      * @OA\Response(
      *     response=200,
      *     description="User deleted successgully"
@@ -386,7 +348,7 @@ class UserController extends ApiController
     }
 
     /**
-     * Get info about user
+     * Получение текущего пользователя
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -416,7 +378,7 @@ class UserController extends ApiController
     }
 
     /**
-     * Change fields for user
+     * Изменение полей текущего пользователя
      * @OA\RequestBody (
      *     required = true,
      *     @OA\JsonContent(
