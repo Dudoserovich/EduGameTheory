@@ -145,7 +145,6 @@ export default function profile() {
     function onChangeHandler() {
         dispatch(getUserInfo());
     }
-
     function stringToColor(string) {
         let hash = 0;
         let i;
@@ -194,8 +193,6 @@ export default function profile() {
             },
         },
     }));
-
-    console.log(user.data?.roles)
 
     return (
         <Page pageTitle={'Профиль'}>
