@@ -1,24 +1,35 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {getRequest} from "../../api";
-import {Topics} from "../../models/response/topic";
 
 
-export const getTopicsInfo = createAsyncThunk<Promise<IData[] | { error: any }>>(
-    '/topicsInfo/getTopicsInfo',
-    async () => getRequest('/topics')
+export const getAchievements = createAsyncThunk<Promise<IData[] | { error: any }>>(
+    '/achivInfo/getAchievements',
+    async () => getRequest('/achievements/users/self/completed')
 );
-
 interface IData {
+    id: number;
+    achievement: {
+        id: number;
+        name: string;
+        description: string;
+        image_href: string;
+    };
+    progress: {
+        current_score: number;
+        need_score: number;
+    };
+    achievement_date: string;
+
 }
-interface TopicsSelfState {
+interface TasksSelfState {
     info: {
-        data: IData,
+        data: IData[],
         isLoading: boolean,
         error: string | null
     },
 }
 
-const initialState: TopicsSelfState = {
+const initialState: TasksSelfState = {
     info: {
         data: null,
         isLoading: false,
@@ -26,27 +37,27 @@ const initialState: TopicsSelfState = {
     },
 };
 
-export const topicsInfoSlice = createSlice({
-    name: 'topicsInfo',
+export const getAchievementsSlice = createSlice({
+    name: 'achivInfo',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTopicsInfo.pending, (state) => {
+            .addCase(getAchievements.pending, (state) => {
                 state.info = {
                     data: null,
                     isLoading: true,
                     error: null
                 }
             })
-            .addCase(getTopicsInfo.fulfilled, (state, action) => {
+            .addCase(getAchievements.fulfilled, (state, action) => {
                 state.info = {
                     ...state.info,
                     ...action.payload,
                     isLoading: false
                 }
             })
-            .addCase(getTopicsInfo.rejected, (state, action) => {
+            .addCase(getAchievements.rejected, (state, action) => {
                 state.info = {
                     data: null,
                     isLoading: false,
@@ -56,4 +67,4 @@ export const topicsInfoSlice = createSlice({
     }
 });
 
-export default topicsInfoSlice.reducer;
+export default getAchievementsSlice.reducer;

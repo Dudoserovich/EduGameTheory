@@ -1,33 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import s from '../../styles/tasks/tasks.module.scss';
 import Page from "../../layout/Page/Page";
-import BoxAnimation from "../../components/BoxAnimation/BoxAnimation";
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from "@material-ui/core";
 import down from '../../public/svg/down.svg'
 import up from '../../public/svg/up.svg'
 import edit from '../../public/svg/edit.svg'
 import delet from '../../public/svg/delete1.svg'
-import {getTasksInfo} from "../../store/slices/tasksSlice";
-import {getUserInfo} from "../../store/slices/userSlice";
 import {useNavigate} from 'react-router-dom';
 import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
 import closeSvg from "../../public/svg/close.svg";
-import {Controller} from "react-hook-form";
-import Input from "../../components/Input/Input";
-import Spinner from "../../components/Spinner/Spinner";
+import {getTasksTeacherInfo} from "../../store/slices/teacherTasksSlice";
 
 
-export default function tasks() {
+export default function myTasks() {
 
-    const tasks = useSelector(state => state.tasks.info);
-    const user = useSelector(state => state.user.info);
+    const tasks = useSelector(state => state.tasksTeacher.info);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getTasksInfo());
-        dispatch(getUserInfo());
+        dispatch(getTasksTeacherInfo());
     }, []);
 
     const [filters, setFilters] = useState({
@@ -56,7 +49,7 @@ export default function tasks() {
     const navigate = useNavigate();
 
     function MyTask(props) {
-        const [open, setOpen] = React.useState( false);
+        const [open, setOpen] = React.useState(false);
 
         const handleClickOpen = () => {
             setOpen(true);
@@ -89,9 +82,10 @@ export default function tasks() {
         return (
             <>
                 <button onClick={
-                    (task.flag_matrix === 'платёжная матрица')?
-                    handleClickOpen
-                : handleClickTask}>Начать</button>
+                    (task.flag_matrix === 'платёжная матрица') ?
+                        handleClickOpen
+                        : handleClickTask}>Начать
+                </button>
                 <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title' fullWidth={true}>
                     <DialogTitle id='form-dialog-title' className={s.back}>
                         <Button onClick={handleClose}>
@@ -139,33 +133,22 @@ export default function tasks() {
                     </Grid>
                     <Grid item xs={12} sm={4} md={3} lg={3} className={s.fio}>
                         Создатель<br/>
-                        {(task.owner != null) ?
-                            task.owner.fio
-                            : "Задание кота"}
+                        {task.owner.fio}
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} lg={2} className={s.topic}>
                         Тип<br/>
                         {task.topic.name}
                     </Grid>
-                    {(task.owner != null && user.data?.full_name) ?
-                        (task.owner.id === user.data?.id) ?
-                            <Grid container item xs={4} sm={1} md={1} lg={1}>
-                                <Grid item xs={6} sm={6} md={6} lg={6}>
-                                    <GoEditTask task={task} navigate={navigate}/>
-                                </Grid>
-                                <Grid item xs={6} sm={6} md={6} lg={6}>
-                                    <div className={s.more}
-                                         onClick={() => setShowDetails(!showDetails)}
-                                         dangerouslySetInnerHTML={{__html: delet}}/>
-                                </Grid>
-                            </Grid>
-                            : <Grid item xs={4} sm={1} md={1} lg={1}>
-                                <div></div>
-                            </Grid>
-                        : <Grid item xs={4} sm={1} md={1} lg={1}>
-                            <div></div>
+                    <Grid container item xs={4} sm={1} md={1} lg={1}>
+                        <Grid item xs={6} sm={6} md={6} lg={6}>
+                            <GoEditTask task={task} navigate={navigate}/>
                         </Grid>
-                    }
+                        <Grid item xs={6} sm={6} md={6} lg={6}>
+                            <div className={s.more}
+                                 onClick={() => setShowDetails(!showDetails)}
+                                 dangerouslySetInnerHTML={{__html: delet}}/>
+                        </Grid>
+                    </Grid>
                     <Grid container spacing={0} xs={8} sm={2} md={2} lg={2} className={s.buttons}>
                         <Grid item xs={3} sm={3} md={3} lg={3}>
                             {showDetails ?

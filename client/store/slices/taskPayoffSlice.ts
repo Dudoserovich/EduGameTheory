@@ -1,16 +1,18 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {getRequest} from "../../api";
-import {Topics} from "../../models/response/topic";
+import { putRequest} from "../../api";
 
 
-export const getTopicsInfo = createAsyncThunk<Promise<IData[] | { error: any }>>(
-    '/topicsInfo/getTopicsInfo',
-    async () => getRequest('/topics')
+export const TaskPayoff = createAsyncThunk<Promise<{ code: number } | { error: any }>,{id, ITaskPayoff} >(
+    '/tasksInfo/TaskPayoff',
+    async (data) => putRequest(`/tasks/${data.id}/solve/payoff `, data.ITaskPayoff)
 );
 
+
 interface IData {
+    success: boolean;
+    message: string;
 }
-interface TopicsSelfState {
+interface TasksSelfState {
     info: {
         data: IData,
         isLoading: boolean,
@@ -18,7 +20,7 @@ interface TopicsSelfState {
     },
 }
 
-const initialState: TopicsSelfState = {
+const initialState: TasksSelfState = {
     info: {
         data: null,
         isLoading: false,
@@ -26,27 +28,27 @@ const initialState: TopicsSelfState = {
     },
 };
 
-export const topicsInfoSlice = createSlice({
-    name: 'topicsInfo',
+export const tasksPayoffSlice = createSlice({
+    name: 'tasksInfo',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTopicsInfo.pending, (state) => {
+            .addCase(TaskPayoff.pending, (state) => {
                 state.info = {
                     data: null,
                     isLoading: true,
                     error: null
                 }
             })
-            .addCase(getTopicsInfo.fulfilled, (state, action) => {
+            .addCase(TaskPayoff.fulfilled, (state, action) => {
                 state.info = {
                     ...state.info,
                     ...action.payload,
                     isLoading: false
                 }
             })
-            .addCase(getTopicsInfo.rejected, (state, action) => {
+            .addCase(TaskPayoff.rejected, (state, action) => {
                 state.info = {
                     data: null,
                     isLoading: false,
@@ -56,4 +58,4 @@ export const topicsInfoSlice = createSlice({
     }
 });
 
-export default topicsInfoSlice.reducer;
+export default tasksPayoffSlice.reducer;

@@ -1,24 +1,21 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {getRequest} from "../../api";
-import {Topics} from "../../models/response/topic";
 
 
-export const getTopicsInfo = createAsyncThunk<Promise<IData[] | { error: any }>>(
-    '/topicsInfo/getTopicsInfo',
-    async () => getRequest('/topics')
+export const getStrategyInfo = createAsyncThunk<Promise<String[] | { error: any }>>(
+    '/strategyInfo/getStrategyInfo',
+    async () => getRequest('/tasks/payoff/strategy')
 );
 
-interface IData {
-}
-interface TopicsSelfState {
+interface StrategySelfState {
     info: {
-        data: IData,
+        data: String[],
         isLoading: boolean,
         error: string | null
     },
 }
 
-const initialState: TopicsSelfState = {
+const initialState: StrategySelfState = {
     info: {
         data: null,
         isLoading: false,
@@ -26,27 +23,27 @@ const initialState: TopicsSelfState = {
     },
 };
 
-export const topicsInfoSlice = createSlice({
-    name: 'topicsInfo',
+export const strategyInfoSlice = createSlice({
+    name: 'strategyInfo',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTopicsInfo.pending, (state) => {
+            .addCase(getStrategyInfo.pending, (state) => {
                 state.info = {
                     data: null,
                     isLoading: true,
                     error: null
                 }
             })
-            .addCase(getTopicsInfo.fulfilled, (state, action) => {
+            .addCase(getStrategyInfo.fulfilled, (state, action) => {
                 state.info = {
                     ...state.info,
                     ...action.payload,
                     isLoading: false
                 }
             })
-            .addCase(getTopicsInfo.rejected, (state, action) => {
+            .addCase(getStrategyInfo.rejected, (state, action) => {
                 state.info = {
                     data: null,
                     isLoading: false,
@@ -56,4 +53,4 @@ export const topicsInfoSlice = createSlice({
     }
 });
 
-export default topicsInfoSlice.reducer;
+export default strategyInfoSlice.reducer;

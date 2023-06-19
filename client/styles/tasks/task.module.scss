@@ -1,0 +1,75 @@
+@import "styles/mixins";
+
+.backgroundStyle{
+  overflow-x: hidden;
+  background: var(--light-background-primary2);
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  padding: 0 !important;
+
+}
+
+.ctn {
+  position: relative;
+  z-index: 5;
+  padding-top: 124px;
+  justify-items: center;
+  @include content;
+
+}
+
+.background{
+  width: 100%;
+  background: rgba(220, 225, 255, 0.2);
+  backdrop-filter: blur(2px);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 80px;
+
+}
+
+.name{
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px!important;
+}
+
+.propsText{
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  justify-content: space-around;
+  margin-bottom: 10px!important;
+}
+.check{
+  max-width: 24px;
+}
+.title{
+  font-size: 24px;
+  color: white;
+  margin-bottom: 10px!important;
+  margin-top: 20px!important;
+}
+.descriptionsR{
+  background: rgba(105, 89, 206, 0.2);
+  padding: 10px;
+  border-color: white;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 16px;
+  font-size: 18px;
+  color: white;
+  margin-bottom: 10px!important;
+}
+
+.backgroundMatrix{
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.col{
+  border: 1px solid #8880a4;
+  padding: 14px 20px!important;
+}

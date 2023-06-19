@@ -23,6 +23,7 @@ import Badge from '@mui/material/Badge';
 import {getUserRole} from "../scripts/rolesConfig";
 import {Chip} from "@mui/material";
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import {getAchievements} from "../store/slices/achivSlice";
 
 function PersonalInformation({data, onChange}) {
     const {handleSubmit, control} = useForm({
@@ -135,13 +136,15 @@ export default function profile() {
     const [settingsPage, setSettingsPage] = useState(Pages.personalInfo);
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.info);
+    const achievements = useSelector(state => state.achievements.info);
     const userAvatar = useSelector(state => state.user.avatar)
 
     useEffect(() => {
         dispatch(getUserInfo());
+        dispatch(getAchievements());
         // dispatch(getSelfUserAvatar());
     }, []);
-
+console.log(achievements)
     function onChangeHandler() {
         dispatch(getUserInfo());
     }
@@ -193,7 +196,28 @@ export default function profile() {
             },
         },
     }));
+    const [filters, setFilters] = useState({
+        tasks: []
+    });
 
+    function filtering(tasks) {
+        let result = tasks;
+        let filteredItems = [];
+
+        if (filters.tasks.length !== 0) {
+            for (let i = 0; i < filters.tasks.length; i++) {
+                filteredItems = filteredItems.concat(
+                    result.filter(tasks =>
+                        tasks?.data?.id === filters.tasks[i].id
+                    )
+                );
+            }
+
+            result = filteredItems;
+        }
+
+        return result;
+    }
     return (
         <Page pageTitle={'Профиль'}>
             <div className={s.backgroundStyle}>
@@ -241,6 +265,36 @@ export default function profile() {
                                             />
                                         </div>
                                     </>
+                            }
+                        </Grid>
+                        <Grid container item xs={12} sm={12} md={12} lg={12} className={s.hello}>
+                            <Grid item xs={12} sm={12} md={12} lg={12} style={{
+                                paddingTop: '10px',
+                                paddingLeft: '20px',
+                                color: 'white',
+                                fontSize: '28px'
+
+                            }}>
+                                Достижения
+                            </Grid>
+
+                            {
+                                achievements?.data ?
+                                    filtering(achievements?.data).map((achievement) => (
+                                        <Grid item xs={3} sm={2} md={1} lg={1} key={achievement.id} style={{color: 'white'}}>
+                                            <img style={{
+                                                backgroundColor: 'white',
+                                                borderRadius: '10%',
+                                                borderStyle: 'solid',
+                                                borderColor: 'white',
+                                                borderWidth: '2px',
+
+                                            }} src={achievement.achievement.image_href} alt="описание изображения" />
+                                            {achievement.achievement.name}
+                                        </Grid>
+                                        )
+                                    )
+                                    : "Loading..."
                             }
                         </Grid>
                     </Grid>

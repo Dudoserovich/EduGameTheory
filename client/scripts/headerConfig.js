@@ -2,13 +2,9 @@ import {Roles} from "./rolesConfig"
 
 export const headerConfig = {
     user: [
-        // {
-        //     name: 'Пройти компанию',
-        //     href: '/company'
-        // },
         {
-            name: 'Пройти обучение',
-            href: '/education'
+            name: 'Задания',
+            href: '/tasks/allTasks'
         },
         {
             name: 'Дополнительные материалы',
@@ -32,7 +28,22 @@ export const headerConfig = {
 
     teacher: [
         {
-            name: 'Конструктор заданий',
+            name: 'Задания',
+            submenus: [
+                {
+                    name: 'Задания',
+                    href: '/tasks/allTasks'
+                },
+                {
+                    name: 'Конструктор заданий',
+                    href: '/tasks/creatTask'
+                },
+                {
+                    name: 'Мои задания',
+                    href: '/tasks/myTasks'
+                },
+
+            ],
             href: '/tasks'
         },
         {
