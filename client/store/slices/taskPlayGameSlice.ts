@@ -1,16 +1,23 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {getRequest} from "../../api";
-import {Topics} from "../../models/response/topic";
+import {putRequest} from "../../api";
 
 
-export const getTopicsInfo = createAsyncThunk<Promise<IData[] | { error: any }>>(
-    '/topicsInfo/getTopicsInfo',
-    async () => getRequest('/topics')
+export const TaskPlayPayoff = createAsyncThunk<Promise<{ code: number } | { error: any }>,{id, IData} >(
+    '/playInfo/TaskPlayPayoff',
+    async (data) => putRequest(`/tasks/${data.id}/turns/play`, data.IData)
 );
 
 interface IData {
+    moves: number[];
+    chance_first: number[];
+    chance_second: number[];
+    your_chance: number[];
+    result_move: number;
+    score: number;
+    message: string;
+
 }
-interface TopicsSelfState {
+interface TasksSelfState {
     info: {
         data: IData,
         isLoading: boolean,
@@ -18,7 +25,7 @@ interface TopicsSelfState {
     },
 }
 
-const initialState: TopicsSelfState = {
+const initialState: TasksSelfState = {
     info: {
         data: null,
         isLoading: false,
@@ -26,27 +33,27 @@ const initialState: TopicsSelfState = {
     },
 };
 
-export const topicsInfoSlice = createSlice({
-    name: 'topicsInfo',
+export const playGameSlice = createSlice({
+    name: 'playInfo',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTopicsInfo.pending, (state) => {
+            .addCase(TaskPlayPayoff.pending, (state) => {
                 state.info = {
                     data: null,
                     isLoading: true,
                     error: null
                 }
             })
-            .addCase(getTopicsInfo.fulfilled, (state, action) => {
+            .addCase(TaskPlayPayoff.fulfilled, (state, action) => {
                 state.info = {
                     ...state.info,
                     ...action.payload,
                     isLoading: false
                 }
             })
-            .addCase(getTopicsInfo.rejected, (state, action) => {
+            .addCase(TaskPlayPayoff.rejected, (state, action) => {
                 state.info = {
                     data: null,
                     isLoading: false,
@@ -56,4 +63,4 @@ export const topicsInfoSlice = createSlice({
     }
 });
 
-export default topicsInfoSlice.reducer;
+export default playGameSlice.reducer;

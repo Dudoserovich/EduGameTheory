@@ -20,3 +20,10 @@ export interface Tasks {
 export interface AllTasks {
     allTasks: Tasks[],
 }
+
+export interface TasksPlay {
+    matrix: number[][],
+    chance_first: number,
+    chance_second: number,
+    description: string,
+}

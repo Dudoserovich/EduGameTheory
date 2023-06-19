@@ -1,24 +1,22 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {getRequest} from "../../api";
-import {Topics} from "../../models/response/topic";
+import {getRequest, putRequest} from "../../api";
+import {AllTasks} from "../../models/response/task";
 
 
-export const getTopicsInfo = createAsyncThunk<Promise<IData[] | { error: any }>>(
-    '/topicsInfo/getTopicsInfo',
-    async () => getRequest('/topics')
+export const getTasksTeacherInfo = createAsyncThunk<Promise<AllTasks[] | { error: any }>>(
+    '/tasksInfo/getTasksTeacherInfo',
+    async () => getRequest('/teacher/tasks')
 );
 
-interface IData {
-}
-interface TopicsSelfState {
+interface TasksSelfState {
     info: {
-        data: IData,
+        data: AllTasks,
         isLoading: boolean,
         error: string | null
     },
 }
 
-const initialState: TopicsSelfState = {
+const initialState: TasksSelfState = {
     info: {
         data: null,
         isLoading: false,
@@ -26,27 +24,27 @@ const initialState: TopicsSelfState = {
     },
 };
 
-export const topicsInfoSlice = createSlice({
-    name: 'topicsInfo',
+export const tasksTeacherInfoSlice = createSlice({
+    name: 'tasksInfo',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTopicsInfo.pending, (state) => {
+            .addCase(getTasksTeacherInfo.pending, (state) => {
                 state.info = {
                     data: null,
                     isLoading: true,
                     error: null
                 }
             })
-            .addCase(getTopicsInfo.fulfilled, (state, action) => {
+            .addCase(getTasksTeacherInfo.fulfilled, (state, action) => {
                 state.info = {
                     ...state.info,
                     ...action.payload,
                     isLoading: false
                 }
             })
-            .addCase(getTopicsInfo.rejected, (state, action) => {
+            .addCase(getTasksTeacherInfo.rejected, (state, action) => {
                 state.info = {
                     data: null,
                     isLoading: false,
@@ -56,4 +54,4 @@ export const topicsInfoSlice = createSlice({
     }
 });
 
-export default topicsInfoSlice.reducer;
+export default tasksTeacherInfoSlice.reducer;

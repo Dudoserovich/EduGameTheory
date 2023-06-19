@@ -334,7 +334,7 @@ export default function tasks(userID) {
                             <Matrix/>
                         </Grid>
                         {
-                            <Button type={'submit'} /*className={s.bottonGo}*/>Создать</Button>
+                            <Button type={'submit'}>Создать</Button>
                         }
                     </form>
 
