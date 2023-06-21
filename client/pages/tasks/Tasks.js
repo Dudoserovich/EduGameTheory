@@ -10,12 +10,13 @@ import edit from '../../public/svg/edit.svg'
 import deleteSVG from '../../public/svg/delete1.svg'
 import {getTasksInfo} from "../../store/slices/tasksSlice";
 import {getUserInfo} from "../../store/slices/userSlice";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
 import closeSvg from "../../public/svg/close.svg";
 import {Controller} from "react-hook-form";
 import Input from "../../components/Input/Input";
 import Spinner from "../../components/Spinner/Spinner";
+import Markdown from "../../components/Markdown/Markdown";
 
 
 export default function tasks() {
@@ -56,7 +57,7 @@ export default function tasks() {
     const navigate = useNavigate();
 
     function MyTask(props) {
-        const [open, setOpen] = React.useState( false);
+        const [open, setOpen] = React.useState(false);
 
         const handleClickOpen = () => {
             setOpen(true);
@@ -89,9 +90,10 @@ export default function tasks() {
         return (
             <>
                 <button onClick={
-                    (task.flag_matrix === 'платёжная матрица')?
-                    handleClickOpen
-                : handleClickTask}>Начать</button>
+                    (task.flag_matrix === 'платёжная матрица') ?
+                        handleClickOpen
+                        : handleClickTask}>Начать
+                </button>
                 <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title' fullWidth={true}>
                     <DialogTitle id='form-dialog-title' className={s.back}>
                         <Button onClick={handleClose}>
@@ -155,7 +157,7 @@ export default function tasks() {
                                 </Grid>
                                 <Grid item xs={6} sm={6} md={6} lg={6}>
                                     <div className={s.more}
-                                         // onClick={() => setShowDetails(!showDetails)}
+                                        // onClick={() => setShowDetails(!showDetails)}
                                          dangerouslySetInnerHTML={{__html: deleteSVG}}/>
                                 </Grid>
                             </Grid>
@@ -199,7 +201,9 @@ export default function tasks() {
                                     height: '2px',
                                 }}>
                                 </div>
-                                <div className={s.description}>{task.description}</div>
+                                <div style={{background: "white"}}>
+                                    <Markdown value={task?.description.trim()}/>
+                                </div>
 
                             </Grid>
                         )

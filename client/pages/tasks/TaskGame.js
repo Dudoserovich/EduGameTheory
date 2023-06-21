@@ -7,6 +7,7 @@ import {useLocation} from 'react-router-dom';
 import check from "../../public/svg/check.svg";
 import {getPlayInfo} from "../../store/slices/taskPlaySlice";
 import {TaskPlayPayoff} from "../../store/slices/taskPlayGameSlice";
+import Markdown from "../../components/Markdown/Markdown";
 
 
 export default function TasksPlay() {
@@ -76,14 +77,14 @@ export default function TasksPlay() {
                             Описание
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.descriptionsR}>
-                            {task.description}
+                            <Markdown value={task?.description.trim()}/>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Подсказки
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.descriptionsR}>
                             {taskPlay?.data?.description ?
-                                (<div>{taskPlay.data.description}</div>)
+                                (<Markdown value={taskPlay?.data?.description}/>)
                                 : (<div>Загрузка</div>)
                             }
                         </Grid>

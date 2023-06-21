@@ -15,13 +15,14 @@ import Literature from "../pages/literature";
 import Users from "../pages/users";
 import Term from "../pages/term";
 import Page404 from "../pages/404";
-import CreatTask from  "../pages/tasks/creatTask";
+import CreateTask from  "../pages/tasks/createTask";
 import Tasks from  "../pages/tasks/Tasks";
 import Task from  "../pages/tasks/Task";
 import EditTask from  "../pages/tasks/editTask";
 import TaskPlay from  "../pages/tasks/TaskGame";
 import MyTask from  "../pages/tasks/tasksTeacher";
 import Toast from "../components/Toast/Toast";
+import TestPage from "../pages/Test/testPage";
 
 const App = () => {
     return (
@@ -40,7 +41,7 @@ const App = () => {
                             <Route path="users" element={<Users/>}/>
                             <Route path="tasks">
                                 <Route path="all" element={<Tasks/>}/>
-                                <Route path="createTask" element={<CreatTask/>}/>
+                                <Route path="createTask" element={<CreateTask/>}/>
                                 <Route path="task" element={<Task/>}/>
                                 <Route path="editTask" element={<EditTask/>}/>
                                 <Route path="taskPlay" element={<TaskPlay/>}/>
