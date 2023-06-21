@@ -3,7 +3,7 @@ import {Grid} from "@material-ui/core";
 import AOS from "aos";
 import s from './Style/ContactsPage.module.scss';
 
-export default function TheoryPage() {
+export default function ContactsPage() {
     AOS.init({
         disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
         startEvent: 'DOMContentLoaded', // name of the event dispatched on the document, that AOS should initialize on
@@ -34,10 +34,10 @@ export default function TheoryPage() {
 
                     }}>
                         <Grid item sx={6} sm={6} md={5} lg={5} className={s.link}>
-                            <a className={s.we} href="https://vk.com/liss_see"> Вконтакте: Liss_see</a>.
+                            <a className={s.we} href="https://vk.com/liss_see"> Вконтакте: Liss_see</a>
                         </Grid>
                         <Grid item sx={6} sm={6} md={5} lg={5} className={s.link}>
-                            <a className={s.we} href="https://vk.com/egorhmell"> Вконтакте: Dudoserovich</a>.
+                            <a className={s.we} href="https://vk.com/egorhmell"> Вконтакте: Dudoserovich</a>
                         </Grid>
                     </Grid>
                 </div>

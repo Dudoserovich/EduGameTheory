@@ -1,1 +1,10 @@
-//Пока пусто
+.contact {
+  position: relative;
+  background: var(--dark-header-theme);
+  backdrop-filter: blur(20px);
+  width: auto;
+  z-index: 4;
+  height: auto;
+  margin: 100px 0 0 0 !important;
+  bottom: -20px !important;
+}

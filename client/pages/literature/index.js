@@ -6,9 +6,9 @@ import {getLiteratures} from "../../store/slices/literatureSlice";
 import {Button, Card, CardActions, CardContent, CardMedia, Chip} from "@mui/material";
 import {Typography} from "@material-ui/core";
 // import ogs from 'open-graph-scraper';
-import {getLinkPreview, getPreviewFromContent} from "link-preview-js";
+// import {getLinkPreview, getPreviewFromContent} from "link-preview-js";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import {getTopics, getTopicsInfo} from "../../store/slices/topicSlice";
+import {getTopicsInfo} from "../../store/slices/topicSlice";
 import {LiteratureCardSkeleton} from "../../components/Skeletons/CardSkeleton";
 
 export default function literature() {

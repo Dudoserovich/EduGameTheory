@@ -55,7 +55,7 @@ nelmio_api_doc:
             description: API на удалённом сервере
         tags:
           - name: Login Check
-            description: Аутентификация и получение JWT токена
+            description: Получение JWT
           - name: User
             description: Взаимодействие с пользователями
           - name: Term
@@ -98,9 +98,8 @@ nelmio_api_doc:
               security: [ ]
               tags:
                 - Login Check
-              summary: Authenticate and get JWT token
+              summary: Получение JWT токена и refresh токена по логину и паролю
               requestBody:
-                description: Authenticate and get JWT token.
                 content:
                   application/json:
                     schema:
@@ -112,6 +111,7 @@ nelmio_api_doc:
                         password:
                           example: "admin"
                           type: string
+
         components:
             securitySchemes:
                 Bearer:

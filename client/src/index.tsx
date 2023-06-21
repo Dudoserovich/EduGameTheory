@@ -38,12 +38,14 @@ const App = () => {
                                 <Route path="terms" element={<Term/>}/>
                             </Route>
                             <Route path="users" element={<Users/>}/>
-                            <Route path="tasks/creatTask" element={<CreatTask/>}/>
-                            <Route path="tasks/allTasks" element={<Tasks/>}/>
-                            <Route path="tasks/task" element={<Task/>}/>
-                            <Route path="tasks/editTask" element={<EditTask/>}/>
-                            <Route path="tasks/taskPlay" element={<TaskPlay/>}/>
-                            <Route path="tasks/myTasks" element={<MyTask/>}/>
+                            <Route path="tasks">
+                                <Route path="all" element={<Tasks/>}/>
+                                <Route path="createTask" element={<CreatTask/>}/>
+                                <Route path="task" element={<Task/>}/>
+                                <Route path="editTask" element={<EditTask/>}/>
+                                <Route path="taskPlay" element={<TaskPlay/>}/>
+                                <Route path="myTasks" element={<MyTask/>}/>
+                            </Route>
                         </Route>
                         <Route path="*" element={<Page404 />} />
                     </Routes>
