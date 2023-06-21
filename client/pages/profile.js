@@ -17,7 +17,7 @@ import ProfileInput from "../components/Input/ProfileInput";
 import catSvg from  "../public/svg/circleCat.svg"
 import Avatar from '@mui/material/Avatar';
 import {Grid} from "@material-ui/core";
-import ContactPage from "../components/IndexPage/ContactsPage";
+import ContactsPage from "../components/IndexPage/ContactsPage";
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import {getUserRole} from "../scripts/rolesConfig";
@@ -346,7 +346,7 @@ console.log(achievements)
 
                 </div>
                 <div className={s.contact}>
-                    <ContactPage/>
+                    <ContactsPage/>
                 </div>
 
             </div>

@@ -7,10 +7,10 @@ import {Grid} from "@material-ui/core";
 import down from '../../public/svg/down.svg'
 import up from '../../public/svg/up.svg'
 import edit from '../../public/svg/edit.svg'
-import delet from '../../public/svg/delete1.svg'
+import deleteSVG from '../../public/svg/delete1.svg'
 import {getTasksInfo} from "../../store/slices/tasksSlice";
 import {getUserInfo} from "../../store/slices/userSlice";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
 import closeSvg from "../../public/svg/close.svg";
 import {Controller} from "react-hook-form";
@@ -155,8 +155,8 @@ export default function tasks() {
                                 </Grid>
                                 <Grid item xs={6} sm={6} md={6} lg={6}>
                                     <div className={s.more}
-                                         onClick={() => setShowDetails(!showDetails)}
-                                         dangerouslySetInnerHTML={{__html: delet}}/>
+                                         // onClick={() => setShowDetails(!showDetails)}
+                                         dangerouslySetInnerHTML={{__html: deleteSVG}}/>
                                 </Grid>
                             </Grid>
                             : <Grid item xs={4} sm={1} md={1} lg={1}>
@@ -166,7 +166,12 @@ export default function tasks() {
                             <div></div>
                         </Grid>
                     }
-                    <Grid container spacing={0} xs={8} sm={2} md={2} lg={2} className={s.buttons}>
+                    <Grid item xs={4} sm={1} md={1} lg={1}>
+                        <div className={s.more}
+                             onClick={() => setShowDetails(!showDetails)}
+                             dangerouslySetInnerHTML={{__html: down}}/>
+                    </Grid>
+                    <Grid container item spacing={0} xs={8} sm={2} md={2} lg={2} className={s.buttons}>
                         <Grid item xs={3} sm={3} md={3} lg={3}>
                             {showDetails ?
                                 (
@@ -225,6 +230,16 @@ export default function tasks() {
                         }
                     </div>
                 </div>
+                <ul className={s.boxArea}>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <BoxAnimation/>
+
             </div>
         </Page>
     );

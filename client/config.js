@@ -1,3 +1,3 @@
 export default {
-    API_BASE_URL: 'https://dudoser.msur.team/api'
+    API_BASE_URL: '/api'
 };

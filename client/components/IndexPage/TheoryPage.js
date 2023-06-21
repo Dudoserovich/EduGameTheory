@@ -3,7 +3,7 @@ import {Grid, Hidden} from "@material-ui/core";
 import s from './Style/Right.module.scss';
 import catSvg from './svg/Theory2.svg';
 import AOS from "aos";
-import Buttom from "../Auth/ButtonAuth";
+import Button from "../Auth/ButtonAuth";
 
 export default function TheoryPage() {
     AOS.init({
@@ -49,7 +49,7 @@ export default function TheoryPage() {
                         <Hidden mdDown>
                         <Grid item lg={12} data-aos="fade-up"
                               data-aos-anchor-placement="top-bottom">
-                            <Buttom/>
+                            <Button/>
                         </Grid>
                     </Hidden>
                 </Grid>
@@ -68,7 +68,7 @@ export default function TheoryPage() {
                           data-aos-anchor-placement="center-bottom" style={
                         {justifyContent: 'center',}
                     }>
-                        <Buttom/>
+                        <Button/>
                     </Grid>
                 </Hidden>
             </Grid>

@@ -68,11 +68,11 @@ export const headerConfig = {
             submenus: [
                 {
                     name: 'Задания',
-                    href: '/tasks/allTasks'
+                    href: '/tasks/all'
                 },
                 {
                     name: 'Конструктор заданий',
-                    href: '/tasks/creatTask'
+                    href: '/tasks/createTask'
                 },
                 {
                     name: 'Мои задания',
