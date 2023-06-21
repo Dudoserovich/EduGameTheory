@@ -88,7 +88,7 @@ class TaskController extends ApiController
      * @OA\RequestBody (
      *     required=true,
      *     description="Добавление задания преподавателем.
-     *                  Поля `description`, `matrix` являются не обязательными.  <br><br>
+     *                  Поля `description`, `name_first_player`, `name_second_player`, `name_first_strategies`, `name_second_strategies` являются не обязательными.  <br><br>
      *                  **matrix** - платёжная матрица или матрица последствий. <br>
      *                  **flag_matrix** - флаг, указывающий какая матрица находится во входных данных. ",
      *     @OA\JsonContent(
@@ -103,6 +103,10 @@ class TaskController extends ApiController
      *         @OA\Property(property="description", ref="#/components/schemas/TaskView/properties/description"),
      *         @OA\Property(property="matrix", ref="#/components/schemas/TaskView/properties/matrix"),
      *         @OA\Property(property="flag_matrix", ref="#/components/schemas/TaskView/properties/flag_matrix"),
+     *         @OA\Property(property="name_first_player", ref="#/components/schemas/TaskView/properties/name_first_player"),
+     *         @OA\Property(property="name_second_player", ref="#/components/schemas/TaskView/properties/name_second_player"),
+     *         @OA\Property(property="name_first_strategies", ref="#/components/schemas/TaskView/properties/name_first_strategies"),
+     *         @OA\Property(property="name_second_strategies", ref="#/components/schemas/TaskView/properties/name_second_strategies"),
      *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
@@ -209,6 +213,10 @@ class TaskController extends ApiController
      *         @OA\Property(property="description", ref="#/components/schemas/TaskView/properties/description"),
      *         @OA\Property(property="matrix", ref="#/components/schemas/TaskView/properties/matrix"),
      *         @OA\Property(property="flag_matrix", ref="#/components/schemas/TaskView/properties/flag_matrix"),
+     *         @OA\Property(property="name_first_player", ref="#/components/schemas/TaskView/properties/name_first_player"),
+     *         @OA\Property(property="name_second_player", ref="#/components/schemas/TaskView/properties/name_second_player"),
+     *         @OA\Property(property="name_first_strategies", ref="#/components/schemas/TaskView/properties/name_first_strategies"),
+     *         @OA\Property(property="name_second_strategies", ref="#/components/schemas/TaskView/properties/name_second_strategies"),
      *         @OA\Property(property="new_topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )

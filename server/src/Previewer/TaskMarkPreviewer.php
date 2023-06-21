@@ -37,7 +37,11 @@ class TaskMarkPreviewer
                 "fio" => "string"
             ],
             "matrix" => "float[]",
-            "flag_matrix" => "string"
+            "flag_matrix" => "string",
+            "name_first_player" => "string",
+            "name_second_player" => "string",
+            "name_first_strategies" => "string[]",
+            "name_second_strategies" => "string[]",
         ],
         "users" => [[
             "id" => "int",
@@ -66,7 +70,11 @@ class TaskMarkPreviewer
                 "fio" => "string"
             ],
             "matrix" => "float[]",
-            "flag_matrix" => "string"
+            "flag_matrix" => "string",
+            "name_first_player" => "string",
+            "name_second_player" => "string",
+            "name_first_strategies" => "string[]",
+            "name_second_strategies" => "string[]",
         ],
         "user" => [
             "id" => "int",
