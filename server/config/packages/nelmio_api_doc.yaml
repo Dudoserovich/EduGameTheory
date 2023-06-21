@@ -112,6 +112,21 @@ nelmio_api_doc:
                         password:
                           example: "admin"
                           type: string
+          /api/token/refresh:
+            post:
+              security: [ ]
+              tags:
+                - Login Check
+              requestBody:
+                description: Authenticate and get JWT token.
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        refresh_token:
+                          example: "refresh_token"
+                          type: string
         components:
             securitySchemes:
                 Bearer:
