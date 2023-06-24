@@ -48,11 +48,36 @@ class TaskView
      * @OA\Property(property="matrix", ref="#/components/schemas/Task/properties/matrix")
      * @Groups({"default", "matrix"})
      */
-    public ?array $matrix;
+    public array $matrix;
 
     /**
      * @OA\Property(property="flag_matrix", ref="#/components/schemas/Task/properties/flagMatrix")
      * @Groups({"default", "flagMatrix"})
      */
     public ?string $flagMatrix;
+
+    /**
+     * @OA\Property(property="name_first_player", ref="#/components/schemas/Task/properties/nameFirstPlayer")
+     * @Groups({"default", "name_first_player"})
+     */
+    public ?string $nameFirstPlayer;
+
+    /**
+     * @OA\Property(property="name_second_player", ref="#/components/schemas/Task/properties/nameSecondPlayer")
+     * @Groups({"default", "name_second_player"})
+     */
+    public ?string $nameSecondPlayer;
+
+    /**
+     * @OA\Property(property="name_first_strategies", ref="#/components/schemas/Task/properties/nameFirstStrategies")
+     * @Groups({"default", "name_first_strategies"})
+     */
+    public ?array $nameFirstStrategies;
+
+    /**
+     * @OA\Property(property="name_second_strategies", ref="#/components/schemas/Task/properties/nameSecondStrategies")
+     * @Groups({"default", "name_second_strategies"})
+     */
+    public ?array $nameSecondStrategies;
+
 }

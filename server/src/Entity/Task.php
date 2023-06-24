@@ -74,11 +74,39 @@ class Task
     private ?User $owner;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
+     * @ORM\Column(type="json", nullable=false)
      * @OA\Property(type="array", @OA\Items(type="array", @OA\Items(type="number")))
      * @Groups({"default"})
      */
-    private ?array $matrix = null;
+    private array $matrix;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private ?string $nameFirstPlayer = null;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private ?string $nameSecondPlayer = null;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @OA\Property(type="array", @OA\Items(type="array", @OA\Items(type="string")))
+     * @Groups({"default"})
+     */
+    private ?array $nameFirstStrategies = null;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @OA\Property(type="array", @OA\Items(type="array", @OA\Items(type="string")))
+     * @Groups({"default"})
+     */
+    private ?array $nameSecondStrategies = null;
 
     /**
      * @ORM\Column(type="string", length=255, options={"default" : "платёжная матрица"})
@@ -177,6 +205,58 @@ class Task
     public function getMatrix(): ?array
     {
         return $this->matrix;
+    }
+
+    public function getNameFirstPlayer(): ?string
+    {
+        return $this->nameFirstPlayer;
+    }
+
+    public function setNameFirstPlayer(?string $nameFirstPlayer): self
+    {
+        $this->nameFirstPlayer = $nameFirstPlayer;
+
+        return $this;
+    }
+
+    public function getNameSecondPlayer(): ?string
+    {
+        return $this->nameSecondPlayer;
+    }
+
+    public function setNameSecondPlayer(?string $nameSecondPlayer): self
+    {
+        $this->nameSecondPlayer = $nameSecondPlayer;
+
+        return $this;
+    }
+
+    /** @param array|null $nameFirstStrategies The JSON to set.
+     */
+    public function setNameFirstStrategies(?array $nameFirstStrategies): self
+    {
+        $this->nameFirstStrategies = $nameFirstStrategies;
+
+        return $this;
+    }
+
+    public function getNameFirstStrategies(): ?array
+    {
+        return $this->nameFirstStrategies;
+    }
+
+    /** @param array|null $nameSecondStrategies The JSON to set.
+     */
+    public function setNameSecondStrategies(?array $nameSecondStrategies): self
+    {
+        $this->nameSecondStrategies = $nameSecondStrategies;
+
+        return $this;
+    }
+
+    public function getNameSecondStrategies(): ?array
+    {
+        return $this->nameSecondStrategies;
     }
 
     public function getFlagMatrix(): ?string

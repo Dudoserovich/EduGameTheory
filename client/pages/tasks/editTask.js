@@ -20,6 +20,7 @@ import plus1 from "../../public/svg/plus1.svg";
 import minus1 from "../../public/svg/minus1.svg";
 import { useLocation } from 'react-router-dom';
 import {updateTaskInfo} from "../../store/slices/tasksSlice";
+import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
 
 
 export default function tasks() {
@@ -204,7 +205,7 @@ export default function tasks() {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={0} className={s.background}>
                             <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
-                                Новое задание
+                                Редактор задания
                             </Grid>
                             <Grid item xs={12} sm={12} md={4} lg={4} className={s.name}>
                                 <Controller
@@ -304,25 +305,24 @@ export default function tasks() {
                                         color: 'var(--main-brand-color)'
                                     }}>Обязательное поле</span>}
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12} className={s.name}>
+                            <Grid item xs={12} sm={12} md={12} lg={12}
+                                  data-color-mode="light"
+                                  className={s.name}
+                            >
+                                <p>Описание</p>
                                 <Controller
                                     name="description"
                                     control={control}
                                     rules={{required: true}}
-                                    render={({field}) => (
-                                        <TextField
-                                            {...field}
-                                            type={"text"}
-                                            style={{
-                                                borderRadius: '4px',
-                                                backgroundColor: "white",
-                                                width: '100%'
-                                            }}
-                                            id="outlined-multiline-static"
-                                            label="Описание"
-                                            multiline
-                                            rows={4}
-                                            defaultValue=""
+                                    render={(
+                                        {
+                                            field: { onChange, onBlur, value, name, ref },
+                                            fieldState: { invalid, isTouched, isDirty, error },
+                                            formState,
+                                        }) => (
+                                        <CustomMDEditor
+                                            value={value}
+                                            onChange={onChange}
                                         />
                                     )}/>
                             </Grid>

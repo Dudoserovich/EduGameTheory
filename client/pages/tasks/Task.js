@@ -13,6 +13,7 @@ import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
 import {TaskPayoff} from "../../store/slices/taskPayoffSlice";
 import {TaskGame} from "../../store/slices/taskGameSlice";
 import closeSvg from "../../public/svg/close.svg";
+import Markdown from "../../components/Markdown/Markdown";
 
 
 export default function tasks() {
@@ -323,8 +324,10 @@ export default function tasks() {
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Описание
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.descriptionsR}>
-                            {task.description}
+                        <Grid item xs={12} sm={12} md={12} lg={12}
+                              className={s.descriptionsR}
+                        >
+                            <Markdown value={task?.description.trim()}/>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Подсказки
