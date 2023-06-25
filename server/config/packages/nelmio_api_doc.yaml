@@ -1,130 +1,136 @@
 nelmio_api_doc:
-    models:
-        names:
-            - { alias: User,                  type: App\Entity\User,                  groups: [ "default" ] }
-            - { alias: Term,                  type: App\Entity\Term,                  groups: [ "default" ] }
-            - { alias: Task,                  type: App\Entity\Task,                  groups: [ "default" ] }
-            - { alias: Achievement,           type: App\Entity\Achievement,           groups: [ "default" ] }
-            - { alias: Topic,                 type: App\Entity\Topic,                 groups: [ "default" ] }
-            - { alias: TaskMark,              type: App\Entity\TaskMark,              groups: [ "default" ] }
-            - { alias: Education,             type: App\Entity\Education,             groups: [ "default" ] }
-            - { alias: EducationTasks,        type: App\Entity\EducationTasks,        groups: [ "default" ] }
-            - { alias: UserAchievement,       type: App\Entity\UserAchievement,       groups: [ "default" ] }
-            - { alias: UserEducation,         type: App\Entity\UserEducation,         groups: [ "default" ] }
+  models:
+    names:
+      - { alias: User,                  type: App\Entity\User,                  groups: [ "default" ] }
+      - { alias: Term,                  type: App\Entity\Term,                  groups: [ "default" ] }
+      - { alias: Task,                  type: App\Entity\Task,                  groups: [ "default" ] }
+      - { alias: Achievement,           type: App\Entity\Achievement,           groups: [ "default" ] }
+      - { alias: Topic,                 type: App\Entity\Topic,                 groups: [ "default" ] }
+      - { alias: TaskMark,              type: App\Entity\TaskMark,              groups: [ "default" ] }
+      - { alias: Education,             type: App\Entity\Education,             groups: [ "default" ] }
+      - { alias: EducationTasks,        type: App\Entity\EducationTasks,        groups: [ "default" ] }
+      - { alias: UserAchievement,       type: App\Entity\UserAchievement,       groups: [ "default" ] }
+      - { alias: UserEducation,         type: App\Entity\UserEducation,         groups: [ "default" ] }
+      - { alias: Level,                 type: App\Entity\Level,                 groups: [ "default" ] }
 
-            - alias: UserIdAndFioView
-              type: App\Schema\UserView
-              groups: [ "id", "fio" ]
-            - alias: UserView
-              type: App\Schema\UserView
-              groups: [ "default" ]
-            - alias: TermView
-              type: App\Schema\TermView
-              groups: [ "default" ]
-            - alias: TaskView
-              type: App\Schema\TaskView
-              groups: [ "default" ]
-            - alias: AchievementView
-              type: App\Schema\AchievementView
-              groups: [ "default" ]
-            - alias: TopicView
-              type: App\Schema\TopicView
-              groups: [ "default" ]
-            - alias: TaskMarkView
-              type: App\Schema\TaskMarkView
-              groups: [ "default" ]
-            - alias: EducationView
-              type: App\Schema\EducationView
-              groups: [ "default" ]
-            - alias: EducationTasksView
-              type: App\Schema\EducationTasksView
-              groups: [ "default" ]
-            - alias: UserAchievementView
-              type: App\Schema\UserAchievementView
-              groups: [ "default" ]
-            - alias: UserEducationView
-              type: App\Schema\UserEducationView
-              groups: [ "default" ]
-            - alias: LiteratureView
-              type: App\Schema\LiteratureView
-              groups: [ "default" ]
-    documentation:
-        servers:
-          - url: /
-          - url: https://dudoser.msur.team
-            description: API на удалённом сервере
-        tags:
-          - name: Login Check
-            description: Получение JWT
-          - name: User
-            description: Взаимодействие с пользователями
-          - name: Term
-            description: Взаимодействие с терминами
-          - name: Literature
-            description: Взаимодействие со списком литературы
-          - name: Achievement
-            description: Взаимодействие с достижениями
-          - name: Topic
-            description: Взаимодействие с топиками (матричные/кооперативные игры)
-          - name: Task
-            description: Базовое взаимодействие с заданиями
-          - name: UserTask
-            description: Взаимодействие с заданиями обычных пользователей (решение, получение результатов)
-          - name: TeacherTask
-            description: Получение информации по собственным заданиям преподавателем
-          - name: Uploads
-            description: Получение загруженных изображений (аватарки пользователей/достижения)
-          - name: Test
-            description: Фичи, находящиеся на этапе разработки
-        info:
-            title: Game Theory API
-            description: | 
-              API для взаимодействия с backend частью дипломной работы по **"Геймификации теории игр"**.
-              
-              ### Чтобы отправлять запросики необходим **JWT-токен**, который можно получить:
-              - По url `/api/login_check` в Swagger.
-              - Вытащив из браузера, авторизовавшись (**лежит в куках**). 
-              - Если у вас развёрнут backend локально, **вбить команду** для генерации ключа руками.
-            contact:
-              email: mr.egoryk1611@gmail.com
-            version: 0.2.0
-        externalDocs:
-          description: GitHub repository
-          url: https://github.com/Dudoserovich/EduGameTheory
-        paths:
-          /api/login_check:
-            post:
-#              deprecated: true
-              security: [ ]
-              tags:
-                - Login Check
-              summary: Получение JWT токена и refresh токена по логину и паролю
-              requestBody:
-                content:
-                  application/json:
-                    schema:
-                      type: object
-                      properties:
-                        username:
-                          example: "admin"
-                          type: string
-                        password:
-                          example: "admin"
-                          type: string
+      - alias: UserIdAndFioView
+        type: App\Schema\UserView
+        groups: [ "id", "fio" ]
+      - alias: UserView
+        type: App\Schema\UserView
+        groups: [ "default" ]
+      - alias: TermView
+        type: App\Schema\TermView
+        groups: [ "default" ]
+      - alias: TaskView
+        type: App\Schema\TaskView
+        groups: [ "default" ]
+      - alias: AchievementView
+        type: App\Schema\AchievementView
+        groups: [ "default" ]
+      - alias: TopicView
+        type: App\Schema\TopicView
+        groups: [ "default" ]
+      - alias: TaskMarkView
+        type: App\Schema\TaskMarkView
+        groups: [ "default" ]
+      - alias: EducationView
+        type: App\Schema\EducationView
+        groups: [ "default" ]
+      - alias: EducationTasksView
+        type: App\Schema\EducationTasksView
+        groups: [ "default" ]
+      - alias: UserAchievementView
+        type: App\Schema\UserAchievementView
+        groups: [ "default" ]
+      - alias: UserEducationView
+        type: App\Schema\UserEducationView
+        groups: [ "default" ]
+      - alias: LiteratureView
+        type: App\Schema\LiteratureView
+        groups: [ "default" ]
+      - alias: LevelView
+        type: App\Schema\LevelView
+        groups: [ "default" ]
+  documentation:
+    servers:
+      - url: /
+      - url: https://dudoser.msur.team
+        description: API на удалённом сервере
+    tags:
+      - name: Login Check
+        description: Получение JWT
+      - name: User
+        description: Взаимодействие с пользователями
+      - name: Term
+        description: Взаимодействие с терминами
+      - name: Literature
+        description: Взаимодействие со списком литературы
+      - name: Achievement
+        description: Взаимодействие с достижениями
+      - name: Topic
+        description: Взаимодействие с топиками (матричные/кооперативные игры)
+      - name: Task
+        description: Базовое взаимодействие с заданиями
+      - name: UserTask
+        description: Взаимодействие с заданиями обычных пользователей (решение, получение результатов)
+      - name: TeacherTask
+        description: Получение информации по собственным заданиям преподавателем
+      - name: Progress
+        description: Получение прогресса (очков, уровней, таблицы лидеров)
+      - name: Uploads
+        description: Получение загруженных изображений (аватарки пользователей/достижения)
+      - name: Test
+        description: Фичи, находящиеся на этапе разработки
+    info:
+      title: Game Theory API
+      description: |
+        API для взаимодействия с backend частью дипломной работы по **"Геймификации теории игр"**.
+        
+        ### Чтобы отправлять запросики необходим **JWT-токен**, который можно получить:
+        - По url `/api/login_check` в Swagger.
+        - Вытащив из браузера, авторизовавшись (**лежит в куках**). 
+        - Если у вас развёрнут backend локально, **вбить команду** для генерации ключа руками.
+      contact:
+        email: mr.egoryk1611@gmail.com
+      version: 0.2.0
+    externalDocs:
+      description: GitHub repository
+      url: https://github.com/Dudoserovich/EduGameTheory
+    paths:
+      /api/login_check:
+        post:
+          #              deprecated: true
+          security: [ ]
+          tags:
+            - Login Check
+          summary: Получение JWT токена и refresh токена по логину и паролю
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    username:
+                      example: "admin"
+                      type: string
+                    password:
+                      example: "admin"
+                      type: string
 
-        components:
-            securitySchemes:
-                Bearer:
-                    type: http
-                    scheme: bearer
-                    bearerFormat: JWT
-                    description: >
-                        #### Может быть получен в секции 'jwt token' Swagger'а
-                      
-                        Полученный ответ будет содержать ключ **token**, содержимое которого необходимо вставить сюда в **Value**
-        security:
-            - Bearer: [ ]
-    areas: # to filter documented areas
-        disable_default_routes: true
-        path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+    components:
+      securitySchemes:
+        Bearer:
+          type: http
+          scheme: bearer
+          bearerFormat: JWT
+          description: >
+            #### Может быть получен в секции 'jwt token' Swagger'а
+            
+            Полученный ответ будет содержать ключ **token**, содержимое которого необходимо вставить сюда в **Value**
+    security:
+      - Bearer: [ ]
+  areas: # to filter documented areas
+    disable_default_routes: true
+    path_patterns:
+      - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
