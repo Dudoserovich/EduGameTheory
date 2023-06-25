@@ -378,12 +378,12 @@ class UserController extends ApiController
      *                  "fio": "Иваненко Иван Иванович",
      *                  "avatar": "serious_cat.png"
      *          },
-     *         @OA\Property(property="login", nullable=true, ref="#/components/schemas/User/properties/login"),
+     *         @OA\Property(property="login", nullable=true, ref="#/components/schemas/UserView/properties/login"),
      *         @OA\Property(property="oldPassword", nullable=true, ref="#/components/schemas/User/properties/password"),
      *         @OA\Property(property="newPassword", nullable=true, ref="#/components/schemas/User/properties/password"),
-     *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/User/properties/fio"),
-     *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/User/properties/email"),
-     *         @OA\Property(property="avatar", nullable=true, ref="#/components/schemas/User/properties/avatar")
+     *         @OA\Property(property="fio", nullable=true, ref="#/components/schemas/UserView/properties/fio"),
+     *         @OA\Property(property="email", nullable=true, ref="#/components/schemas/UserView/properties/email"),
+     *         @OA\Property(property="avatar_name", nullable=true, ref="#/components/schemas/UserView/properties/avatarName")
      *     )
      * )
      * @OA\Response(
