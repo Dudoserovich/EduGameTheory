@@ -64,6 +64,28 @@ export const tasksInfoSlice = createSlice({
                     error: action.error.message
                 }
             })
+
+            .addCase(updateTaskInfo.pending, (state) => {
+                state.info = {
+                    data: null,
+                    isLoading: true,
+                    error: null
+                }
+            })
+            .addCase(updateTaskInfo.fulfilled, (state, action) => {
+                state.info = {
+                    ...state.info,
+                    ...action.payload,
+                    isLoading: false
+                }
+            })
+            .addCase(updateTaskInfo.rejected, (state, action) => {
+                state.info = {
+                    data: null,
+                    isLoading: false,
+                    error: action.error.message
+                }
+            })
     }
 });
 
