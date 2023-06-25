@@ -472,8 +472,8 @@ class UserTaskController extends ApiController
         if ($task->getFlagMatrix() == 'платёжная матрица') {
             try {
                 $result = TaskSolver::comparisionPaymentResult($task->getMatrix(), $request);
-            } catch (BadDataException|IncorrectTypeException
-            |MatrixException|MathException|Exception $e) {
+            } catch (BadDataException | IncorrectTypeException
+            | MatrixException | MathException | Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
         } else {
