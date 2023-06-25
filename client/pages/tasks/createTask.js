@@ -20,6 +20,8 @@ import plus1 from "../../public/svg/plus1.svg";
 import minus1 from "../../public/svg/minus1.svg";
 import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
 
+import toast, {Toaster} from 'react-hot-toast'
+import SimpleToast, {notify} from "../../components/Toast/SimpleToast";
 
 export default function tasks(userID) {
 //Запрос топиков
@@ -191,10 +193,25 @@ export default function tasks(userID) {
             topic_id: 101,
         }
     });
+
     const onSubmit = (data) => {
         console.log(data)
         dispatch(createTask(data));
     }
+
+    // Отлавливаем сообщения запросов
+    const newTaskResult = useSelector(state => state.newTask.creatingTask);
+    useEffect(() => {
+        if (newTaskResult?.data?.status === 200) {
+            notify(newTaskResult?.data.success)
+        }
+        if (newTaskResult?.error?.status) {
+            notify(newTaskResult?.error?.errors)
+        }
+
+        console.log(newTaskResult);
+    }, [newTaskResult]);
+
     return (
         <Page pageTitle={'Конструктор заданий'}>
             <div className={s.backgroundStyle}>
@@ -348,8 +365,8 @@ export default function tasks(userID) {
                     <li></li>
                 </ul>
                 <BoxAnimation/>
-
             </div>
+            <SimpleToast/>
         </Page>
     );
 }
