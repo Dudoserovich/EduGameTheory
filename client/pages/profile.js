@@ -3,7 +3,7 @@ import s from '../styles/pages/profile.module.scss';
 import Page from "../layout/Page/Page";
 import {Controller, useForm} from "react-hook-form";
 import Input from '../components/Input/Input';
-import {getSelfUserAvatar, getUserInfo, updateUserInfo} from '../store/slices/userSlice';
+import { getUserInfo, updateUserInfo} from '../store/slices/userSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {
     AvatarSkeleton,
