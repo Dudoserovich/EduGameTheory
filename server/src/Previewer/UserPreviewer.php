@@ -76,7 +76,7 @@ class UserPreviewer
         return [
             "id" => $user->getId(),
             "fio" => $user->getFio(),
-            "avatar_name" => $avatar,
+            "avatar_name" => $user->getAvatar(),
             "avatar_base64" => $avatar
         ];
     }

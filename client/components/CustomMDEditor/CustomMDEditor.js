@@ -5,16 +5,16 @@ import React from "react";
 
 import 'katex/dist/katex.min.css';
 
-export default function CustomMDEditor({value, setValue}) {
+export default function CustomMDEditor({value, onChange}) {
+
     return (
         <MDEditor
             value={value}
-            onChange={setValue}
+            onChange={onChange}
             previewOptions={{
                 components: {
                     code: ({inline, children = [], className, ...props}) => {
                         const txt = children[0] || '';
-                        console.log(txt);
                         if (inline) {
                             if (typeof txt === 'string' && /^\$\$(.*)\$\$/.test(txt)) {
                                 const html = katex.renderToString(txt.replace(/^\$\$(.*)\$\$/, '$1'), {

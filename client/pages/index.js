@@ -8,8 +8,6 @@ import ContactsPage from "../components/IndexPage/ContactsPage";
 import AchivPage from "../components/IndexPage/AchivPage";
 import Head from "../polyfills/head";
 import s from '../styles/pages/index.module.scss';
-import Toast, {notify} from "../components/Toast/Toast";
-import auto from "chart.js/auto";
 import {Hidden} from "@material-ui/core";
 import logoSvg from "../public/svg/logo.svg";
 import BoxAnimation from "../components/BoxAnimation/BoxAnimation";

@@ -1,23 +1,11 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {putRequest, refreshingToken, testPostRequest} from "../../api";
+import {postRequest, putRequest, refreshingToken, testPostRequest} from "../../api";
 import {IUser} from "../../models/response/user";
 
 
-export const createTask = createAsyncThunk<Promise<{ code: number } | { error: any }>, IUser, { rejectValue: string }>(
+export const createTask = createAsyncThunk<Promise<{ code: number } | { error: any }>, IUser>(
     '/newTask/createTask',
-    async (data, {rejectWithValue}) => {
-        try {
-            const response = await testPostRequest('/tasks', data);
-            return response.data;
-        } catch (err) {
-            if (err.response.data.code === 401) {
-                await refreshingToken();
-                return createTask(data);
-            } else {
-                return rejectWithValue(err.response.data);
-            }
-        }
-    }
+    async (data) => await postRequest('/tasks', data)
 );
 
 

@@ -3,7 +3,7 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useDispatch, useSelector} from "react-redux";
 
-const Toast = () => {
+const ToastSSE = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.info);
 
@@ -62,5 +62,5 @@ const Toast = () => {
     );
 }
 
-export default Toast;
+export default ToastSSE;
 export const notify = (message) => toast(message);

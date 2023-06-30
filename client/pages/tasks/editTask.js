@@ -21,6 +21,7 @@ import minus1 from "../../public/svg/minus1.svg";
 import { useLocation } from 'react-router-dom';
 import {updateTaskInfo} from "../../store/slices/tasksSlice";
 import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
+import SimpleToast, {notify} from "../../components/Toast/SimpleToast";
 
 
 export default function tasks() {
@@ -122,6 +123,18 @@ export default function tasks() {
                 </Grid>
             ));
         }
+
+        const tasksUpdate = useSelector(state => state.tasks.info);
+        useEffect(() => {
+            if (tasksUpdate?.data?.status === 200) {
+                notify(tasksUpdate?.data?.success)
+            }
+            if (tasksUpdate?.data?.error?.status) {
+                notify(tasksUpdate?.data?.error?.errors)
+            }
+
+            console.log(tasksUpdate);
+        }, [tasksUpdate.data]);
 
         return (
             <Grid container spacing={0} style={{height: `100%`}}>
@@ -353,6 +366,7 @@ export default function tasks() {
                 <BoxAnimation/>
 
             </div>
+            <SimpleToast/>
         </Page>
     );
 }
