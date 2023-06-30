@@ -28,11 +28,6 @@ class Level
      */
     private ?int $id = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @OA\Property()
@@ -53,6 +48,11 @@ class Level
      * @Groups({"default"})
      */
     private ?DateTimeInterface $deletedAt;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getName(): string
     {
