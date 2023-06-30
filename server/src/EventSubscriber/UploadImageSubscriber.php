@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Achievement;
+use App\Message\RemoveProductImageMessage;
 use App\Service\FileUploader;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,7 +28,7 @@ class UploadImageSubscriber implements EventSubscriberInterface
     {
         return [
             Events::POST_UPLOAD => 'postPersist',
-//            Events::PRE_REMOVE => 'preRemove',
+            Events::PRE_REMOVE => 'preRemove',
         ];
     }
 
@@ -51,7 +52,7 @@ class UploadImageSubscriber implements EventSubscriberInterface
         $mappingName = $mapping->getMappingName();
 
         if ('products' === $mappingName) {
-            $this->dispatch(Achievement::class, $event);
+            $this->dispatch(RemoveProductImageMessage::class, $event);
         }
     }
 
