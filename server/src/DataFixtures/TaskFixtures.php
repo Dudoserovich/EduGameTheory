@@ -356,6 +356,7 @@ class TaskFixtures extends BaseFixtureAbstract implements DependentFixtureInterf
         $topics = $this->getReferencesByEntityClass(Topic::class);
         $users = $this->getReferencesByEntityClass(User::class);
 
+        // оставляем только топик с матричными играми
         $matrixTopic = null;
         foreach ($topics as $topic) {
             if ("Матричные игры" === $topic->getName())
