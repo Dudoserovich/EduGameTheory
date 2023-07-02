@@ -15,31 +15,24 @@ class EducationFixtures extends BaseFixtureAbstract implements DependentFixtureI
     public function load(ObjectManager $manager): void
     {
         $topics = $this->getReferencesByEntityClass(Topic::class);
-        $tasks = $this->getReferencesByEntityClass(Task::class);
 
-        for ($i = 0; $i < 10; ++$i) {
+        // оставляем только топик с матричными играми
+        $matrixTopic = null;
+        foreach ($topics as $topic) {
+            if ("Матричные игры" === $topic->getName())
+                $matrixTopic = $topic;
+        }
+
+        for ($i = 0; $i < 5; ++$i) {
             $education = new Education();
             $education
                 ->setName($this->faker->unique()->word())
-                ->setDescription($this->faker->paragraph(1))
-                ->setConclusion($this->faker->paragraph(1))
-                ->setTopic($this->faker->randomElement($topics))
+                ->setDescription($this->faker->paragraph(4))
+                ->setConclusion($this->faker->paragraph(4))
+                ->setTopic($matrixTopic)
             ;
             $manager->persist($education);
             $this->saveReference($education);
-
-            // EduTasks
-//            $countTasks = $this->faker->numberBetween(3, count($tasks));
-//            for ($j = 0; $j < $countTasks; $j++) {
-//                $educationTasks = new EducationTasks();
-//                $educationTasks
-//                    ->setTheoryText($this->faker->paragraph(2))
-//                    ->setTask($this->faker->unique()->randomElement($tasks))
-//                    ->setEdu($education);
-//
-//                $manager->persist($education);
-//                $this->saveReference($education);
-//            }
         }
 
         $manager->flush();

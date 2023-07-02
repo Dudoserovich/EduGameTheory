@@ -18,11 +18,23 @@ class EducationView
      * @OA\Property(property="name", ref="#/components/schemas/Education/properties/name")
      * @Groups({"default", "name"})
      */
-    public int $name;
+    public string $name;
+
+    /**
+     * @OA\Property(property="description", ref="#/components/schemas/Education/properties/description")
+     * @Groups({"default", "description"})
+     */
+    public ?string $description;
 
     /**
      * @OA\Property(property="topic", ref="#/components/schemas/Education/properties/topic")
      * @Groups({"default", "topic"})
      */
     public ?Topic $topic;
+
+    /**
+     * @OA\Property(property="conclusion", ref="#/components/schemas/Education/properties/conclusion")
+     * @Groups({"default", "conclusion"})
+     */
+    public ?string $conclusion;
 }
