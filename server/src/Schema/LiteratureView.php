@@ -42,4 +42,11 @@ class LiteratureView
      */
 //    #[Property()]
     public Topic $topic;
+
+    /**
+     * @OA\Property(property="image_base64")
+     * @Groups({"default", "image_base64"})
+     */
+    #[Property(example: "data:image/png;base64...")]
+    public string $imageBase64;
 }

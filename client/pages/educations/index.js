@@ -3,25 +3,27 @@ import Page from "../../layout/Page/Page";
 import s from "../../styles/pages/profile.module.scss";
 import {useDispatch, useSelector} from "react-redux";
 import {getLiteratures} from "../../store/slices/literatureSlice";
-import {Button, Card, CardActions, CardContent, CardMedia, Chip} from "@mui/material";
+import {Button, Card, CardActions, CardContent, CardMedia, Chip, Rating} from "@mui/material";
 import {Typography} from "@material-ui/core";
-// import ogs from 'open-graph-scraper';
-// import {getLinkPreview, getPreviewFromContent} from "link-preview-js";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import {getTopicsInfo} from "../../store/slices/topicSlice";
 import {LiteratureCardSkeleton} from "../../components/Skeletons/CardSkeleton";
+import {getEducations} from "../../store/slices/educationSlice";
 
-export default function literature() {
-    // const ogs = require('open-graph-scraper');
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import Markdown from "../../components/Markdown/Markdown";
+
+export default function educations() {
     const dispatch = useDispatch();
-    const literatures = useSelector(state => state.literature.info);
+    const educations = useSelector(state => state.education.info);
     const topics = useSelector(state => state.topics.info);
     const [filters, setFilters] = useState({
         topics: []
     });
 
     useEffect(() => {
-        dispatch(getLiteratures());
+        dispatch(getEducations());
         dispatch(getTopicsInfo());
     }, [])
 
@@ -35,28 +37,40 @@ export default function literature() {
 
         if (filters.topics.length !== 0) {
             for (let i = 0; i < filters.topics.length; i++) {
-                filteredItems = filteredItems.concat(result.filter(item =>
-                    item.topic?.map((topic) => topic.id).includes(filters.topics[i].id))
+                filteredItems = filteredItems.concat(
+                    result.filter(item =>
+                        item?.topic?.id === filters.topics[i].id
+                    )
                 );
             }
 
-            // Есть какое-то задубление, поэтому оставляем только уникальные значения
-            result = new Set(filteredItems);
-            result = Array.from(result);
+            result = filteredItems;
         }
 
         return result;
     }
 
-    // console.log(literatures)
+    function truncateString(str, maxLength = 200) {
+        if (str.length <= maxLength) {
+            return str;
+        }
 
-    // async function ogtPreview(link) {
-    //     const data = await getLinkPreview("https://cataas.com/cat");
-    //     return data.favicons[0];
-    // }
+        // Обрезаем строку до maxLength символов
+        let truncatedStr = str.substr(0, maxLength);
+
+        // Находим последний пробел в обрезанной строке
+        let lastSpaceIndex = truncatedStr.lastIndexOf(' ');
+
+        // Если найден пробел, обрезаем строку до этого пробела
+        if (lastSpaceIndex !== -1) {
+            truncatedStr = truncatedStr.substr(0, lastSpaceIndex);
+        }
+
+        return truncatedStr;
+    }
 
     return (
-        <Page pageTitle={'Список литературы'}>
+        <Page pageTitle={'Обучения'}>
             <div className={s.backgroundStyle}>
                 <div className={s.ctn}>
                     <div style={{
@@ -91,46 +105,51 @@ export default function literature() {
                         placeItems: "center"
                     }}>
                         {
-                            literatures?.data ?
-                                filtering(literatures?.data).map(literature => {
-                                    // ogtPreview(literature.link)
-                                    // console.log(link)
+                            educations?.data ?
+                                filtering(educations?.data)?.map(education => {
                                     return (
-                                        <Card key={literature.id}
+                                        <Card key={education.id}
                                               sx={{
                                                   marginBottom: "10px",
                                                   marginRight: "20px",
-                                                  minWidth: "-webkit-fill-available"
+                                                  minWidth: "-webkit-fill-available",
+                                                  // minHeight: 200
                                               }}
                                         >
                                             <CardMedia
                                                 sx={{height: 350}}
                                                 component="img"
-                                                image={literature.image_base64}
+                                                image="https://cataas.com/cat?type=sm"
                                             />
                                             <CardContent>
                                                 <Typography gutterBottom variant="h5" component="div">
-                                                    {literature.name}
+                                                    {education.name}
                                                 </Typography>
-                                                <Typography variant="body2" style={{color: "dimgray"}}>
-                                                    {literature.description}
-                                                </Typography>
-                                                {literature?.topic?.map(topic => {
-                                                    return (
-                                                        <Chip
-                                                            key={topic?.id}
-                                                            label={topic?.name}
-                                                            style={{marginRight: "10px", marginTop: "10px"}}
-                                                        />
-                                                    )
-                                                })}
+                                                <Markdown
+                                                    value={truncateString(education?.description) + '...'}
+                                                />
+                                                <Chip
+                                                    key={education?.topic?.id}
+                                                    label={education?.topic?.name}
+                                                    style={{marginTop: "10px"}}
+                                                />
+                                                <div style={{marginTop: 10, color: "dimgray"}}>
+                                                    <Typography component="legend">Прогресс</Typography>
+                                                    <Rating
+                                                        name="disabled"
+                                                        value={education?.progress?.passed}
+                                                        max={education?.progress?.total}
+                                                        icon={<CheckCircleIcon/>}
+                                                        emptyIcon={<CheckCircleOutlineIcon/>}
+                                                        disabled
+                                                    />
+                                                </div>
                                             </CardContent>
                                             <CardActions>
                                                 <Button
-                                                    target="_blank"
-                                                    href={literature.link}
+                                                    href={`/educations/${education.id}`}
                                                     size="small"
-                                                >Перейти на ресурс
+                                                >Перейти к обучению
                                                 </Button>
                                             </CardActions>
                                         </Card>

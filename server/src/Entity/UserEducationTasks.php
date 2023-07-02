@@ -108,7 +108,7 @@ class UserEducationTasks
         return $this->isCurrentBlock;
     }
 
-    public function setCurrentBlock(bool $isCurrentBlock): self
+    public function setIsCurrentBlock(bool $isCurrentBlock): self
     {
         $this->isCurrentBlock = $isCurrentBlock;
         return $this;

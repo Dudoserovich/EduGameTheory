@@ -8,6 +8,12 @@ vich_uploader:
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             inject_on_load: true
 
+        literature:
+            uri_prefix: /literatures/upload
+            upload_destination: '%kernel.project_dir%/public/uploads/literature'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: true
+
 #    db_driver: orm        # or mongodb or phpcr - default db driver
 #    twig: false            # set to false to disable twig integration
 #    form: false            # set to false to disable form integration

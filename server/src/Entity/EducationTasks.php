@@ -29,6 +29,13 @@ class EducationTasks
     private ?int $id = null;
 
     /**
+     * @ORM\Column(type="integer", nullable=false)
+     * @OA\Property()
+     * @Groups({"default"})
+     */
+    private int $blockNumber;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Education::class)
      * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      * @OA\Property(ref=@Model(type=Education::class))
@@ -61,6 +68,17 @@ class EducationTasks
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getBlockNumber(): int
+    {
+        return $this->blockNumber;
+    }
+
+    public function setBlockNumber(int $blockNumber): self
+    {
+        $this->blockNumber = $blockNumber;
+        return $this;
     }
 
     public function getEdu(): ?Education

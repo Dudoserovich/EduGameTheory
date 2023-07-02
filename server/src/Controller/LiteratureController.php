@@ -9,8 +9,10 @@ use App\Previewer\TopicLiteraturePreviewer;
 use App\Repository\LiteratureRepository;
 use App\Repository\TopicLiteratureRepository;
 use App\Repository\TopicRepository;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,9 +33,9 @@ class LiteratureController extends ApiController
     private TopicLiteratureRepository $topicLiteratureRepository;
 
     public function __construct(
-        LiteratureRepository $literatureRepository,
+        LiteratureRepository      $literatureRepository,
         TopicLiteratureRepository $topicLiteratureRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface    $em
     )
     {
         $this->literatureRepository = $literatureRepository;
@@ -60,7 +62,7 @@ class LiteratureController extends ApiController
      */
     #[Route(name: 'get', methods: ['GET'])]
     public function getLiteratures(
-        LiteraturePreviewer $literaturePreviewer,
+        LiteraturePreviewer      $literaturePreviewer,
         TopicLiteraturePreviewer $topicLiteraturePreviewer
     ): JsonResponse
     {
@@ -76,12 +78,31 @@ class LiteratureController extends ApiController
 
     /**
      * Add new literature
-     * @OA\RequestBody (
+     * @OA\RequestBody(
+     *     description="P.S. svg загрузить не получится",
      *     required=true,
-     *     @OA\JsonContent(
-     *         @OA\Property(property="name", ref="#/components/schemas/LiteratureView/properties/name"),
-     *         @OA\Property(property="link", ref="#/components/schemas/LiteratureView/properties/link"),
-     *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
+     *     @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *         @OA\Schema(
+     *             @OA\Property(
+     *                  property="name",
+     *                  ref="#/components/schemas/LiteratureView/properties/name"
+     *             ),
+     *             @OA\Property(
+     *                  property="description",
+     *                  ref="#/components/schemas/LiteratureView/properties/description"
+     *             ),
+     *             @OA\Property(
+     *                  property="link",
+     *                  ref="#/components/schemas/LiteratureView/properties/link"
+     *             ),
+     *            @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id"),
+     *            @OA\Property(
+     *                 property="imageFile",
+     *                 nullable=false,
+     *                 ref="#/components/schemas/AchievementView/properties/imageFile"
+     *            ),
+     *         )
      *     )
      * )
      * @OA\Response(
@@ -99,12 +120,26 @@ class LiteratureController extends ApiController
      */
     #[Route(name: 'post', methods: ['POST'])]
     public function postLiterature(
-        Request $request,
-        TopicRepository $topicRepository,
+        Request                   $request,
+        TopicRepository           $topicRepository,
         TopicLiteratureRepository $topicLiteratureRepository,
+        FileUploader              $fileUploader
     ): JsonResponse
     {
+        /**
+         * @var $imageFile File
+         */
+        $imageFile = $request->files->get('imageFile');
+        if (!$imageFile) {
+            return $this->respondValidationError("File for literature not transferred");
+        }
+
         $request = $request->request->all();
+
+        // Проверяем, что файл - изображение
+        if (!$fileUploader->isImage($imageFile))
+            return $this->respondValidationError("Incorrect image type" . $imageFile->getMimeType());
+
 
         $topic = $topicRepository->find($request['topic_id']);
         if (!$topic) {
@@ -118,6 +153,9 @@ class LiteratureController extends ApiController
             if ($literature->getDeletedAt()) {
                 $literature->setDeletedAt(null);
                 $literature
+                    ->setImageFile($imageFile)
+                    ->setName($request['name'])
+                    ->setDescription($request['description'])
                     ->setLink($request['link']);
 
                 $topicLiterature = $topicLiteratureRepository->findOneBy(
@@ -141,7 +179,9 @@ class LiteratureController extends ApiController
         $literature = new Literature();
         try {
             $literature
+                ->setImageFile($imageFile)
                 ->setName($request['name'])
+                ->setDescription($request['description'])
                 ->setLink($request['link']);
             $this->em->persist($literature);
 
@@ -181,7 +221,7 @@ class LiteratureController extends ApiController
     ]
     public function getLiterature(
         TopicLiteraturePreviewer $topicLiteraturePreviewer,
-        int $literatureId
+        int                      $literatureId
     ): JsonResponse
     {
         $literature = $this->literatureRepository->find($literatureId);
@@ -199,8 +239,12 @@ class LiteratureController extends ApiController
      *     @OA\JsonContent(
      *         @OA\Property(property="name", nullable=false, ref="#/components/schemas/LiteratureView/properties/name"),
      *         @OA\Property(property="link", nullable=true, ref="#/components/schemas/LiteratureView/properties/link"),
-     *         @OA\Property(property="old_topic_id", ref="#/components/schemas/Topic/properties/id"),
-     *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
+     *         @OA\Property(
+     *             property="topic_ids",
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Topic/properties/id")
+     *         ),
+     *         @OA\Property(property="image_base64", ref="#/components/schemas/LiteratureView/properties/imageBase64"),
      *     )
      * )
      * @OA\Response(
@@ -222,11 +266,14 @@ class LiteratureController extends ApiController
      * )
      */
     #[Route('/{literatureId}', name: 'put_by_id', requirements: ['literatureId' => '\d+'], methods: ['PUT'])]
-    public function upLiterature(Request $request,
-                                 int $literatureId,
+    public function upLiterature(Request                   $request,
+                                 int                       $literatureId,
                                  TopicLiteratureRepository $topicLiteratureRepository,
-                                 TopicRepository $topicRepository): JsonResponse
+                                 TopicRepository           $topicRepository): JsonResponse
     {
+        // TODO: Есть возможность задать пустой массив с топиками,
+        //  тогда литература будет без темы. Стоит оставлять?
+
         $literature = $this->literatureRepository->find($literatureId);
         if (!$literature) {
             return $this->respondNotFound("Literature not found");
@@ -238,22 +285,62 @@ class LiteratureController extends ApiController
             if (isset($request['name'])) {
                 $literature->setName($request['name']);
             }
+            if (isset($request['description'])) {
+                $literature->setDescription($request['description']);
+            }
             if (isset($request['link'])) {
                 $literature->setLink($request['link']);
             }
-            if (isset($request['topic_id'])) {
-                $newTopic = $topicRepository->find($request['topic_id']);
-                $topicLiterature = $topicLiteratureRepository->findOneBy(["literature" => $literature, "topic" => $newTopic]);
 
-                // Попытка заменить топик на уже существующий
-                if ($topicLiterature)
-                    return $this->respondWithSuccess("Literature is already exists");
-                else { // Если меняем топик, нам нужно заменить на новый
-                    $oldTopic = $topicRepository->find($request["old_topic_id"]);
-                    $topicLiterature = $topicLiteratureRepository->findOneBy(["literature" => $literature, "topic" => $oldTopic]);
+            if (isset($request['topic_ids'])) {
+                $topicIds = $request['topic_ids'];
 
-                    $topicLiterature->setTopic($newTopic);
+                // Проверка на существование топиков
+                $topics = [];
+                foreach ($topicIds as $topicId) {
+                    $topic = $topicRepository->find($topicId);
+
+                    if (!$topic) {
+                        return $this->respondNotFound("Topic with id: $topicId not found");
+                    }
+
+                    $topics[] = $topic;
                 }
+
+                // Удаление всех существующих TopicLiterature если они не подходят
+                $topicLiteratures = $topicLiteratureRepository->findBy([
+                    "literature" => $literature
+                ]);
+                $notFoundTopicLiteratures = $topicLiteratures
+                    ? array_filter(
+                        $topicLiteratures,
+                        fn(TopicLiterature $topicLiterature): bool
+                            => !in_array($topicLiterature->getTopic(), $topics)
+                    )
+                    : [];
+                foreach ($notFoundTopicLiteratures as $notFoundTopicLiterature) {
+                    $this->em->remove($notFoundTopicLiterature);
+                }
+
+                // Создание новых связей литературы и топиков
+                foreach ($topics as $topic) {
+                    $topicLiterature = $topicLiteratureRepository->findOneBy([
+                        "literature" => $literature,
+                        "topic" => $topic
+                    ]);
+
+                    if (!$topicLiterature) {
+                        $topicLiterature = new TopicLiterature();
+                        $topicLiterature
+                            ->setLiterature($literature)
+                            ->setTopic($topic)
+                        ;
+
+                        $this->em->persist($topicLiterature);
+                    }
+                }
+
+
             }
 
             $this->em->flush();

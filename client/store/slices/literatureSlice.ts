@@ -13,6 +13,7 @@ interface IData {
     description: string;
     link: string;
     topic: {id: string, name: string};
+    image_base64: string;
 }
 
 interface ILiteraturesSlice {

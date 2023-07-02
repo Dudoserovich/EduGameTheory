@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\Achievement;
+use App\Entity\Literature;
 use App\Service\FileUploader;
 use Exception;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -37,7 +38,7 @@ class UploadImageListener
     {
         $entity = $args->getObject();
 
-        if (!$entity instanceof Achievement) {
+        if (!$entity instanceof Achievement and !$entity instanceof Literature) {
             return;
         }
 
@@ -54,20 +55,25 @@ class UploadImageListener
         $optimizerChain = OptimizerChainFactory::create();
         $optimizerChain->optimize($pathImage);
 
-        // Генерируем ссылку
-        preg_match("/uploads\/[A-z]+\/[0-9A-z-]+\.(png|jpg|gif)$/", $pathImage, $matchesPath);
-        $imagePath = $this->cacheManager->getBrowserPath($movedImageFile, 'thumb');
-        preg_match('/^http?s?:\/\/[A-z.]+/', $imagePath, $matchesHost);
-//        print_r($matchesPath);
-        $imagePath = "$matchesHost[0]/api/$matchesPath[0]";
         $entity
             ->setImageSize($movedImageFile->getSize())
             ->setImageName($movedImageFile->getFilename())
             ->setImageFile($movedImageFile)
-            ->setThumbnail($imagePath);
+        ;
+
+        // По старой логике, мы генерируем ссылку на картинку.
+        // По этой логике пока что работают достижения.
+        if ($entity instanceof Achievement) {
+            // генерируем ссылку
+            preg_match("/uploads\/[A-z]+\/[0-9A-z-]+\.(png|jpg|gif)$/", $pathImage, $matchesPath);
+            $imagePath = $this->cacheManager->getBrowserPath($movedImageFile, 'thumb');
+            preg_match('/^http?s?:\/\/[A-z.]+/', $imagePath, $matchesHost);
+
+            $imagePath = "$matchesHost[0]/api/$matchesPath[0]";
+            $entity->setThumbnail($imagePath);
+        }
 
         $args->getObjectManager()->flush();
 
-//        $args->getEntityManager()->getRepository();
     }
 }

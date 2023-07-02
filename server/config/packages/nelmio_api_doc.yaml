@@ -78,6 +78,8 @@ nelmio_api_doc:
         description: Получение информации по собственным заданиям преподавателем
       - name: Progress
         description: Получение прогресса (очков, уровней, таблицы лидеров)
+      - name: Education
+        description: Взаимодействие с обучением
       - name: Uploads
         description: Получение загруженных изображений (аватарки пользователей/достижения)
       - name: Test

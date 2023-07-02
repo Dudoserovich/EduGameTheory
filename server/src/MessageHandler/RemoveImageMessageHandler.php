@@ -3,13 +3,14 @@
 namespace App\MessageHandler;
 
 use App\Entity\Achievement;
+use App\Message\RemoveProductImageMessage;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class RemoveImageMessageHandler implements MessageHandlerInterface
 {
-    public function __invoke(Achievement $message): void
+    public function __invoke(RemoveProductImageMessage $message): void
     {
-        $file = $message->getImageFile();
+        $file = $message->getFile();
 
         unlink($file->getFilename());
 
