@@ -39,7 +39,7 @@ class FileUploader
      */
     public function upload(
         File   $file,
-        string $targetDirectory = 'achievement'
+//        string $targetDirectory = 'achievement'
     ): File|null
     {
         $file->getType();
@@ -51,9 +51,11 @@ class FileUploader
 
         $newFile = null;
 
+        echo '/app/' . $file->getPath() . PHP_EOL;
+        echo $file->getRealPath();
         try {
             $newFile = $file->move(
-                $this->getGlobalDirectory() . $targetDirectory,
+                $file->getPath(),
                 $fileName
             );
         } catch (FileException $e) {
