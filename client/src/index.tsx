@@ -24,7 +24,6 @@ import MyTask from  "../pages/tasks/tasksTeacher";
 import ToastSSE from "../components/Toast/ToastSSE";
 import Educations from "../pages/educations"
 import Education from "../pages/educations/[eduId]"
-import TestPage from "../pages/Test/testPage";
 
 const App = () => {
     return (
@@ -53,7 +52,6 @@ const App = () => {
                                 <Route index element={<Educations/>}/>
                                 <Route path=":eduId" element={<Education/>}/>
                             </Route>
-                            <Route path="test" element={<TestPage/>}/>
                         </Route>
                         <Route path="*" element={<Page404 />} />
                     </Routes>
