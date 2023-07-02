@@ -36,7 +36,7 @@ export const headerConfig = {
                 },
                 {
                     name: 'Конструктор заданий',
-                    href: '/tasks/creatTask'
+                    href: '/tasks/createTask'
                 },
                 {
                     name: 'Мои задания',
@@ -86,7 +86,7 @@ export const headerConfig = {
             name: 'Дополнительные материалы',
             submenus: [
                 {
-                    name: 'Глосарий терминов',
+                    name: 'Глоссарий терминов',
                     href: '/materials/terms'
                 },
                 {
@@ -95,6 +95,10 @@ export const headerConfig = {
                 }
             ],
             href: '/materials'
+        },
+        {
+            name: 'Обучение',
+            href: '/educations'
         },
         {
             name: 'Пользователи',

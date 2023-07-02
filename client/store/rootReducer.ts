@@ -16,6 +16,7 @@ import tasksPayoffSlice from "./slices/taskPayoffSlice";
 import playGameSlice from "./slices/taskPlayGameSlice";
 import tasksTeacherInfoSlice from "./slices/teacherTasksSlice";
 import getAchievementsSlice from "./slices/achivSlice";
+import educationSlice from "./slices/educationSlice";
 
 export const rootReducer = combineReducers({
     achievements: getAchievementsSlice,
@@ -34,5 +35,6 @@ export const rootReducer = combineReducers({
     term: termSlice,
     tasks: tasksInfoSlice,
     newTask: newTaskSlice,
-    topics: topicsInfoSlice
+    topics: topicsInfoSlice,
+    education: educationSlice
 });

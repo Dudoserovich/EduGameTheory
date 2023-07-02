@@ -33,6 +33,7 @@
     "nprogress": "^0.2.0",
     "open-graph-scraper": "^6.1.0",
     "parallax-js": "^3.1.0",
+    "prop-types": "^15.8.1",
     "react": "17.0.2",
     "react-animate-height": "^2.0.23",
     "react-chartjs-2": "^4.3.1",

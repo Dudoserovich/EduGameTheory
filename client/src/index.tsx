@@ -21,7 +21,9 @@ import Task from  "../pages/tasks/Task";
 import EditTask from  "../pages/tasks/editTask";
 import TaskPlay from  "../pages/tasks/TaskGame";
 import MyTask from  "../pages/tasks/tasksTeacher";
-import Toast from "../components/Toast/Toast";
+import ToastSSE from "../components/Toast/ToastSSE";
+import Educations from "../pages/educations"
+import Education from "../pages/educations/[eduId]"
 import TestPage from "../pages/Test/testPage";
 
 const App = () => {
@@ -47,11 +49,16 @@ const App = () => {
                                 <Route path="taskPlay" element={<TaskPlay/>}/>
                                 <Route path="myTasks" element={<MyTask/>}/>
                             </Route>
+                            <Route path="educations">
+                                <Route index element={<Educations/>}/>
+                                <Route path=":eduId" element={<Education/>}/>
+                            </Route>
+                            <Route path="test" element={<TestPage/>}/>
                         </Route>
                         <Route path="*" element={<Page404 />} />
                     </Routes>
                 </Router>
-                {/*<Toast />*/}
+                {/*<ToastSSE />*/}
             </Provider>
         </>
     );
