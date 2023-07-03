@@ -2,6 +2,7 @@ import axios from "axios";
 import CONFIG from "../config";
 import router from '../polyfills/router';
 import {getJWT, setJWT, getRefreshToken, setRefreshToken, removeJWT, removeRefreshToken} from '../scripts/jwtService';
+import {notify, notifyError, notifySuccess, notifyWarn} from "../components/Toast/SimpleToast";
 
 let cancelToken;
 
@@ -15,6 +16,13 @@ export function authorization(data) {
             return {data: res.data}
         })
         .catch(err => {
+            if (err.response.data.code === 401) {
+                notifyWarn("Неверные данные для входа")
+            }
+            else if (err.response.data.code === 500) {
+                notifyError(err.response.data.message)
+            }
+
             return {error: err.response.data}
         });
 }
@@ -68,6 +76,8 @@ export function getRequest(path, headers = {}) {
                 refreshingToken();
                 return getRequest(path, headers);
             }
+            else notifyError(err.response.data.errors);
+
             return {error: err.response.data}
         });
 }
@@ -84,6 +94,7 @@ export function postRequest(path, data = {}, headers = {}) {
         data: data
     })
         .then(res => {
+            notifySuccess(res.data.success)
             return {data: res.data}
         })
         .catch(err => {
@@ -91,6 +102,8 @@ export function postRequest(path, data = {}, headers = {}) {
                 refreshingToken();
                 return postRequest(path, data, headers);
             }
+            else notifyError(err.response.data.errors);
+
             return {error: err.response.data}
         });
 }
@@ -120,6 +133,7 @@ export function putRequest(path, data = {}, headers = {}) {
         data: data
     })
         .then(res => {
+            notifySuccess(res.data.success)
             return {data: res.data}
         })
         .catch(err => {
@@ -127,6 +141,10 @@ export function putRequest(path, data = {}, headers = {}) {
                 refreshingToken();
                 return putRequest(path, data, headers);
             }
+            else {
+                notifyError(err.response.data.errors)
+            }
+
             return {error: err.response.data}
         });
 }

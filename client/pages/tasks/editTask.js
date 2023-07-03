@@ -124,18 +124,6 @@ export default function tasks() {
             ));
         }
 
-        const tasksUpdate = useSelector(state => state.tasks.info);
-        useEffect(() => {
-            if (tasksUpdate?.data?.status === 200) {
-                notify(tasksUpdate?.data?.success)
-            }
-            if (tasksUpdate?.data?.error?.status) {
-                notify(tasksUpdate?.data?.error?.errors)
-            }
-
-            console.log(tasksUpdate);
-        }, [tasksUpdate.data]);
-
         return (
             <Grid container spacing={0} style={{height: `100%`}}>
                 <Grid item container spacing={2} xs={12} sm={12} md={6} lg={6} className={s.propsBack}>
@@ -210,6 +198,7 @@ export default function tasks() {
     const onSubmit = (data) => {
         console.log(data)
         dispatch(updateTaskInfo({id: task.id, IData: data}));
+        topic = useSelector(state => state.topics.info);
     }
     return (
         <Page pageTitle={'Конструктор заданий'}>
@@ -326,7 +315,7 @@ export default function tasks() {
                                 <Controller
                                     name="description"
                                     control={control}
-                                    rules={{required: true}}
+                                    rules={{required: false}}
                                     render={(
                                         {
                                             field: { onChange, onBlur, value, name, ref },
@@ -348,10 +337,8 @@ export default function tasks() {
                             </Grid>
 
                             <Matrix/>
+                            <Button type={'submit'} variant="contained">Изменить</Button>
                         </Grid>
-                        {
-                            <Button type={'submit'} /*className={s.bottonGo}*/>Изменить</Button>
-                        }
                     </form>
 
                 </div>
@@ -366,7 +353,6 @@ export default function tasks() {
                 <BoxAnimation/>
 
             </div>
-            <SimpleToast/>
         </Page>
     );
 }

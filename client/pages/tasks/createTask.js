@@ -95,7 +95,7 @@ export default function tasks(userID) {
         // функция для отображения ячеек матрицы
         function renderCells(row) {
             return matrix[row].map((value, col) => (
-                <Grid item xs={4} sm={4} md={3} lg={2} >
+                <Grid item xs={4} sm={4} md={3} lg={2}>
                     <TextField
                         value={value}
                         id="col"
@@ -107,12 +107,14 @@ export default function tasks(userID) {
                 </Grid>
             ));
         }
+
         console.log(matrix);
+
         // функция для отображения строк матрицы
         function renderRows() {
             return matrix.map((row, index) => (
-                <Grid item container spacing={2} xs={12} sm={12} md={12} lg={12} key={index} >
-                    Строка {index+1}
+                <Grid item container spacing={2} xs={12} sm={12} md={12} lg={12} key={index}>
+                    Строка {index + 1}
                     <div className={s.propsRow}>
                         <Grid container spacing={2} item xs={12} sm={12} md={12} lg={12}>
                             {renderCells(index)}
@@ -198,19 +200,6 @@ export default function tasks(userID) {
         console.log(data)
         dispatch(createTask(data));
     }
-
-    // Отлавливаем сообщения запросов
-    const newTaskResult = useSelector(state => state.newTask.creatingTask);
-    useEffect(() => {
-        if (newTaskResult?.data?.status === 200) {
-            notify(newTaskResult?.data.success)
-        }
-        if (newTaskResult?.error?.status) {
-            notify(newTaskResult?.error?.errors)
-        }
-
-        console.log(newTaskResult);
-    }, [newTaskResult]);
 
     return (
         <Page pageTitle={'Конструктор заданий'}>
@@ -330,8 +319,8 @@ export default function tasks(userID) {
                                     rules={{required: true}}
                                     render={(
                                         {
-                                            field: { onChange, onBlur, value, name, ref },
-                                            fieldState: { invalid, isTouched, isDirty, error },
+                                            field: {onChange, onBlur, value, name, ref},
+                                            fieldState: {invalid, isTouched, isDirty, error},
                                             formState,
                                         }) => (
                                         <CustomMDEditor
@@ -349,10 +338,8 @@ export default function tasks(userID) {
                             </Grid>
 
                             <Matrix/>
+                            <Button type={'submit'} variant="contained">Создать</Button>
                         </Grid>
-                        {
-                            <Button type={'submit'}>Создать</Button>
-                        }
                     </form>
 
                 </div>
@@ -366,7 +353,6 @@ export default function tasks(userID) {
                 </ul>
                 <BoxAnimation/>
             </div>
-            <SimpleToast/>
         </Page>
     );
 }

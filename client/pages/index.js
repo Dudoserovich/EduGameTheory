@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Auth from "../components/Auth/Auth";
 import SmallAuth from "../components/Auth/SmallAuth";
 import ProjectPage from "../components/IndexPage/ProjectPage";
@@ -11,6 +11,10 @@ import s from '../styles/pages/index.module.scss';
 import {Hidden} from "@material-ui/core";
 import logoSvg from "../public/svg/logo.svg";
 import BoxAnimation from "../components/BoxAnimation/BoxAnimation";
+import SimpleToast, {notify} from "../components/Toast/SimpleToast";
+import {useSelector} from "react-redux";
+import {getToken, saveToken} from "../store/slices/authSlice";
+import router from "router";
 
 export default function Home() {
     return (
