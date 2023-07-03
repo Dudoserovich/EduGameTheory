@@ -44,12 +44,12 @@ class ApiController extends AbstractController
         );
     }
 
-    public function respondValidationError($message = 'Data no valid'): JsonResponse
+    public function respondValidationError($message = 'Некорректные данные'): JsonResponse
     {
         return $this->respondWithErrors($message, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function respondNotFound($message = 'Not found!'): JsonResponse
+    public function respondNotFound($message = 'Не найдено'): JsonResponse
     {
         return $this->respondWithErrors($message, Response::HTTP_NOT_FOUND);
     }

@@ -69,7 +69,7 @@ class TaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещен"
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
@@ -112,15 +112,15 @@ class TaskController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Task added successfully"
+     *     description="Задание успешно добавлено"
      * )
      * * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Некорректные данные"
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
@@ -133,12 +133,12 @@ class TaskController extends ApiController
         $task = $this->taskRepository->findOneBy(['name' => $request['name']]);
         if ($task)
             if (!$task->getDeletedAt())
-                return $this->respondValidationError('A Task with such name has already been created');
+                return $this->respondValidationError('Задание с таким названием уже существует');
             else $task->setDeletedAt(null);
 
         $topic = $topicRepository->find($request['topic_id']);
         if (!$topic) {
-            return $this->respondNotFound("Topic not found");
+            return $this->respondNotFound("Тип задания не найден");
         }
 
         $task = $task ?? new Task();
@@ -158,7 +158,7 @@ class TaskController extends ApiController
             $this->em->persist($task);
 
             $this->em->flush();
-            return $this->respondWithSuccess("Task added successfully");
+            return $this->respondWithSuccess("Задание успешно добавлено");
         } catch (Exception) {
             return $this->respondValidationError();
         }
@@ -173,11 +173,11 @@ class TaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}',
@@ -191,7 +191,7 @@ class TaskController extends ApiController
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
 
         return $this->response($taskPreviewer->preview($task));
@@ -222,20 +222,19 @@ class TaskController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Task updated successfully"
+     *     description="Задание изменено"
      * )
-     *
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Некорректные данные"
      * )
      */
     #[Route('/{taskId}',
@@ -249,7 +248,7 @@ class TaskController extends ApiController
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task)
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
 
         $request = $request->request->all();
 
@@ -271,7 +270,7 @@ class TaskController extends ApiController
                 $topic = $topicRepository->find($request['new_topic_id']);
 
                 if (!$topic)
-                    return $this->respondNotFound("Topic not found");
+                    return $this->respondNotFound("Тип задания не найден");
                 else {
                     $task->setTopic($topic);
                 }
@@ -279,7 +278,7 @@ class TaskController extends ApiController
 
             $this->em->flush();
 
-            return $this->respondWithSuccess("Task updated successfully");
+            return $this->respondWithSuccess("Задание изменено");
         } catch (Exception) {
             return $this->respondValidationError();
         }
@@ -289,15 +288,15 @@ class TaskController extends ApiController
      * Удаление задания
      * @OA\Response(
      *     response=200,
-     *     description="Task deleted successfully"
+     *     description="Задание успешно удалено"
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}',
@@ -309,12 +308,12 @@ class TaskController extends ApiController
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
 
         $this->em->remove($task);
         $this->em->flush();
 
-        return $this->respondWithSuccess("Task deleted successfully");
+        return $this->respondWithSuccess("Задание успешно удалено");
     }
 }

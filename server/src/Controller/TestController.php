@@ -34,7 +34,7 @@ class TestController extends ApiController
     //  в передаваемые параметры type и message.
     // TODO: topic стоит передавать в теле и пусть это будет массив строк
     /**
-     * Publish your topic
+     * Публикация вашей темы
      * @param HubInterface $hub
      * @param Request $request
      * @return JsonResponse
@@ -60,7 +60,7 @@ class TestController extends ApiController
      *
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied"
+     *     description="Доступ запрещён"
      * )
      *
      */

@@ -65,11 +65,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}/turns/play',
@@ -85,7 +85,7 @@ class UserTaskController extends ApiController
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
         if ($task->getFlagMatrix() !== 'платёжная матрица') {
             return $this->respondValidationError("Задание не содержит платёжную матрицу");
@@ -123,11 +123,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}/turns/play',
@@ -148,7 +148,7 @@ class UserTaskController extends ApiController
 
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
         if ($task->getFlagMatrix() !== 'платёжная матрица') {
             return $this->respondValidationError("Задание не содержит платёжную матрицу");
@@ -157,8 +157,8 @@ class UserTaskController extends ApiController
         $moves = $session->get("task_$taskId")["moves"] ?? [];
         if (count($moves) > 10) {
             $result = $session->get("task_$taskId");
-            $resultMessage = "Вы уже прошли это задание.";
-            $result["message"] = $resultMessage;
+            $resultMessage = "Вы уже прошли это задание";
+            $result["success"] = $resultMessage;
             $session->set(
                 "task_$taskId",
                 $result
@@ -171,7 +171,7 @@ class UserTaskController extends ApiController
 
         // Проверка на валидность переданного номера строки
         if (!($request['row_number'] < count($task->getMatrix()) and $request['row_number'] >= 0))
-            return $this->respondNotFound("Row number does not exist");
+            return $this->respondNotFound("Неверный номер строки");
 
         // вычисляем результат хода
         $taskBrownRobinson->BraunRobinson($task->getMatrix());
@@ -182,7 +182,7 @@ class UserTaskController extends ApiController
         );
 
         if (is_null($resultMove))
-            return $this->respondNotFound("Matrix or array of chance is empty");
+            return $this->respondNotFound("Пустая матрица");
 
         $score = $session->get("task_$taskId")["score"] ?? 0;
         $score += $resultMove;
@@ -224,7 +224,7 @@ class UserTaskController extends ApiController
                 "your_chance" => $your_chance,
                 "result_move" => $resultMove,
                 "score" => $score,
-                "message" => $message
+                "success" => $message
             ];
         // сохраняет результаты задачи в сессии
         $session->set(
@@ -244,11 +244,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}/turns/restart',
@@ -262,7 +262,7 @@ class UserTaskController extends ApiController
 
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
 
         $session->remove("task_$taskId");
@@ -277,11 +277,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}/solve',
@@ -293,7 +293,7 @@ class UserTaskController extends ApiController
     {
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
 
         // Матрица последствий
@@ -331,11 +331,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/payoff/strategy',
@@ -366,11 +366,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/payoff/flagMatrix',
@@ -426,11 +426,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}/solve/payoff',
@@ -447,7 +447,7 @@ class UserTaskController extends ApiController
 
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
 
         $user = $this->getUserEntity($this->userRepository);
@@ -524,11 +524,11 @@ class UserTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Task not found"
+     *     description="Задание не найдено"
      * )
      */
     #[Route('/{taskId}/solve/risk',
@@ -543,7 +543,7 @@ class UserTaskController extends ApiController
 
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдено");
         }
 
         $resultMessage = null;

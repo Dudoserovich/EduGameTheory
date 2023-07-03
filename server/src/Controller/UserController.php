@@ -63,7 +63,7 @@ class UserController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
@@ -95,15 +95,15 @@ class UserController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="User added successgully"
+     *     description="Аккаунт успешно создан"
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
@@ -122,10 +122,10 @@ class UserController extends ApiController
                     $this->em->persist($user);
                     $this->em->flush();
                     $this->setSoftDeleteable($this->em);
-                    return $this->respondWithSuccess("User added successfully");
+                    return $this->respondWithSuccess("Аккаунт успешно создан");
                 }
 
-                return $this->respondValidationError('User with this login is already exist');
+                return $this->respondValidationError('Аккаунт с данным логином уже существует');
             }
             $user = new User();
 
@@ -146,7 +146,7 @@ class UserController extends ApiController
                 $files = array_diff($files, array('.', '..'));
 
                 if (!in_array($request['avatar_name'], $files))
-                    return $this->respondNotFound("Avatar not found");
+                    return $this->respondNotFound("Аватар не найден");
 
                 $user->setAvatar($request['avatar_name']);
             }
@@ -163,7 +163,7 @@ class UserController extends ApiController
             $this->em->persist($user);
             $this->em->flush();
 
-            return $this->respondWithSuccess("User added successfully");
+            return $this->respondWithSuccess("Аккаунт успешно создан");
         } catch (Exception $e) {
             return $this->respondValidationError($e->getMessage());
         }
@@ -178,11 +178,11 @@ class UserController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="User not found"
+     *     description="Пользователь не найден"
      * )
      */
     #[Route('/{userId}',
@@ -197,7 +197,7 @@ class UserController extends ApiController
     {
         $user = $this->userRepository->find($userId);
         if (!$user) {
-            return $this->respondNotFound("User not found");
+            return $this->respondNotFound("Пользователь не найден");
         }
 
         $this->setSoftDeleteable($this->em, false);
@@ -221,20 +221,20 @@ class UserController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="User updated successgully"
+     *     description="Данные пользователя успешно обновлены"
      * )
      * * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      *
      * @OA\Response(
      *     response=404,
-     *     description="User not found"
+     *     description="Пользователь не найден"
      * )
      */
     #[Route('/{userId}',
@@ -249,7 +249,7 @@ class UserController extends ApiController
     {
         $user = $this->userRepository->find($userId);
         if (!$user) {
-            return $this->respondNotFound("User not found");
+            return $this->respondNotFound("Пользователь не найден");
         }
 
         $request = $request->request->all();
@@ -259,7 +259,7 @@ class UserController extends ApiController
                 $login = $request['login'];
 
                 if ($this->userRepository->findOneBy(['login' => $request['login']])) {
-                    return $this->respondValidationError('User with this login is already exist');
+                    return $this->respondValidationError('Аккаунт с таким логином уже существует');
                 }
 
                 $user->setUsername($login);
@@ -283,7 +283,7 @@ class UserController extends ApiController
                 $files = array_diff($files, array('.', '..'));
 
                 if (!in_array($request['avatar_name'], $files))
-                    return $this->respondNotFound("Avatar not found");
+                    return $this->respondNotFound("Аватар не найден");
 
                 $user->setAvatar($request['avatar_name']);
             }
@@ -296,7 +296,7 @@ class UserController extends ApiController
 
             $this->em->flush();
 
-            return $this->respondWithSuccess("User updated successfully");
+            return $this->respondWithSuccess("Данные пользователя успешно обновлены");
         } catch (Exception) {
             return $this->respondValidationError();
         }
@@ -306,15 +306,15 @@ class UserController extends ApiController
      * Удаление пользователя
      * @OA\Response(
      *     response=200,
-     *     description="User deleted successgully"
+     *     description="Аккаунт успешно удалён"
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="User not found"
+     *     description="Пользователь не найден"
      * )
      */
     #[Route('/{userId}',
@@ -326,13 +326,13 @@ class UserController extends ApiController
     {
         $user = $this->userRepository->find($userId);
         if (!$user) {
-            return $this->respondNotFound("User not found");
+            return $this->respondNotFound("Пользователь не найден");
         }
 
         $this->em->remove($user);
         $this->em->flush();
 
-        return $this->respondWithSuccess("User deleted successfully");
+        return $this->respondWithSuccess("Аккаунт успешно удалён");
     }
 
     /**
@@ -344,11 +344,11 @@ class UserController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route('/self',
@@ -388,15 +388,15 @@ class UserController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="User updated successgully"
+     *     description="Данные пользователя успешно обновлены"
      * )
      * * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route('/self', name: 'self_put', methods: ['PUT'])]
@@ -411,7 +411,7 @@ class UserController extends ApiController
                 $userRepository = $this->em->getRepository(User::class);
                 $userExist = (bool)$userRepository->findOneBy(['login' => $request['login']]);
                 if ($userExist && $user->getUserIdentifier() != $request['login']) {
-                    return $this->respondValidationError('User with this login is already exist');
+                    return $this->respondValidationError('Аккаунт с таким логином уже существует');
                 }
                 $user->setUsername($request['login']);
             }
@@ -421,7 +421,7 @@ class UserController extends ApiController
             if (isset($request['email'])) {
                 $email = $request['email'];
                 if (!(filter_var($email, FILTER_VALIDATE_EMAIL))) {
-                    return $this->respondValidationError("No valid email");
+                    return $this->respondValidationError("Неверный формат почты");
                 }
                 $user->setEmail($email);
             }
@@ -430,7 +430,7 @@ class UserController extends ApiController
                 $files = array_diff($files, array('.', '..'));
 
                 if (!in_array($request['avatar'], $files))
-                    return $this->respondNotFound("Avatar not found");
+                    return $this->respondNotFound("Аватар не найден");
 
                 $user->setAvatar($request['avatar']);
             }
@@ -439,16 +439,16 @@ class UserController extends ApiController
                 if (!$user->getPassword()) {
                     $user->setPassword($passwordEncoder->hashPassword($user, $request['newPassword']));
                 } else {
-                    return $this->respondValidationError("Old password is not set");
+                    return $this->respondValidationError("Старый пароль не задан");
                 }
             } else if (isset($request['oldPassword']) && !isset($request['newPassword'])) {
-                return $this->respondValidationError("New password is not set");
+                return $this->respondValidationError("Новый пароль не задан");
             } else if (isset($request['oldPassword']) && isset($request['newPassword'])) {
                 $oldPassword = $request['oldPassword'];
                 $newPassword = $request['newPassword'];
 
                 if (!$passwordEncoder->isPasswordValid($user, $oldPassword)) {
-                    return $this->respondValidationError("Old password is not right");
+                    return $this->respondValidationError("Старый пароль неверный");
                 } else {
                     $user->setPassword($passwordEncoder->hashPassword($user, $newPassword));
                 }
@@ -456,7 +456,7 @@ class UserController extends ApiController
 
             $this->em->flush();
 
-            return $this->respondWithSuccess("User updated successfully");
+            return $this->respondWithSuccess("Данные аккаунта успешно обновлены");
         } catch (Exception) {
             return $this->respondValidationError();
         }

@@ -19,7 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"login"}, message="There is already an account with this login")
+ * @UniqueEntity(fields={"login"}, message="Аккаунт с таким логином уже существует")
  * @Gedmo\SoftDeleteable
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -57,7 +57,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="json")
      * @OA\Property(
      *     type="array",
-     *     @OA\Items(type="string", minItems=1, maxItems=3, enum={"ROLE_USER", "ROLE_TEACHER", "ROLE_ADMIN"})
+     *     @OA\Items(
+     *         type="string",
+     *         minItems=1,
+     *         maxItems=3,
+     *         enum={"ROLE_USER", "ROLE_TEACHER", "ROLE_ADMIN"}
+     *     )
      * )
      * @Groups({"default"})
      */

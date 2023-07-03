@@ -14,7 +14,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=LevelRepository::class)
- * @UniqueEntity(fields={"name"}, message="A level with this name already exists")
+ * @UniqueEntity(fields={"name"}, message="Уровень с таким названием уже существует")
  * @Gedmo\SoftDeleteable
  */
 class Level

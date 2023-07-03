@@ -62,19 +62,19 @@ class UserProgress extends ApiController
      *              @OA\Property(
      *                  property="scores",
      *                  type="integer",
-     *                  description="Total scores"
+     *                  description="Всего очков"
      *              ),
      *              @OA\Property(
      *                 property="current_level",
      *                 type="object",
-     *                 description="The current level details",
+     *                 description="Информация о текущем уровне",
      *                 @OA\Property(property="name", ref="#/components/schemas/LevelView/properties/name"),
      *                 @OA\Property(property="need_scores", ref="#/components/schemas/LevelView/properties/need_scores")
      *              ),
      *              @OA\Property(
      *                 property="next_level",
      *                 type="object",
-     *                 description="The next level details",
+     *                 description="Информация о следующем уровне",
      *                 @OA\Property(property="name", ref="#/components/schemas/LevelView/properties/name"),
      *                 @OA\Property(property="need_scores", ref="#/components/schemas/LevelView/properties/need_scores")
      *              )
@@ -83,11 +83,11 @@ class UserProgress extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Scores not found"
+     *     description="Не найдено"
      * )
      * @throws NonUniqueResultException
      */
@@ -148,19 +148,19 @@ class UserProgress extends ApiController
      *              @OA\Property(
      *                  property="scores",
      *                  type="integer",
-     *                  description="Total scores"
+     *                  description="Всего очков"
      *              ),
      *              @OA\Property(
      *                 property="current_level",
      *                 type="object",
-     *                 description="The current level details",
+     *                 description="Информация о текущем уровне",
      *                 @OA\Property(property="name", ref="#/components/schemas/LevelView/properties/name"),
      *                 @OA\Property(property="need_scores", ref="#/components/schemas/LevelView/properties/need_scores")
      *              ),
      *              @OA\Property(
      *                 property="next_level",
      *                 type="object",
-     *                 description="The next level details",
+     *                 description="Информация о следующем уровне",
      *                 @OA\Property(property="name", ref="#/components/schemas/LevelView/properties/name"),
      *                 @OA\Property(property="need_scores", ref="#/components/schemas/LevelView/properties/need_scores")
      *              )
@@ -168,11 +168,11 @@ class UserProgress extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Scores not found"
+     *     description="Не найдено"
      * )
      * @throws NonUniqueResultException
      */
@@ -220,11 +220,11 @@ class UserProgress extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Scores not found"
+     *     description="Уровни не найдены"
      * )
      */
     #[Route(
@@ -237,6 +237,11 @@ class UserProgress extends ApiController
     ): JsonResponse
     {
         $levels = $this->levelRepository->findAll();
+
+        if (!$levels) {
+            return $this->respondWithErrors('Уровни не найдены');
+        }
+
         $levelPreviews = array_map(
             fn(Level $level): array => $levelPreviewer->preview($level),
             $levels

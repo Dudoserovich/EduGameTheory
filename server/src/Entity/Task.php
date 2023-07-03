@@ -20,7 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=TaskRepository::class)
- * @UniqueEntity(fields={"name"}, message="A task with this name already exists")
+ * @UniqueEntity(fields={"name"}, message="Задание с таким названием уже существует")
  * @Gedmo\SoftDeleteable
  * @ORM\HasLifecycleCallbacks
  */
@@ -123,7 +123,12 @@ class Task
     private ?DateTimeInterface $deletedAt;
 
     /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default" : "1970-01-02 00:00:00"})
+     * @ORM\Column(
+     *     name="created_at",
+     *     type="datetime",
+     *     nullable=false,
+     *     options={"default" : "1970-01-02 00:00:00"}
+     * )
      * @OA\Property(format="date-time")
      * @Groups({"default"})
      */

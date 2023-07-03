@@ -49,7 +49,7 @@ class TaskSolver
     static public function solvePayoffMatrix(array $matrix, bool $fullResult = false): array
     {
         if (!$matrix) {
-            throw new Exception('Matrix cannot be empty');
+            throw new Exception('Матрица не может быть пустой');
         }
 
         # 1. Поиск седловой точки
@@ -153,7 +153,7 @@ class TaskSolver
     static public function solveRiskMatrix(array $matrix): array
     {
         if (!$matrix) {
-            throw new Exception('Matrix cannot be empty');
+            throw new Exception('Матрица не может быть пустой');
         }
 
         $A = MatrixFactory::create($matrix);

@@ -15,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=EducationRepository::class)
- * @UniqueEntity(fields={"name"}, message="A education with this name already exists")
+ * @UniqueEntity(fields={"name"}, message="Обучение с таким именем уже существует")
  * @Gedmo\SoftDeleteable
  */
 class Education

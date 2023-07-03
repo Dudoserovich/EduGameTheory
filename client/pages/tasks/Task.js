@@ -79,7 +79,8 @@ export default function tasks() {
                                     label="Тип марицы"
                                     defaultValue={strate}
                                     style={{
-                                        minWidth: '200px'
+                                        minWidth: '200px',
+                                        background: "white"
                                     }}
                                 >
                                     {
@@ -98,7 +99,8 @@ export default function tasks() {
                             )}/>
                         {errors.strategy &&
                             <span style={{
-                                color: 'var(--main-brand-color)'
+                                color: 'var(--main-brand-color)',
+                                fontSize: "large"
                             }}>Обязательное поле</span>}
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}
@@ -124,7 +126,8 @@ export default function tasks() {
                             )}/>
                         {errors.first_player &&
                             <span style={{
-                                color: 'var(--main-brand-color)'
+                                color: 'var(--main-brand-color)',
+                                fontSize: "large"
                             }}>Обязательное поле</span>}
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}
@@ -150,7 +153,8 @@ export default function tasks() {
                             )}/>
                         {errors.second_player &&
                             <span style={{
-                                color: 'var(--main-brand-color)'
+                                color: 'var(--main-brand-color)',
+                                fontSize: "large"
                             }}>Обязательное поле</span>}
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12} className={s.name}>
@@ -174,13 +178,14 @@ export default function tasks() {
                             )}/>
                         {errors.game_price &&
                             <span style={{
-                                color: 'var(--main-brand-color)'
+                                color: 'var(--main-brand-color)',
+                                fontSize: "large"
                             }}>Обязательное поле</span>}
                     </Grid>
 
                 </Grid>
                 {
-                    <Button type={'submit'}>Проверить решение</Button>
+                    <Button type={'submit'} variant="contained">Проверить решение</Button>
                 }
             </form>
         </Grid>);

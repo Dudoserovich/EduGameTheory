@@ -74,7 +74,7 @@ class TeacherTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(
@@ -105,7 +105,7 @@ class TeacherTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(
@@ -137,7 +137,11 @@ class TeacherTaskController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Задание не найдено"
      * )
      */
     #[Route(
@@ -154,7 +158,7 @@ class TeacherTaskController extends ApiController
         $user = $this->getUserEntity($this->userRepository);
         $task = $this->taskRepository->findOneBy(["owner" => $user, "id" => $taskId]);
         if (!$task) {
-            return $this->respondNotFound("Task not found");
+            return $this->respondNotFound("Задание не найдена");
         }
 
         $taskMarksBySelfTask = $this->taskMarkRepository->findBy(["task" => $task]);

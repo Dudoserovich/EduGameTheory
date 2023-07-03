@@ -15,7 +15,6 @@ interface IData {
     result_move: number;
     score: number;
     message: string;
-
 }
 interface TasksSelfState {
     info: {

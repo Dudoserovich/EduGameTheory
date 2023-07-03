@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=LiteratureRepository::class)
- * @UniqueEntity(fields={"name"}, message="A literature with this name already exists")
+ * @UniqueEntity(fields={"name"}, message="Литература с таким названием уже существует")
  * @Gedmo\SoftDeleteable
  */
 #[Vich\Uploadable]
@@ -85,7 +85,7 @@ class Literature
      */
     #[Assert\Regex(
         pattern: "/^(?:http(s)?:\/\/)?[\w.-]{2,}(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/",
-        message: 'Invalid link',
+        message: 'Неправильная ссылка',
         match: false,
     )]
     private ?string $link = null;

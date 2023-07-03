@@ -46,7 +46,7 @@ class LiteratureController extends ApiController
     # TODO: Сто процентов нужна пагинация
     #   + нормальный поиск с учётом фильтров (топиков литературы)
     /**
-     * Get all literatures ordered
+     * Получение списка литературы отсортированного по названию
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -57,7 +57,7 @@ class LiteratureController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
@@ -77,7 +77,7 @@ class LiteratureController extends ApiController
     }
 
     /**
-     * Add new literature
+     * Добавление новой литературы
      * @OA\RequestBody(
      *     description="P.S. svg загрузить не получится",
      *     required=true,
@@ -107,15 +107,15 @@ class LiteratureController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Literature added successfully"
+     *     description="Литература успешно добавлена"
      * )
      * * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
@@ -131,19 +131,19 @@ class LiteratureController extends ApiController
          */
         $imageFile = $request->files->get('imageFile');
         if (!$imageFile) {
-            return $this->respondValidationError("File for literature not transferred");
+            return $this->respondValidationError("Изображение для литературы не передано");
         }
 
         $request = $request->request->all();
 
         // Проверяем, что файл - изображение
         if (!$fileUploader->isImage($imageFile))
-            return $this->respondValidationError("Incorrect image type" . $imageFile->getMimeType());
+            return $this->respondValidationError("Неверный тип изображения" . $imageFile->getMimeType());
 
 
         $topic = $topicRepository->find($request['topic_id']);
         if (!$topic) {
-            return $this->respondNotFound("Topic not found");
+            return $this->respondNotFound("Тип не передан");
         }
 
         $this->setSoftDeleteable($this->em, false);
@@ -170,10 +170,10 @@ class LiteratureController extends ApiController
 
                 $this->em->flush();
                 $this->setSoftDeleteable($this->em);
-                return $this->respondWithSuccess("Literature added successfully");
+                return $this->respondWithSuccess("Литература успешно добавлена");
             }
 
-            return $this->respondValidationError('A literature with such name has already been created');
+            return $this->respondValidationError('Литература с таким названием уже создана');
         }
 
         $literature = new Literature();
@@ -192,14 +192,14 @@ class LiteratureController extends ApiController
             $this->em->persist($topicLiterature);
 
             $this->em->flush();
-            return $this->respondWithSuccess("Literature added successfully");
+            return $this->respondWithSuccess("Литература успешно добавлена");
         } catch (Exception) {
             return $this->respondValidationError();
         }
     }
 
     /**
-     * Literature object
+     * Получение объекта литературы
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -207,11 +207,11 @@ class LiteratureController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Literature not found"
+     *     description="Литература не найдена"
      * )
      */
     #[Route('/{literatureId}',
@@ -226,14 +226,14 @@ class LiteratureController extends ApiController
     {
         $literature = $this->literatureRepository->find($literatureId);
         if (!$literature) {
-            return $this->respondNotFound("Literature not found");
+            return $this->respondNotFound("Литература не найдена");
         }
 
         return $this->response($topicLiteraturePreviewer->preview($literature));
     }
 
     /**
-     * Change field of literature
+     * Изменение полей литературы
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -249,20 +249,20 @@ class LiteratureController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Literature updated successfully"
+     *     description="Литература обновлена успешно"
      * )
      *
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещен"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Literature not found"
+     *     description="Литература не найдена"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route('/{literatureId}', name: 'put_by_id', requirements: ['literatureId' => '\d+'], methods: ['PUT'])]
@@ -276,7 +276,7 @@ class LiteratureController extends ApiController
 
         $literature = $this->literatureRepository->find($literatureId);
         if (!$literature) {
-            return $this->respondNotFound("Literature not found");
+            return $this->respondNotFound("Литература не найдена");
         }
 
         $request = $request->request->all();
@@ -301,7 +301,7 @@ class LiteratureController extends ApiController
                     $topic = $topicRepository->find($topicId);
 
                     if (!$topic) {
-                        return $this->respondNotFound("Topic with id: $topicId not found");
+                        return $this->respondNotFound("Тип с id: $topicId не найден");
                     }
 
                     $topics[] = $topic;
@@ -345,7 +345,7 @@ class LiteratureController extends ApiController
 
             $this->em->flush();
 
-            return $this->respondWithSuccess("Literature updated successfully");
+            return $this->respondWithSuccess("Литература обновлена успешно");
         } catch (Exception) {
             return $this->respondValidationError();
         }
@@ -355,15 +355,15 @@ class LiteratureController extends ApiController
      * Delete literature
      * @OA\Response(
      *     response=200,
-     *     description="Literature deleted successfully"
+     *     description="Литература успешно удалена"
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Literature not found"
+     *     description="Литература не найдена"
      * )
      */
     #[Route('/{literatureId}', name: 'delete_by_id', requirements: ['literatureId' => '\d+'], methods: ['DELETE'])]
@@ -371,12 +371,12 @@ class LiteratureController extends ApiController
     {
         $literature = $this->literatureRepository->find($literatureId);
         if (!$literature) {
-            return $this->respondNotFound("Literature not found");
+            return $this->respondNotFound("Литература не найдена");
         }
 
         $this->em->remove($literature);
         $this->em->flush();
 
-        return $this->respondWithSuccess("Literature deleted successfully");
+        return $this->respondWithSuccess("Литература успешно удалена");
     }
 }

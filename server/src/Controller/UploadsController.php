@@ -18,7 +18,7 @@ use OpenApi\Annotations as OA;
 class UploadsController extends ApiController
 {
     /**
-     * Get all images by entityName
+     * Получение всех изображений по названию сущности (entityName)
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -31,11 +31,11 @@ class UploadsController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Image not found"
+     *     description="Изображение не найдено"
      * )
      */
     #[Security(name: null)]
@@ -53,20 +53,20 @@ class UploadsController extends ApiController
         $childrenDir = $entityName;
 
         if (!is_dir($parentDir . $childrenDir))
-            return $this->respondNotFound("Not found this entity");
+            return $this->respondNotFound("Сущность не найдена");
 
         $files = scandir($parentDir . $childrenDir);
         $nameFiles = array_diff($files, array('.', '..'));
 
         if (!$nameFiles)
-            return $this->respondNotFound("No images");
+            return $this->respondNotFound("Изображения сущности не найдены");
         else return $this->response(
             array_values(
                 array_map(function($file) use ($entityName, $fileUploader) {
                     try {
                         $realImage = $fileUploader->load($entityName, $file);
                     } catch (Exception $e) {
-                        return $this->respondValidationError("Failed load files");
+                        return $this->respondValidationError("Ошибка в загрузке изображений");
                     }
 
                     $imageSize = getimagesize($realImage);
@@ -79,7 +79,7 @@ class UploadsController extends ApiController
     }
 
     /**
-     * Get all name images by entityName
+     * Получение всех названий изображения по названию сущности (entityName)
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -92,11 +92,11 @@ class UploadsController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Image not found"
+     *     description="Изображение не найдено"
      * )
      */
     #[Security(name: null)]
@@ -113,19 +113,19 @@ class UploadsController extends ApiController
         $childrenDir = $entityName;
 
         if (!is_dir($parentDir . $childrenDir))
-            return $this->respondNotFound("Not found this entity");
+            return $this->respondNotFound("Сущность не найдена");
 
         $files = scandir($parentDir . $childrenDir);
         $nameFiles = array_diff($files, array('.', '..'));
 
         if (!$nameFiles)
-            return $this->respondNotFound("Not found images");
+            return $this->respondNotFound("Изображения не найдены");
         else return $this->response(array_values($nameFiles));
 
     }
 
     /**
-     * Get image entity
+     * Получение конкретного изображения сущности
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -136,11 +136,11 @@ class UploadsController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Image not found"
+     *     description="Изображение не найдено"
      * )
      */
     #[Security(name: null)]
@@ -158,7 +158,7 @@ class UploadsController extends ApiController
         try {
             $realImage = $fileUploader->load($entityName, $imageName);
         } catch (Exception $e) {
-            return $this->respondValidationError("This image or entity not found!");
+            return $this->respondValidationError("Изображение или сущность не найдены");
         }
 
         return new BinaryFileResponse($realImage);

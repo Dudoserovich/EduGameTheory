@@ -132,7 +132,7 @@ class TaskSimplex
             // Если совершенно слишком большое количество
             //  попыток решения, то значит количество возможных решений НЕ ОГРАНИЧЕНО
             if ($count >= 100) {
-                throw new Exception('The solution is unbounded');
+                throw new Exception('Решение неограниченно');
             }
 
             $pivot_position = $this->get_pivot_position($tableau);

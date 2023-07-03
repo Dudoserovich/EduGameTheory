@@ -8,10 +8,10 @@ import down from '../../public/svg/down.svg'
 import up from '../../public/svg/up.svg'
 import edit from '../../public/svg/edit.svg'
 import deleteSVG from '../../public/svg/delete1.svg'
-import {getTasksInfo} from "../../store/slices/tasksSlice";
+import {deleteTask, getTasksInfo} from "../../store/slices/tasksSlice";
 import {getUserInfo} from "../../store/slices/userSlice";
 import {useNavigate} from 'react-router-dom';
-import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
+import {Button, Chip, Dialog, DialogContent, DialogTitle, Divider} from "@mui/material";
 import closeSvg from "../../public/svg/close.svg";
 import {Controller} from "react-hook-form";
 import Input from "../../components/Input/Input";
@@ -35,8 +35,8 @@ export default function tasks() {
         tasks: []
     });
 
-    function filtering(tasks) {
-        let result = tasks;
+    function filtering(data) {
+        let result = data;
         let filteredItems = [];
 
         if (filters.tasks.length !== 0) {
@@ -157,7 +157,10 @@ export default function tasks() {
                                 </Grid>
                                 <Grid item xs={6} sm={6} md={6} lg={6}>
                                     <div className={s.more}
-                                        // onClick={() => setShowDetails(!showDetails)}
+                                         onClick={async () => {
+                                             await dispatch(deleteTask(task.id));
+                                             await dispatch(getTasksInfo());
+                                         }}
                                          dangerouslySetInnerHTML={{__html: deleteSVG}}/>
                                 </Grid>
                             </Grid>
@@ -201,7 +204,10 @@ export default function tasks() {
                                     height: '2px',
                                 }}>
                                 </div>
-                                <div style={{background: "white"}}>
+                                <div style={{background: "white", padding: 10}}>
+                                    <Divider variant="middle">
+                                        <Chip label="Описание"/>
+                                    </Divider>
                                     <Markdown value={task?.description.trim()}/>
                                 </div>
 
@@ -226,7 +232,7 @@ export default function tasks() {
                     <div>
                         {
                             tasks?.data ?
-                                filtering(tasks?.data).map((task) => (
+                                filtering(tasks?.data)?.map((task) => (
                                         <ListTask key={task.id} task={task}/>
                                     )
                                 )

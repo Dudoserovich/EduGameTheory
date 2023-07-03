@@ -15,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=TermRepository::class)
- * @UniqueEntity(fields={"name"}, message="A term with this name already exists")
+ * @UniqueEntity(fields={"name"}, message="Термин с таким названием уже существует")
  * @Gedmo\SoftDeleteable
  */
 class Term

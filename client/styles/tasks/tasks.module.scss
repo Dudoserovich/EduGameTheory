@@ -113,9 +113,14 @@
   color: white;
 }
 .more{
+  cursor: pointer;
   max-width: 30px !important;
   margin-top: 10px;
 }
+.more:hover {
+  transform: scale(1.2);
+}
+
 .description{
   padding: 20px!important;
 }
