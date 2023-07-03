@@ -34,7 +34,7 @@ class TermController extends ApiController
     }
 
     /**
-     * Get all terms ordered
+     * Получение всех терминов отсортированных по названию
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -61,7 +61,7 @@ class TermController extends ApiController
     }
 
     /**
-     * Add new term
+     * Добавление нового термина
      * @OA\RequestBody (
      *     required=true,
      *     @OA\JsonContent(
@@ -73,15 +73,15 @@ class TermController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Term added successfully"
+     *     description="Термин добавлен успешно"
      * )
      * * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
@@ -96,12 +96,12 @@ class TermController extends ApiController
         $term = $this->termRepository->findOneBy(['name' => $request['name']]);
         if ($term)
             if (!$term->getDeletedAt())
-                return $this->respondValidationError('A term with such name has already been created');
+                return $this->respondValidationError('Термин с таким названием уже создан');
             else $term->setDeletedAt(null);
 
         $topic = $topicRepository->find($request['topic_id']);
         if (!$topic) {
-            return $this->respondNotFound("Topic not found");
+            return $this->respondNotFound("Тип не найден");
         }
 
         $term = $term ?? new Term();
@@ -113,14 +113,14 @@ class TermController extends ApiController
             ;
             $this->em->persist($term);
             $this->em->flush();
-            return $this->respondWithSuccess("Term added successfully");
+            return $this->respondWithSuccess("Термин добавлен успешно");
         } catch (Exception) {
             return $this->respondValidationError();
         }
     }
 
     /**
-     * Term object
+     * Получение объекта термина
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -128,11 +128,11 @@ class TermController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Term not found"
+     *     description="Термин не найден"
      * )
      */
     #[Route('/{termId}', name: 'get_by_id', requirements: ['termId' => '\d+'], methods: ['GET'])]
@@ -143,14 +143,14 @@ class TermController extends ApiController
     {
         $term = $this->termRepository->find($termId);
         if (!$term) {
-            return $this->respondNotFound("Term not found");
+            return $this->respondNotFound("Термин не найден");
         }
 
         return $this->response($termPreviewer->preview($term));
     }
 
     /**
-     * Change field of term
+     * Изменение полей термина
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -161,19 +161,19 @@ class TermController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Term updated successfully"
+     *     description="Термин успешно обновлён"
      * )
      * * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Term not found"
+     *     description="Термин не наёден"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route('/{termId}', name: 'put_by_id', requirements: ['termId' => '\d+'], methods: ['PUT'])]
@@ -185,7 +185,7 @@ class TermController extends ApiController
     {
         $term = $this->termRepository->find($termId);
         if (!$term) {
-            return $this->respondNotFound("Term not found");
+            return $this->respondNotFound("Термин не найден");
         }
 
         $request = $request->request->all();
@@ -200,7 +200,7 @@ class TermController extends ApiController
             if (isset($request['topic_id'])) {
                 $newTopic = $topicRepository->find($request['topic_id']);
                 if (!$newTopic) {
-                    return $this->respondNotFound("Topic not found");
+                    return $this->respondNotFound("Тип не найден");
                 }
 
                 $term->setTopic($newTopic);
@@ -208,25 +208,25 @@ class TermController extends ApiController
 
             $this->em->flush();
 
-            return $this->respondWithSuccess("Term updated successfully");
+            return $this->respondWithSuccess("Термин успешно обновлён");
         } catch (Exception) {
             return $this->respondValidationError();
         }
     }
 
     /**
-     * Delete term
+     * Удаление термина
      * @OA\Response(
      *     response=200,
-     *     description="Term deleted successfully"
+     *     description="Термин удалён успешно"
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Term not found"
+     *     description="Термин не найден"
      * )
      */
     #[Route('/{termId}', name: 'delete_by_id', requirements: ['termId' => '\d+'], methods: ['DELETE'])]
@@ -234,12 +234,12 @@ class TermController extends ApiController
     {
         $term = $this->termRepository->find($termId);
         if (!$term) {
-            return $this->respondNotFound("Term not found");
+            return $this->respondNotFound("Термин не найден");
         }
 
         $this->em->remove($term);
         $this->em->flush();
 
-        return $this->respondWithSuccess("Term deleted successfully");
+        return $this->respondWithSuccess("Термин удалён успешно");
     }
 }

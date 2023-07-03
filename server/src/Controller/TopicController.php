@@ -40,7 +40,7 @@ class TopicController extends ApiController
     }
 
     /**
-     * Get all topics ordered
+     * Получение всех типов, отсортированных по названию
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -51,7 +51,7 @@ class TopicController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
@@ -75,15 +75,15 @@ class TopicController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Topic added successfully"
+     *     description="Тип добавлен успешно"
      * )
      * * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route(name: 'post', methods: ['POST'])]
@@ -98,7 +98,7 @@ class TopicController extends ApiController
         $topic = $this->topicRepository->findOneBy(['name' => $request['name']]);
         if ($topic)
             if (!$topic->getDeletedAt())
-                return $this->respondValidationError('A topic with such name has already been created');
+                return $this->respondValidationError('Тип с таким названием уже создан');
             else $topic->setDeletedAt(null);
 
         $topic = $topic ?? new Topic();
@@ -108,14 +108,14 @@ class TopicController extends ApiController
             $this->em->persist($topic);
 
             $this->em->flush();
-            return $this->respondWithSuccess("Topic added successfully");
+            return $this->respondWithSuccess("Тип добавлен успешно");
         } catch (Exception) {
             return $this->respondValidationError();
         }
     }
 
     /**
-     * Topic object
+     * Объект типа
      * @OA\Response(
      *     response=200,
      *     description="HTTP_OK",
@@ -123,11 +123,11 @@ class TopicController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Topic not found"
+     *     description="Тип не найден"
      * )
      */
     #[Route('/{topicId}',
@@ -141,14 +141,14 @@ class TopicController extends ApiController
     {
         $topic = $this->topicRepository->find($topicId);
         if (!$topic) {
-            return $this->respondNotFound("Topic not found");
+            return $this->respondNotFound("Тип не найден");
         }
 
         return $this->response($topicPreviewer->preview($topic));
     }
 
     /**
-     * Change field of topic
+     * Изменение полей Типа
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -157,20 +157,20 @@ class TopicController extends ApiController
      * )
      * @OA\Response(
      *     response=200,
-     *     description="Topic updated successfully"
+     *     description="Тип обновлён успешно"
      * )
      *
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Topic not found"
+     *     description="Тип не найден"
      * )
      * @OA\Response(
      *     response=422,
-     *     description="Data no valid"
+     *     description="Неверные данные"
      * )
      */
     #[Route(
@@ -186,7 +186,7 @@ class TopicController extends ApiController
     {
         $topic = $this->topicRepository->find($topicId);
         if (!$topic) {
-            return $this->respondNotFound("Topic not found");
+            return $this->respondNotFound("Тип не найден");
         }
 
         $request = $request->request->all();
@@ -198,25 +198,25 @@ class TopicController extends ApiController
 
             $this->em->flush();
 
-            return $this->respondWithSuccess("Topic updated successfully");
+            return $this->respondWithSuccess("Тип обновлён успешно");
         } catch (Exception) {
             return $this->respondValidationError();
         }
     }
 
     /**
-     * Delete topic
+     * Удаление Типа
      * @OA\Response(
      *     response=200,
-     *     description="Topic deleted successfully"
+     *     description="Тип удалён успешно"
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied!"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Topic not found"
+     *     description="Тип не найден"
      * )
      */
     #[Route(
@@ -229,12 +229,12 @@ class TopicController extends ApiController
     {
         $literature = $this->topicRepository->find($topicId);
         if (!$literature) {
-            return $this->respondNotFound("Topic not found");
+            return $this->respondNotFound("Тип не найден");
         }
 
         $this->em->remove($literature);
         $this->em->flush();
 
-        return $this->respondWithSuccess("Topic deleted successfully");
+        return $this->respondWithSuccess("Тип удалён успешно");
     }
 }

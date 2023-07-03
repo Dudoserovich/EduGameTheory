@@ -48,7 +48,7 @@ class AchievementController extends ApiController
     }
 
 //    /**
-//     * Add new achievement
+//     * Добавление нового достижения
 //     * @OA\RequestBody(
 //     *     description="P.S. svg загрузить не получится",
 //     *     required=true,
@@ -73,15 +73,15 @@ class AchievementController extends ApiController
 //     * )
 //     * @OA\Response(
 //     *     response=200,
-//     *     description="Achievement added successfully"
+//     *     description="Достижения добавлено успешно"
 //     * )
 //     * @OA\Response(
 //     *     response=403,
-//     *     description="Permission denied!"
+//     *     description="Доступ запрещен"
 //     * )
 //     * @OA\Response(
 //     *     response=422,
-//     *     description="Data no valid"
+//     *     description="Неверные данные"
 //     * )
 //     */
 //    #[Route(name: 'post', methods: ['POST'])]
@@ -97,12 +97,12 @@ class AchievementController extends ApiController
 //         */
 //        $imageFile = $request->files->get('imageFile');
 //        if (!$imageFile) {
-//            return $this->respondValidationError("File for achievement not transferred");
+//            return $this->respondValidationError("Изображение достижения не передано");
 //        }
 //
 //        // Проверяем, что файл - изображение
 //        if (!$fileUploader->isImage($imageFile))
-//            return $this->respondValidationError("Incorrect image type" . $imageFile->getMimeType());
+//            return $this->respondValidationError("Неверный тип изображения" . $imageFile->getMimeType());
 //
 //        $achievementByName = $this->achievementRepository
 //            ->findOneBy(["name" => $jsonRequest['name']]);
@@ -119,12 +119,12 @@ class AchievementController extends ApiController
 //                $this->em->persist($achievement);
 //                $this->em->flush();
 //
-//                return $this->respondWithSuccess("Achievement added successfully");
+//                return $this->respondWithSuccess("Достижение добавлено успешно");
 //            } catch (Exception $e) {
 //                return $this->respondValidationError();
 //            }
 //        } else {
-//            return $this->respondValidationError("Achievement with this name is already exists");
+//            return $this->respondValidationError("Достижение с таким названием уже существует");
 //        }
 //    }
 
@@ -166,7 +166,7 @@ class AchievementController extends ApiController
     }
 
 //    /**
-//     * Change achievement (this is no REST style :( )
+//     * Изменение достижения (Это не REST стиль :( )
 //     * @OA\RequestBody(
 //     *     description="P.S. svg загрузить не получится",
 //     *     required=true,
@@ -191,20 +191,20 @@ class AchievementController extends ApiController
 //     * )
 //     * @OA\Response(
 //     *     response=200,
-//     *     description="Achievement updated successgully"
+//     *     description="Достижение добавлено успешно"
 //     * )
 //     * * @OA\Response(
 //     *     response=403,
-//     *     description="Permission denied!"
+//     *     description="Доступ запрещён"
 //     * )
 //     * @OA\Response(
 //     *     response=422,
-//     *     description="Data no valid"
+//     *     description="Неверные данные"
 //     * )
 //     *
 //     * @OA\Response(
 //     *     response=404,
-//     *     description="Achievement not found"
+//     *     description="Достижение не найдено"
 //     * )
 //     */
 //    #[Route('/{achievementId}',
@@ -220,7 +220,7 @@ class AchievementController extends ApiController
 //            ->find($achievementId);
 //
 //        if (!$achievement) {
-//            return $this->respondNotFound("Achievement not found");
+//            return $this->respondNotFound("Достижение не найдено");
 //        }
 //
 //        $jsonRequest = $request->request->all();
@@ -228,7 +228,7 @@ class AchievementController extends ApiController
 //        try {
 //            if (isset($jsonRequest['name'])) {
 //                if ($this->achievementRepository->findOneBy(['name' => $jsonRequest['name']])) {
-//                    return $this->respondValidationError('Achievement with this name is already exist');
+//                    return $this->respondValidationError('Достижение с таким названием уже существует');
 //                }
 //
 //                $achievement->setName($jsonRequest['name']);
@@ -245,7 +245,7 @@ class AchievementController extends ApiController
 //            if (isset($imageFile)) {
 //                // Проверяем, что файл - изображение
 //                if (!$fileUploader->isImage($imageFile))
-//                    return $this->respondValidationError("Incorrect image type");
+//                    return $this->respondValidationError("Неверный тип изображения");
 //                else {
 //                    $fileUploader->delete($achievement->getImageName());
 //                    $achievement->setImageFile($imageFile);
@@ -255,7 +255,7 @@ class AchievementController extends ApiController
 //            $this->em->persist($achievement);
 //            $this->em->flush();
 //
-//            return $this->respondWithSuccess("Achievement updated successfully");
+//            return $this->respondWithSuccess("Достижение обновлено успешно");
 //        } catch (Exception) {
 //            return $this->respondValidationError();
 //        }
@@ -277,21 +277,25 @@ class AchievementController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied"
+     *     description="Доступ запрещен"
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
     public function getAchievements(
         AchievementPreviewer $achievementPreviewer): JsonResponse
     {
-        $achievements = $this->achievementRepository->findAll();
+        try {
+            $achievements = $this->achievementRepository->findAll();
 
-        $achievementPreviews = array_map(
-            fn(Achievement $achievement): array => $achievementPreviewer->preview($achievement),
-            $achievements
-        );
+            $achievementPreviews = array_map(
+                fn(Achievement $achievement): array => $achievementPreviewer->preview($achievement),
+                $achievements
+            );
 
-        return $this->response($achievementPreviews);
+            return $this->response($achievementPreviews);
+        } catch (Exception $e) {
+            return $this->respondWithErrors($e->getMessage());
+        }
     }
 
     /**
@@ -305,37 +309,37 @@ class AchievementController extends ApiController
      *             @OA\Property(
      *                 property="id",
      *                 type="integer",
-     *                 description="The ID of the achievement"
+     *                 description="ID достижения у пользователя"
      *             ),
      *             @OA\Property(
      *                 property="achievement",
      *                 type="object",
-     *                 description="The achievement details",
+     *                 description="Детали достижения",
      *                 @OA\Property(
      *                     property="id",
      *                     type="integer",
-     *                     description="The ID of the achievement"
+     *                     description="ID достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     description="The name of the achievement"
+     *                     description="Название достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="description",
      *                     type="string",
-     *                     description="The description of the achievement"
+     *                     description="Описание достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="image_href",
      *                     type="string",
-     *                     description="The URL of the image for the achievement"
+     *                     description="Ссылка на изображение достижения"
      *                 )
      *             ),
      *             @OA\Property(
      *                 property="progress",
      *                 type="array",
-     *                 description="The progress towards the achievement",
+     *                 description="Прогресс достижения",
      *                 @OA\Items(
      *                     type="integer"
      *                 )
@@ -344,14 +348,14 @@ class AchievementController extends ApiController
      *                 property="achievement_date",
      *                 type="string",
      *                 format="date-time",
-     *                 description="The date and time when the achievement was earned"
+     *                 description="Дата получения достижения"
      *             )
      *         )
      *     )
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied"
+     *     description="Доступ запрещен"
      * )
      */
     #[Route(
@@ -360,7 +364,6 @@ class AchievementController extends ApiController
         methods: ['GET']
     )]
     public function getSelfAchievements(
-        AchievementPreviewer     $achievementPreviewer,
         UserAchievementPreviewer $userAchievementPreviewer
     ): JsonResponse
     {
@@ -386,37 +389,37 @@ class AchievementController extends ApiController
      *             @OA\Property(
      *                 property="id",
      *                 type="integer",
-     *                 description="The ID of the achievement"
+     *                 description="ID достижения у пользователя"
      *             ),
      *             @OA\Property(
      *                 property="achievement",
      *                 type="object",
-     *                 description="The achievement details",
+     *                 description="Детали достижения",
      *                 @OA\Property(
      *                     property="id",
      *                     type="integer",
-     *                     description="The ID of the achievement"
+     *                     description="ID достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     description="The name of the achievement"
+     *                     description="Название достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="description",
      *                     type="string",
-     *                     description="The description of the achievement"
+     *                     description="Описание достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="image_href",
      *                     type="string",
-     *                     description="The URL of the image for the achievement"
+     *                     description="Ссылка на изображение достижения"
      *                 )
      *             ),
      *             @OA\Property(
      *                 property="progress",
      *                 type="array",
-     *                 description="The progress towards the achievement",
+     *                 description="Прогресс достижения",
      *                 @OA\Items(
      *                     type="integer"
      *                 )
@@ -425,14 +428,14 @@ class AchievementController extends ApiController
      *                 property="achievement_date",
      *                 type="string",
      *                 format="date-time",
-     *                 description="The date and time when the achievement was earned"
+     *                 description="Дата получения достижения"
      *             )
      *         )
      *     )
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied"
+     *     description="Доступ запрещен"
      * )
      */
     #[Route(
@@ -467,37 +470,37 @@ class AchievementController extends ApiController
      *             @OA\Property(
      *                 property="id",
      *                 type="integer",
-     *                 description="The ID of the achievement"
+     *                 description="ID достижения у пользователя"
      *             ),
      *             @OA\Property(
      *                 property="achievement",
      *                 type="object",
-     *                 description="The achievement details",
+     *                 description="Детали достижения",
      *                 @OA\Property(
      *                     property="id",
      *                     type="integer",
-     *                     description="The ID of the achievement"
+     *                     description="ID достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     description="The name of the achievement"
+     *                     description="Название достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="description",
      *                     type="string",
-     *                     description="The description of the achievement"
+     *                     description="Описание достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="image_href",
      *                     type="string",
-     *                     description="The URL of the image for the achievement"
+     *                     description="Ссылка на изображение достижения"
      *                 )
      *             ),
      *             @OA\Property(
      *                 property="progress",
      *                 type="array",
-     *                 description="The progress towards the achievement",
+     *                 description="Прогресс достижения",
      *                 @OA\Items(
      *                     type="integer"
      *                 )
@@ -506,14 +509,14 @@ class AchievementController extends ApiController
      *                 property="achievement_date",
      *                 type="string",
      *                 format="date-time",
-     *                 description="The date and time when the achievement was earned"
+     *                 description="Дата получения достижения"
      *             )
      *         )
      *     )
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied"
+     *     description="Доступ запрещен"
      * )
      */
     #[Route(
@@ -549,37 +552,37 @@ class AchievementController extends ApiController
      *             @OA\Property(
      *                 property="id",
      *                 type="integer",
-     *                 description="The ID of the achievement"
+     *                 description="ID достижения у пользователя"
      *             ),
      *             @OA\Property(
      *                 property="achievement",
      *                 type="object",
-     *                 description="The achievement details",
+     *                 description="Детали достижения",
      *                 @OA\Property(
      *                     property="id",
      *                     type="integer",
-     *                     description="The ID of the achievement"
+     *                     description="ID достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     description="The name of the achievement"
+     *                     description="Название достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="description",
      *                     type="string",
-     *                     description="The description of the achievement"
+     *                     description="Описание достижения"
      *                 ),
      *                 @OA\Property(
      *                     property="image_href",
      *                     type="string",
-     *                     description="The URL of the image for the achievement"
+     *                     description="Ссылка на изображение достижения"
      *                 )
      *             ),
      *             @OA\Property(
      *                 property="progress",
      *                 type="array",
-     *                 description="The progress towards the achievement",
+     *                 description="Прогресс достижения",
      *                 @OA\Items(
      *                     type="integer"
      *                 )
@@ -588,14 +591,14 @@ class AchievementController extends ApiController
      *                 property="achievement_date",
      *                 type="string",
      *                 format="date-time",
-     *                 description="The date and time when the achievement was earned"
+     *                 description="Дата получения достижения"
      *             )
      *         )
      *     )
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission denied"
+     *     description="Доступ запрещен"
      * )
      */
     #[Route(

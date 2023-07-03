@@ -24,7 +24,7 @@ class TaskMarkService
     static public function get(int $n): int
     {
         if ($n <= 0)
-            throw new Exception("Invalid argument n in log with base 10");
+            throw new Exception("Недопустимый аргумент n в логарифме с основанием 10");
         if ($n > 5)
             return 2;
         else

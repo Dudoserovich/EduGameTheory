@@ -51,7 +51,11 @@ class Achievement
      */
     private ?string $description = null;
 
-    #[Vich\UploadableField(mapping: "achievement", fileNameProperty: "imageName", size: "imageSize")]
+    #[Vich\UploadableField(
+        mapping: "achievement",
+        fileNameProperty: "imageName",
+        size: "imageSize"
+    )]
     private ?File $imageFile = null;
 
     /**

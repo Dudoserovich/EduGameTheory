@@ -59,7 +59,7 @@ class EducationController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(name: 'get', methods: ['GET'])]
@@ -91,7 +91,7 @@ class EducationController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(
@@ -108,7 +108,7 @@ class EducationController extends ApiController
         $education = $this->educationRepository->find($eduId);
 
         if (!$education) {
-            return $this->respondNotFound("Education not found");
+            return $this->respondNotFound("Обучение не найдено");
         }
 
         $user = $this->getUserEntity($this->userRepository);
@@ -119,15 +119,15 @@ class EducationController extends ApiController
      * Обновление статуса прохождения блока
      * @OA\Response(
      *     response=200,
-     *     description="Block done"
+     *     description="Статус пройденности блока обновлён"
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      * @OA\Response(
      *     response=404,
-     *     description="Not found"
+     *     description="Не найдено"
      * )
      */
     #[Route(
@@ -151,11 +151,11 @@ class EducationController extends ApiController
         ]);
 
         if (!$education) {
-            return $this->respondNotFound("Education not found");
+            return $this->respondNotFound("Обучение не найдено");
         }
 
         if (!$block) {
-            return $this->respondNotFound("Blocks not found");
+            return $this->respondNotFound("Блок не найден");
         }
 
         $user = $this->getUserEntity($this->userRepository);
@@ -165,13 +165,13 @@ class EducationController extends ApiController
         ]);
 
         if (!$userBlock) {
-            $this->respondNotFound('Block not found');
+            $this->respondNotFound('Блок не найден');
         } else {
             $userBlock->setSuccess(true);
             $this->em->flush();
         }
 
-        return $this->respondWithSuccess("Block done");
+        return $this->respondWithSuccess("Статус пройденности блока обновлён");
     }
 
     /**
@@ -205,11 +205,11 @@ class EducationController extends ApiController
         ]);
 
         if (!$education) {
-            return $this->respondNotFound("Education not found");
+            return $this->respondNotFound("Обучение не найдено");
         }
 
         if (!$blocks) {
-            return $this->respondNotFound("Blocks not found");
+            return $this->respondNotFound("Блоки обучения не найдены");
         }
 
         $user = $this->getUserEntity($this->userRepository);
@@ -251,7 +251,7 @@ class EducationController extends ApiController
      * )
      * @OA\Response(
      *     response=403,
-     *     description="Permission deinied"
+     *     description="Доступ запрещён"
      * )
      */
     #[Route(
@@ -276,11 +276,11 @@ class EducationController extends ApiController
         ]);
 
         if (!$education) {
-            return $this->respondNotFound("Education not found");
+            return $this->respondNotFound("Обучение не найдено");
         }
 
         if (!$block) {
-            return $this->respondNotFound("Block not found");
+            return $this->respondNotFound("Блок обучения не найден");
         }
 
         $user = $this->getUserEntity($this->userRepository);
