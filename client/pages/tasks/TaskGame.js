@@ -40,7 +40,7 @@ export default function TasksPlay() {
         );
     }
 
-    const onClickPlay= (index) => {
+    const onClickPlay = (index) => {
         const TasksPayoffClear = {
             row_number: index,
         }
@@ -76,15 +76,23 @@ export default function TasksPlay() {
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Описание
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.descriptionsR}>
-                            <Markdown value={task?.description.trim()}/>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Markdown
+                                className={s.descriptionsR}
+                                value={task?.description.trim()}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Подсказки
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.descriptionsR}>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
                             {taskPlay?.data?.description ?
-                                (<Markdown value={taskPlay?.data?.description}/>)
+                                (
+                                    <Markdown
+                                        className={s.descriptionsR}
+                                        value={taskPlay?.data?.description}
+                                    />
+                                )
                                 : (<div>Загрузка</div>)
                             }
                         </Grid>
@@ -96,7 +104,9 @@ export default function TasksPlay() {
                             <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                                 Матрица
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Grid item xs={12} sm={12} md={12} lg={12}
+                                  style={{maxWidth: "fit-content"}}
+                            >
                                 <Matrix/>
                             </Grid>
                         </Grid>
@@ -104,23 +114,40 @@ export default function TasksPlay() {
                             <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                                 Стратегии игроков
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                Шанс первого игрока: {taskPlay?.data?.chance_first ?
-                                (<div>{
-                                    taskPlay.data.chance_first.map((row) => (
-                                        <div>{row},</div>
-                                    ))}</div>)
-                                : (<div>Загрузка</div>)
-                            }
+                            <Grid item xs={12} sm={12} md={12} lg={12}
+                                style={{maxWidth: "fit-content"}}
+                            >
+                                {taskPlay?.data?.chance_first ?
+                                    (<table className={s.backgroundMatrix}>
+                                        <caption>
+                                            Вероятности первого игрока:
+                                        </caption>
+                                        <tbody>
+                                        <tr>{
+                                            taskPlay.data.chance_first.map((row) => (
+                                                <td className={s.col}>{row.toFixed(4)}</td>
+                                            ))}</tr>
+                                        </tbody>
+                                    </table>)
+                                    : (<div>Загрузка</div>)
+                                }
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                Шанс Второго игрока: {taskPlay?.data?.chance_second ?
-                                (<div>{
-                                    taskPlay.data.chance_second.map((row) => (
-                                        <div>{row},</div>
-                                    ))}</div>)
-                                : (<div>Загрузка</div>)
-                            }
+                            <Grid item xs={12} sm={12} md={12} lg={12}
+                                  style={{maxWidth: "fit-content"}}
+                            >
+                                {taskPlay?.data?.chance_second ?
+                                    (<table className={s.backgroundMatrix}>
+                                        <caption>
+                                            Вероятности второго игрока:
+                                        </caption>
+                                        <tbody>
+                                        <tr>{
+                                            taskPlay.data.chance_second.map((row) => (
+                                                <td className={s.col}>{row.toFixed(4)}</td>
+                                            ))}</tr>
+                                        </tbody></table>)
+                                    : (<div>Загрузка</div>)
+                                }
                             </Grid>{/*
                             {playGame?.data?.your_chance ?
                                 (<Grid item xs={12} sm={12} md={12} lg={12}>
@@ -151,9 +178,10 @@ export default function TasksPlay() {
                             <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                                 {task.matrix.map((row, rowIndex) => (
                                     <div key={rowIndex}>
-                                        <button onClick={()=>{
+                                        <button onClick={() => {
                                             onClickPlay(rowIndex)
-                                        }}>Выбрать {rowIndex + 1} стратегию</button>
+                                        }}>Выбрать {rowIndex + 1} стратегию
+                                        </button>
                                     </div>
                                 ))}
                             </Grid>

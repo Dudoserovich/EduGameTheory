@@ -73,6 +73,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"text"}
                                     id="outlined-select-currency"
                                     select
@@ -112,6 +113,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -139,6 +141,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -165,6 +168,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number"}
                                     color="info"
                                     style={{
@@ -214,6 +218,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -240,6 +245,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -330,9 +336,11 @@ export default function tasks() {
                             Описание
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}
-                              className={s.descriptionsR}
                         >
-                            <Markdown value={task?.description.trim()}/>
+                            <Markdown
+                                className={s.descriptionsR}
+                                value={task?.description.trim()}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Подсказки
