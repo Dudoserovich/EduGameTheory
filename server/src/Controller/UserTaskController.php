@@ -472,8 +472,8 @@ class UserTaskController extends ApiController
         if ($task->getFlagMatrix() == 'платёжная матрица') {
             try {
                 $result = TaskSolver::comparisionPaymentResult($task->getMatrix(), $request);
-            } catch (BadDataException | IncorrectTypeException
-            | MatrixException | MathException | Exception $e) {
+            } catch (BadDataException|IncorrectTypeException
+            |MatrixException|MathException|Exception $e) {
                 return $this->respondValidationError($e->getMessage());
             }
         } else {
@@ -546,6 +546,21 @@ class UserTaskController extends ApiController
             return $this->respondNotFound("Задание не найдено");
         }
 
+        $user = $this->getUserEntity($this->userRepository);
+        $taskMark = $this->taskMarkRepository
+            ->findOneBy(["user" => $user, "task" => $task]);
+        if (!$taskMark) {
+            $taskMark = new TaskMark();
+            $taskMark
+                ->setTask($task)
+                ->setUser($user)
+                ->setCountTries(0);
+            $this->em->persist($taskMark);
+            $this->em->flush();
+        }
+
+        $taskMark->incCountTries();
+
         $resultMessage = null;
         // Матрица последствий
         if ($task->getFlagMatrix() == 'матрица последствий') {
@@ -554,8 +569,22 @@ class UserTaskController extends ApiController
 
                 if ($resultSolve['min_value'] == $request['min_value']
                     and $resultSolve["min_index"] == $request["min_index"])
+                {
                     $resultMessage = "Вы правильно решили задание!";
-                else $resultMessage = "Вы неправильно решили задание!";
+
+                    $tries = $taskMark->getCountTries();
+                    try {
+                        $rating = TaskMarkService::get($tries);
+                    } catch (Exception $e) {
+                        return $this->respondWithErrors($e->getMessage());
+                    }
+
+                    $taskMark->setRating($rating);
+
+                    $this->em->persist($taskMark);
+                    $this->em->flush();
+                } else
+                    $resultMessage = "Вы неправильно решили задание!";
             } catch (BadDataException|IncorrectTypeException
             |MatrixException|MathException|Exception $e) {
                 return $this->respondValidationError($e->getMessage());
