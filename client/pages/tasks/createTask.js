@@ -3,7 +3,7 @@ import s from '../../styles/tasks/creatTasks.module.scss';
 import Page from "../../layout/Page/Page";
 import BoxAnimation from "../../components/BoxAnimation/BoxAnimation";
 import {useDispatch, useSelector} from 'react-redux';
-import {Grid} from "@material-ui/core";
+import {Grid, Typography} from "@material-ui/core";
 import {getTopicsInfo} from "../../store/slices/topicSlice";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,8 +12,8 @@ import {Controller, useForm} from "react-hook-form";
 import Input from "../../components/Input/Input";
 import {getToken} from "../../store/slices/authSlice";
 import Spinner from "../../components/Spinner/Spinner";
-import {Button} from "@mui/material";
-import {createTask} from "../../store/slices/creatTaskSlice";
+import {Button, Modal} from "@mui/material";
+import {checkMatrixInfo, createTask} from "../../store/slices/creatTaskSlice";
 import plus from "../../public/svg/plus.svg";
 import minus from "../../public/svg/minus.svg";
 import plus1 from "../../public/svg/plus1.svg";
@@ -22,6 +22,8 @@ import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
 
 import toast, {Toaster} from 'react-hot-toast'
 import SimpleToast, {notify} from "../../components/Toast/SimpleToast";
+import Markdown from "../../components/Markdown/Markdown";
+import MuiCircularProgress from "../../components/Spinner/MuiCircularProgress";
 
 export default function tasks(userID) {
 //Запрос топиков
@@ -196,10 +198,42 @@ export default function tasks(userID) {
         }
     });
 
+    const [newTask, setNewTask] = React.useState({});
     const onSubmit = (data) => {
-        console.log(data)
-        dispatch(createTask(data));
+        console.log(data);
+        handleOpen()
+        setNewTask(data)
+        dispatch(
+            checkMatrixInfo({
+                matrix: data.matrix,
+                flag_matrix: data.flag_matrix
+            })
+        );
+        // dispatch(createTask(data));
     }
+
+    const matrixInfo = useSelector(state => state.newTask.matrixInfo);
+    console.log(matrixInfo)
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const handleCloseWithAdd = () => {
+        setOpen(false);
+        dispatch(createTask(newTask));
+    };
+
+    const styleModal = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
 
     return (
         <Page pageTitle={'Конструктор заданий'}>
@@ -218,6 +252,7 @@ export default function tasks(userID) {
                                     render={({field}) => (
                                         <TextField
                                             {...field}
+                                            required
                                             type={"text"}
                                             color="info"
                                             style={{
@@ -243,6 +278,7 @@ export default function tasks(userID) {
                                     render={({field}) => (
                                         <TextField
                                             {...field}
+                                            required
                                             type={"text"}
                                             style={{
                                                 borderRadius: '4px',
@@ -279,6 +315,7 @@ export default function tasks(userID) {
                                     render={({field}) => (
                                         <TextField
                                             {...field}
+                                            required
                                             type={"number"}
                                             style={{
                                                 borderRadius: '4px',
@@ -312,11 +349,16 @@ export default function tasks(userID) {
                                   className={s.name}
                                   data-color-mode="light"
                             >
-                                <p>Описание</p>
+                                <Typography
+                                    style={{color: "white"}}
+                                    variant="h6" component="h2"
+                                >
+                                    Описание
+                                </Typography>
                                 <Controller
                                     name="description"
                                     control={control}
-                                    rules={{required: true}}
+                                    rules={{required: false}}
                                     render={(
                                         {
                                             field: {onChange, onBlur, value, name, ref},
@@ -334,14 +376,54 @@ export default function tasks(userID) {
                                 color: "white",
                                 fontSize: '28px'
                             }}>
-                                Создание матрицы
+                                Создание матрицы *
                             </Grid>
 
                             <Matrix/>
-                            <Button type={'submit'} variant="contained">Создать</Button>
+                            <Button
+                                type={'submit'}
+                                variant="contained"
+                                style={{
+                                    marginTop: 10
+                                }}
+                            >
+                                Создать
+                            </Button>
                         </Grid>
                     </form>
 
+                    <div>
+                        <Modal
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                        >
+                            <Box sx={styleModal}>
+                                <Typography style={{color: "black"}} id="modal-modal-title" variant="h6" component="h2">
+                                    Подтвердите добавление
+                                </Typography>
+                                {matrixInfo.isLoading ?
+                                    <MuiCircularProgress/>
+                                    :
+                                    <>
+                                        <Typography id="modal-modal-description" sx={{mt: 2}}>
+                                            <Markdown value={matrixInfo?.data?.message}/>
+                                            <p><br/>Вы уверены, что хотите добавить задание?</p>
+                                        </Typography>
+                                        <div style={{
+                                            paddingTop: 10,
+                                            display: "flex",
+                                            justifyContent: "center"
+                                        }}>
+                                            <Button onClick={handleCloseWithAdd}>Да</Button>
+                                            <Button onClick={handleClose}>Нет</Button>
+                                        </div>
+                                    </>
+                                }
+                            </Box>
+                        </Modal>
+                    </div>
                 </div>
                 <ul className={s.boxArea}>
                     <li></li>

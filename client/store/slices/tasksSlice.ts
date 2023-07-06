@@ -18,14 +18,6 @@ export const deleteTask = createAsyncThunk<Promise<{ code: number } | { error: a
     async taskId => deleteRequest(`/tasks/${taskId} `)
 );
 
-
-interface IData {
-    name: string;
-    description: string;
-    matrix: number[][];
-    flag_matrix: string;
-    topic_id: number;
-}
 interface TasksSelfState {
     info: {
         data: AllTasks,

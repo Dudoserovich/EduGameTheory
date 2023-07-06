@@ -9,11 +9,13 @@ import {Controller, useForm} from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import check from "../../public/svg/check.svg";
-import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
+import {Button, Dialog, DialogContent, DialogTitle, IconButton} from "@mui/material";
 import {TaskPayoff} from "../../store/slices/taskPayoffSlice";
 import {TaskGame} from "../../store/slices/taskGameSlice";
 import closeSvg from "../../public/svg/close.svg";
 import Markdown from "../../components/Markdown/Markdown";
+import CloseIcon from "@mui/icons-material/Close";
+import Matrix from "../../components/Matrix/Matrix";
 
 
 export default function tasks() {
@@ -30,22 +32,6 @@ export default function tasks() {
     }, []);
 
     const [strate, setStrategyies] = useState("");
-
-    function Matrix() {
-        return (
-            <table className={s.backgroundMatrix}>
-                <tbody>
-                {task.matrix.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                        {row.map((cell, cellIndex) => (
-                            <td key={cellIndex} className={s.col}>{cell}</td>
-                        ))}
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        );
-    }
 
     function GamePayoff() {
         const {handleSubmit, control, formState: {errors}} = useForm({
@@ -73,6 +59,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"text"}
                                     id="outlined-select-currency"
                                     select
@@ -112,6 +99,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -139,6 +127,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -165,6 +154,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number"}
                                     color="info"
                                     style={{
@@ -214,6 +204,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -240,6 +231,7 @@ export default function tasks() {
                             render={({field}) => (
                                 <TextField
                                     {...field}
+                                    required
                                     type={"number[]"}
                                     color="info"
                                     style={{
@@ -330,9 +322,11 @@ export default function tasks() {
                             Описание
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12}
-                              className={s.descriptionsR}
                         >
-                            <Markdown value={task?.description.trim()}/>
+                            <Markdown
+                                className={s.descriptionsR}
+                                value={task?.description.trim()}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Подсказки
@@ -350,8 +344,10 @@ export default function tasks() {
                             <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                                 Матрица
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <Matrix/>
+                            <Grid item xs={12} sm={12} md={12} lg={12}
+                                  style={{maxWidth: "fit-content"}}
+                            >
+                                <Matrix matrix={task?.matrix}/>
                             </Grid>
                         </Grid>
                         <Grid container item xs={12} sm={12} md={6} lg={6}>
@@ -369,9 +365,18 @@ export default function tasks() {
                     </Grid>
                     <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title' fullWidth={true}>
                         <DialogTitle id='form-dialog-title' className={s.back}>
-                            <Button onClick={handleClose}>
-                                <div style={{maxWidth: '30px'}} dangerouslySetInnerHTML={{__html: closeSvg}}/>
-                            </Button>
+                            <IconButton
+                                aria-label="close"
+                                onClick={handleClose}
+                                sx={{
+                                    position: 'absolute',
+                                    right: 8,
+                                    top: 8,
+                                    color: (theme) => theme.palette.grey[500],
+                                }}
+                            >
+                                <CloseIcon/>
+                            </IconButton>
                             { taskPayoff?.data?.success ?
                                 (taskPayoff.data.success === true)?
                                     (<div style={{color: 'green'}}>Успех</div>)

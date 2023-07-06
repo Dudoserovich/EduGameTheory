@@ -41,9 +41,9 @@ class UserController extends ApiController
     private string $avatarDirectory;
 
     public function __construct(
-        UserRepository $userRepository,
+        UserRepository         $userRepository,
         EntityManagerInterface $em,
-        string $avatarDirectory
+        string                 $avatarDirectory
     )
     {
         $this->userRepository = $userRepository;
@@ -75,6 +75,53 @@ class UserController extends ApiController
         $userPreviews = array_map(
             fn(User $user): array => $userPreviewer->preview($user),
             $users
+        );
+
+        return $this->response($userPreviews);
+    }
+
+    /**
+     * Получение всех пользователей преподавателей
+     * @OA\Response(
+     *     response=200,
+     *     description="HTTP_OK",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(
+     *             @OA\Property(property="id", ref="#/components/schemas/UserView/properties/id"),
+     *             @OA\Property(property="fio", ref="#/components/schemas/UserView/properties/fio")
+     *         )
+     *     )
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Доступ запрещён"
+     * )
+     */
+    #[Route(
+        '/teachers',
+        name: 'get_teachers',
+        methods: ['GET']
+    )]
+    public function getTeacherUsers(UserPreviewer $userPreviewer): JsonResponse
+    {
+        $users = $this->userRepository->findNotUser($this->getUserEntity($this->userRepository)->getId());
+
+        $usersTeacher = array_values(
+            array_filter(
+                $users,
+                fn(User $user) => in_array(
+                    $user->getRoles(),
+                    [['ROLE_TEACHER'], ['ROLE_ADMIN']]
+                )
+            )
+        );
+
+        $this->setSoftDeleteable($this->em, false);
+
+        $userPreviews = array_map(
+            fn(User $user): array => $userPreviewer->previewOnlyFio($user),
+            $usersTeacher
         );
 
         return $this->response($userPreviews);
@@ -192,7 +239,7 @@ class UserController extends ApiController
     )]
     public function getUserObj(
         UserPreviewer $userPreviewer,
-        int $userId
+        int           $userId
     ): JsonResponse
     {
         $user = $this->userRepository->find($userId);
@@ -400,7 +447,7 @@ class UserController extends ApiController
      * )
      */
     #[Route('/self', name: 'self_put', methods: ['PUT'])]
-    public function upSelf(Request $request,
+    public function upSelf(Request                     $request,
                            UserPasswordHasherInterface $passwordEncoder
     ): JsonResponse
     {

@@ -50,13 +50,13 @@ class UserPreviewer
 
     #[ArrayShape([
         "id" => "int",
-        "fio" => "string"
+        "full_name" => "string"
     ])]
     public function previewOnlyFio(User $user): array
     {
         return [
             "id" => $user->getId(),
-            "fio" => $user->getFio(),
+            "full_name" => $user->getFio(),
         ];
     }
 

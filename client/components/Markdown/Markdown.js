@@ -10,9 +10,9 @@ import rehypeKatex from 'rehype-katex';
 
 import 'katex/dist/katex.min.css';
 
-export default function Markdown({className, value}) {
+export default function Markdown({className, value, style}) {
     return (
-        <div className={classNames(s.markdown_body, className)}>
+        <div className={classNames(s.markdown_body, className)} style={style}>
             <ReactMarkdown
                 children={value}
                 remarkPlugins={[remarkGfm, remarkMath]}

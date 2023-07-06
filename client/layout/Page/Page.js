@@ -42,6 +42,7 @@ export default function Page({children, pageTitle = ''}) {
             <Head>
                 <title>{pageTitle && `${pageTitle} - `}EduGameTheory</title>
                 <meta name="viewport" content="width=device-width"/>
+                {/*<link rel="icon" type="image/png" href="" sizes="16x16"/>*/}
             </Head>
             <div className={s.Page}>
                 <header>
