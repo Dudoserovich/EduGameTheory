@@ -15,7 +15,7 @@
     "@material-ui/icons": "^4.11.2",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@mui/icons-material": "^5.11.9",
-    "@mui/material": "^5.11.9",
+    "@mui/material": "^5.13.5",
     "@react-spring/parallax": "^9.7.2",
     "@reduxjs/toolkit": "^1.9.2",
     "@uiw/react-md-editor": "^3.23.3",
