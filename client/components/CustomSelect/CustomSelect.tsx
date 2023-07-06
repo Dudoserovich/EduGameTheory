@@ -1,7 +1,6 @@
 import React, {forwardRef} from 'react';
 import Select from 'react-select'
 import {RefCallBack} from "react-hook-form";
-import s from "../AttestationPreview/AttestationPreview.module.scss";
 
 const customStyles = {
     control: (provided, state) => {
@@ -23,15 +22,15 @@ const customStyles = {
     }),
     loadingIndicator: (provided) => ({
         ...provided,
-        color: '#DB001B'
+        // color: '#DB001B'
     }),
     menu: (provided) => ({
         ...provided,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
-        border: '1px solid #DB001B',
+        border: '1px solid #1976d2',
         borderTop: 'none',
-        boxShadow: '0 0 0 1px #DB001B',
+        boxShadow: '0 0 0 1px #1976d2',
         padding: 0,
         margin: 0
     })
@@ -41,18 +40,18 @@ const customTheme = (theme) => ({
     ...theme,
     colors: {
         ...theme.colors,
-        primary25: '#F6BFC6',
-        primary: '#DB001B',
+        // primary25: '#F6BFC6',
+        // primary: '#DB001B',
     },
 })
 
 interface IProps {
     className: string,
-    isMulti: boolean
+    isMulti: boolean,
     inputRef: RefCallBack,
     instanceId: string,
     isClearable: boolean,
-    isSearchable: boolean
+    isSearchable: boolean,
     type: string,
     isLoading: boolean
     loadingMessage: () => string,

@@ -3,7 +3,7 @@ import s from '../../styles/tasks/creatTasks.module.scss';
 import Page from "../../layout/Page/Page";
 import BoxAnimation from "../../components/BoxAnimation/BoxAnimation";
 import {useDispatch, useSelector} from 'react-redux';
-import {Grid} from "@material-ui/core";
+import {Grid, Typography} from "@material-ui/core";
 import {getTopicsInfo} from "../../store/slices/topicSlice";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -311,7 +311,12 @@ export default function tasks() {
                                   data-color-mode="light"
                                   className={s.name}
                             >
-                                <p>Описание</p>
+                                <Typography
+                                    style={{color: "white"}}
+                                    variant="h6" component="h2"
+                                >
+                                    Описание
+                                </Typography>
                                 <Controller
                                     name="description"
                                     control={control}

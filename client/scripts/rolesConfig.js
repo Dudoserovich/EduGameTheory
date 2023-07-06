@@ -33,3 +33,12 @@ export function getUserRole(rolesArr) {
 
     return Roles.USER;
 }
+
+export function isNotUser(rolesArr) {
+    return (rolesArr?.includes(Roles.ADMIN.value)
+        || rolesArr?.includes(Roles.TEACHER.value));
+}
+
+export function isAdmin(rolesArr) {
+    return (rolesArr?.includes(Roles.ADMIN.value));
+}

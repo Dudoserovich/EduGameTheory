@@ -416,8 +416,8 @@ export default function tasks(userID) {
                                             display: "flex",
                                             justifyContent: "center"
                                         }}>
-                                            <Button onClick={handleClose}>Нет</Button>
                                             <Button onClick={handleCloseWithAdd}>Да</Button>
+                                            <Button onClick={handleClose}>Нет</Button>
                                         </div>
                                     </>
                                 }

@@ -20,11 +20,13 @@ import Tasks from  "../pages/tasks/Tasks";
 import Task from  "../pages/tasks/Task";
 import EditTask from  "../pages/tasks/editTask";
 import TaskPlay from  "../pages/tasks/TaskGame";
-import MyTask from  "../pages/tasks/tasksTeacher";
 import ToastSSE from "../components/Toast/ToastSSE";
+import SimpleToast from "../components/Toast/SimpleToast";
+
 import Educations from "../pages/educations"
 import Education from "../pages/educations/[eduId]"
-import SimpleToast from "../components/Toast/SimpleToast";
+
+import StatsTask from "../pages/tasks/stats/[taskId]"
 
 const App = () => {
     return (
@@ -47,7 +49,10 @@ const App = () => {
                                 <Route path="task" element={<Task/>}/>
                                 <Route path="editTask" element={<EditTask/>}/>
                                 <Route path="taskPlay" element={<TaskPlay/>}/>
-                                <Route path="myTasks" element={<MyTask/>}/>
+
+                                <Route path="stats">
+                                    <Route path=":taskId" element={<StatsTask/>}/>
+                                </Route>
                             </Route>
                             <Route path="educations">
                                 <Route index element={<Educations/>}/>

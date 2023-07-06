@@ -8,6 +8,7 @@ import check from "../../public/svg/check.svg";
 import {getPlayInfo} from "../../store/slices/taskPlaySlice";
 import {TaskPlayPayoff} from "../../store/slices/taskPlayGameSlice";
 import Markdown from "../../components/Markdown/Markdown";
+import Matrix from "../../components/Matrix/Matrix";
 
 
 export default function TasksPlay() {
@@ -22,23 +23,6 @@ export default function TasksPlay() {
         dispatch(getPlayInfo({id: task.id}));
     }, []);
     console.log(playGame)
-
-    function Matrix() {
-        return (
-            <table className={s.backgroundMatrix}>
-                <tbody>
-                {task.matrix.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                        {row.map((cell, cellIndex) => (
-                            <td key={cellIndex} className={s.col}>{cell}</td>
-                        ))}
-                        <td> - {rowIndex + 1}-ая стратегия</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        );
-    }
 
     const onClickPlay = (index) => {
         const TasksPayoffClear = {
@@ -107,7 +91,7 @@ export default function TasksPlay() {
                             <Grid item xs={12} sm={12} md={12} lg={12}
                                   style={{maxWidth: "fit-content"}}
                             >
-                                <Matrix/>
+                                <Matrix matrix={task?.matrix}/>
                             </Grid>
                         </Grid>
                         <Grid container item xs={12} sm={6} md={6} lg={6}>

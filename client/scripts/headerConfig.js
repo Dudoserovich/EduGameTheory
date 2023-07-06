@@ -4,7 +4,7 @@ export const headerConfig = {
     user: [
         {
             name: 'Задания',
-            href: '/tasks/allTasks'
+            href: '/tasks/all'
         },
         {
             name: 'Дополнительные материалы',
@@ -19,11 +19,7 @@ export const headerConfig = {
                 }
             ],
             href: '/materials'
-        },
-        {
-            name: 'Задания',
-            href: '/tasks'
-        },
+        }
     ],
 
     teacher: [
@@ -32,17 +28,12 @@ export const headerConfig = {
             submenus: [
                 {
                     name: 'Задания',
-                    href: '/tasks/allTasks'
+                    href: '/tasks/all'
                 },
                 {
                     name: 'Конструктор заданий',
                     href: '/tasks/createTask'
                 },
-                {
-                    name: 'Мои задания',
-                    href: '/tasks/myTasks'
-                },
-
             ],
             href: '/tasks'
         },
@@ -74,11 +65,6 @@ export const headerConfig = {
                     name: 'Конструктор заданий',
                     href: '/tasks/createTask'
                 },
-                {
-                    name: 'Мои задания',
-                    href: '/tasks/myTasks'
-                },
-
             ],
             href: '/tasks'
         },
