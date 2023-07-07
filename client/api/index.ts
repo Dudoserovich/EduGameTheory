@@ -161,6 +161,7 @@ export function deleteRequest(path, data = {}, headers = {}) {
         data: data
     })
         .then(res => {
+            notifySuccess(res.data.success)
             return {data: res.data}
         })
         .catch(err => {
@@ -168,6 +169,10 @@ export function deleteRequest(path, data = {}, headers = {}) {
                 refreshingToken();
                 return deleteRequest(path, headers);
             }
+            else {
+                notifyError(err.response.data.errors)
+            }
+
             return {error: err.response.data}
         });
 }
