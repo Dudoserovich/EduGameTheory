@@ -7,6 +7,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeRaw from "rehype-raw";
 
 import 'katex/dist/katex.min.css';
 
@@ -16,7 +17,7 @@ export default function Markdown({className, value, style}) {
             <ReactMarkdown
                 children={value}
                 remarkPlugins={[remarkGfm, remarkMath]}
-                rehypePlugins={[rehypeKatex]}
+                rehypePlugins={[rehypeRaw, rehypeKatex]}
                 components={{
                 code({node, inline, className, children, ...props}) {
                     const match = /language-(\w+)/.exec(className || '')
