@@ -23,6 +23,7 @@
     "axios": "^0.27.2",
     "chart.js": "^3.9.1",
     "classnames": "^2.2.6",
+    "favicons-webpack-plugin": "^6.0.0",
     "history": "^5.3.0",
     "jwt-decode": "^3.1.2",
     "katex": "^0.16.7",
