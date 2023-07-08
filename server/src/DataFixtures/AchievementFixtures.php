@@ -27,7 +27,7 @@ class AchievementFixtures extends BaseFixtureAbstract
             "typeOfInteraction" => "прохождение",
             "needScore" => 1,
             "needTries" => 1,
-            "rating" => null
+            "rating" => 5
         ],
         [
             "name" => "Наугад",
