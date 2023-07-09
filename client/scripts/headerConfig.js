@@ -4,13 +4,13 @@ export const headerConfig = {
     user: [
         {
             name: 'Задания',
-            href: '/tasks/allTasks'
+            href: '/tasks/all'
         },
         {
             name: 'Дополнительные материалы',
             submenus: [
                 {
-                    name: 'Глосарий терминов',
+                    name: 'Глоссарий терминов',
                     href: '/materials/terms'
                 },
                 {
@@ -21,8 +21,12 @@ export const headerConfig = {
             href: '/materials'
         },
         {
-            name: 'Задания',
-            href: '/tasks'
+            name: 'Обучение',
+            href: '/educations'
+        },
+        {
+            name: 'Пользователи',
+            href: '/users'
         },
     ],
 
@@ -32,7 +36,7 @@ export const headerConfig = {
             submenus: [
                 {
                     name: 'Задания',
-                    href: '/tasks/allTasks'
+                    href: '/tasks/all'
                 },
                 {
                     name: 'Конструктор заданий',
@@ -50,7 +54,7 @@ export const headerConfig = {
             name: 'Дополнительные материалы',
             submenus: [
                 {
-                    name: 'Глосарий терминов',
+                    name: 'Глоссарий терминов',
                     href: '/materials/terms'
                 },
                 {
@@ -59,7 +63,15 @@ export const headerConfig = {
                 }
             ],
             href: '/materials'
-        }
+        },
+        {
+            name: 'Обучение',
+            href: '/educations'
+        },
+        {
+            name: 'Пользователи',
+            href: '/users'
+        },
     ],
 
     admin: [
@@ -102,6 +114,17 @@ export const headerConfig = {
         },
         {
             name: 'Пользователи',
+            submenus: [
+                {
+                    name: 'Пользователи',
+                    href: '/users/allUsers'
+                },
+                {
+                    name: 'Таблица лидеров',
+                    href: '/users/leaders'
+                },
+
+            ],
             href: '/users'
         },
     ]

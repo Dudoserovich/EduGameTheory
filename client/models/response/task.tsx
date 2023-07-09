@@ -12,10 +12,17 @@ export interface Tasks {
     name: string,
     description: string,
     type: string,
-    topic: string,
+    topic: {
+        id: number,
+        name: string
+    },
     owner: { id: number, fio: string,},
     matrix: number[][],
     flagMatrix: string,
+    name_first_player: string,
+    name_second_player: string,
+    name_first_strategies: string[],
+    name_second_strategies: string[],
 }
 export interface AllTasks {
     allTasks: Tasks[],

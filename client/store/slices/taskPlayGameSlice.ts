@@ -13,6 +13,8 @@ interface IData {
     chance_second: number[];
     your_chance: number[];
     result_move: number;
+    min_score: number,
+    max_score: number,
     score: number;
     message: string;
 }

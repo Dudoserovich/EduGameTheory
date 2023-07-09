@@ -30,13 +30,42 @@ export default function tasks() {
     }, []);
 
     const [strate, setStrategyies] = useState("");
+    console.log(task)
 
     function Matrix() {
         return (
             <table className={s.backgroundMatrix}>
                 <tbody>
+                <tr>
+                    {
+                        (task.name_first_player !== null && task.name_second_player !== null) ?
+
+
+                            (<td>{task.name_first_player} /<br/>{task.name_second_player}</td>)
+                            : (<td></td>)
+                    }
+                    {
+                        (task.name_first_strategies !== null) ?
+                            task.name_first_strategies.map((strategies, index) => (
+
+                                (<td key={index} className={s.col}>{strategies}</td>)
+                            ))
+                            :
+                            task.matrix[0].map((strategies, index) => (
+                                <td key={index} className={s.col}>{index + 1}-ая стратегия</td>
+
+                            ))
+                    }
+                </tr>
                 {task.matrix.map((row, rowIndex) => (
                     <tr key={rowIndex}>
+                        {/* Дополнительная ячейка слева с подписью для каждой строки */}
+                        {
+                            (task.name_second_strategies !== null) ?
+                                (<td key={rowIndex} className={s.col}>{task.name_second_strategies[rowIndex]}</td>)
+                                :
+                                <td key={rowIndex} className={s.col}>{rowIndex + 1}-ая стратегия</td>
+                        }
                         {row.map((cell, cellIndex) => (
                             <td key={cellIndex} className={s.col}>{cell}</td>
                         ))}
@@ -346,15 +375,13 @@ export default function tasks() {
                             второго
                             игрока.
                         </Grid>
-                        <Grid container item xs={12} sm={12} md={6} lg={6}>
-                            <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
-                                Матрица
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <Matrix/>
-                            </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
+                            Матрица
                         </Grid>
-                        <Grid container item xs={12} sm={12} md={6} lg={6}>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Matrix/>
+                        </Grid>
+                        <Grid container item xs={12} sm={9} md={6} lg={4}>
                             <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                                 Решение
                             </Grid>
@@ -372,14 +399,14 @@ export default function tasks() {
                             <Button onClick={handleClose}>
                                 <div style={{maxWidth: '30px'}} dangerouslySetInnerHTML={{__html: closeSvg}}/>
                             </Button>
-                            { taskPayoff?.data?.success ?
-                                (taskPayoff.data.success === true)?
+                            {taskPayoff?.data?.success ?
+                                (taskPayoff.data.success === true) ?
                                     (<div style={{color: 'green'}}>Успех</div>)
                                     :
                                     (<div style={{color: 'red'}}>Провал</div>)
-                            :
+                                :
                                 (<div></div>)
-                        }
+                            }
                         </DialogTitle>
                         <DialogContent style={{color: 'black'}}>
                             {taskGame?.data ?

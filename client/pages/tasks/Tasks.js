@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import s from '../../styles/tasks/tasks.module.scss';
 import Page from "../../layout/Page/Page";
-import BoxAnimation from "../../components/BoxAnimation/BoxAnimation";
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from "@material-ui/core";
 import down from '../../public/svg/down.svg'
@@ -13,9 +12,6 @@ import {getUserInfo} from "../../store/slices/userSlice";
 import {useNavigate} from 'react-router-dom';
 import {Button, Chip, Dialog, DialogContent, DialogTitle, Divider} from "@mui/material";
 import closeSvg from "../../public/svg/close.svg";
-import {Controller} from "react-hook-form";
-import Input from "../../components/Input/Input";
-import Spinner from "../../components/Spinner/Spinner";
 import Markdown from "../../components/Markdown/Markdown";
 
 
@@ -240,15 +236,6 @@ export default function tasks() {
                         }
                     </div>
                 </div>
-                <ul className={s.boxArea}>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
-                <BoxAnimation/>
 
             </div>
         </Page>

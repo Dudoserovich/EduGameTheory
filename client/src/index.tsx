@@ -21,6 +21,7 @@ import Task from  "../pages/tasks/Task";
 import EditTask from  "../pages/tasks/editTask";
 import TaskPlay from  "../pages/tasks/TaskGame";
 import MyTask from  "../pages/tasks/tasksTeacher";
+import Leaders from "../pages/users/leaders"
 import ToastSSE from "../components/Toast/ToastSSE";
 import Educations from "../pages/educations"
 import Education from "../pages/educations/[eduId]"
@@ -40,7 +41,10 @@ const App = () => {
                                 <Route path="literature" element={<Literature/>}/>
                                 <Route path="terms" element={<Term/>}/>
                             </Route>
-                            <Route path="users" element={<Users/>}/>
+                            <Route path="users">
+                                <Route path="allUsers" element={<Users/>}/>
+                                <Route path="leaders" element={<Leaders/>}/>
+                            </Route>
                             <Route path="tasks">
                                 <Route path="all" element={<Tasks/>}/>
                                 <Route path="createTask" element={<CreateTask/>}/>

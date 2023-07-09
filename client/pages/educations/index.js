@@ -70,7 +70,7 @@ export default function educations() {
     }
 
     return (
-        <Page pageTitle={'Обучения'}>
+        <Page pageTitle={'Обучение'}>
             <div className={s.backgroundStyle}>
                 <div className={s.ctn}>
                     <div style={{

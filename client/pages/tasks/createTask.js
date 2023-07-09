@@ -1,21 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import s from '../../styles/tasks/creatTasks.module.scss';
 import Page from "../../layout/Page/Page";
-import BoxAnimation from "../../components/BoxAnimation/BoxAnimation";
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from "@material-ui/core";
 import {getTopicsInfo} from "../../store/slices/topicSlice";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import Box from '@mui/material/Box';
 import {Controller, useForm} from "react-hook-form";
-import Input from "../../components/Input/Input";
-import {getToken} from "../../store/slices/authSlice";
-import Spinner from "../../components/Spinner/Spinner";
 import {Button} from "@mui/material";
 import {createTask} from "../../store/slices/creatTaskSlice";
-import plus from "../../public/svg/plus.svg";
-import minus from "../../public/svg/minus.svg";
 import plus1 from "../../public/svg/plus1.svg";
 import minus1 from "../../public/svg/minus1.svg";
 import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
@@ -95,20 +88,17 @@ export default function tasks(userID) {
         // функция для отображения ячеек матрицы
         function renderCells(row) {
             return matrix[row].map((value, col) => (
-                <Grid item xs={4} sm={4} md={3} lg={2}>
                     <TextField
-                        value={value}
+                        defaultValue={value}
                         id="col"
                         key={col}
                         type="text"
                         className={s.matrixInput}
-                        onChange={(event) => updateMatrixValue(row, col, event.target.value)}
+                        onBlur={(event) => updateMatrixValue(row, col, parseFloat(event.target.value))}
                     />
-                </Grid>
             ));
         }
 
-        console.log(matrix);
 
         // функция для отображения строк матрицы
         function renderRows() {
@@ -116,9 +106,7 @@ export default function tasks(userID) {
                 <Grid item container spacing={2} xs={12} sm={12} md={12} lg={12} key={index}>
                     Строка {index + 1}
                     <div className={s.propsRow}>
-                        <Grid container spacing={2} item xs={12} sm={12} md={12} lg={12}>
                             {renderCells(index)}
-                        </Grid>
                     </div>
                 </Grid>
             ));
@@ -138,16 +126,9 @@ export default function tasks(userID) {
                     }} dangerouslySetInnerHTML={{__html: minus1}} className={s.propsButton}/>
 
                     {rows}
-                    {/*<TextField
-                        className={s.propsText}
-                        variant="standard"
-                        type="number"
-                        value={rows}
-                        onChange={(event) => resizeMatrix(parseInt(event.target.value), cols)}
-                    />*/}
                     <button onClick={() => {
                         resizeMatrix(parseInt(
-                                (rows === 20) ?
+                                (rows === 12) ?
                                     rows
                                     : (rows + 1)
                             ), cols
@@ -166,7 +147,7 @@ export default function tasks(userID) {
                     {cols}
                     <button onClick={() => {
                         resizeMatrix(rows, parseInt(
-                            (cols === 20) ?
+                            (cols === 12) ?
                                 cols
                                 : cols + 1
                         ))
@@ -174,15 +155,13 @@ export default function tasks(userID) {
 
 
                 </Grid>
-                <Grid container item spacing={0} xs={12} sm={12} md={12} lg={12} style={{justifyContent: ' center'}}>
+
                     <div className={s.matrixBack}>
                         {renderRows()}
                     </div>
-                </Grid>
             </Grid>
         );
     }
-
 
 //для запроса
     const {handleSubmit, control, formState: {errors}} = useForm({
@@ -197,8 +176,15 @@ export default function tasks(userID) {
     });
 
     const onSubmit = (data) => {
-        console.log(data)
-        dispatch(createTask(data));
+
+      const newTask = {
+          name: data.name,
+          description: data.description,
+          matrix: matrix,
+          flag_matrix: data.flag_matrix,
+          topic_id: data.topic_id,
+        }
+        dispatch(createTask({ITask: newTask}));
     }
 
     return (
@@ -343,15 +329,6 @@ export default function tasks(userID) {
                     </form>
 
                 </div>
-                <ul className={s.boxArea}>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
-                <BoxAnimation/>
             </div>
         </Page>
     );
