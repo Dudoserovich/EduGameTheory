@@ -13,6 +13,9 @@ use Exception;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+
 //use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 /**
@@ -24,16 +27,19 @@ class TaskMarkSubscriber implements EventSubscriberInterface
     private AchievementRepository $achievementRepository;
     private UserAchivementRepository $userAchivementRepository;
     private TaskMarkRepository $taskMarkRepository;
+    private HubInterface $hub;
 
     public function __construct(
         AchievementRepository    $achievementRepository,
         TaskMarkRepository    $taskMarkRepository,
-        UserAchivementRepository $userAchivementRepository
+        UserAchivementRepository $userAchivementRepository,
+        HubInterface $hub
     )
     {
         $this->achievementRepository = $achievementRepository;
         $this->taskMarkRepository = $taskMarkRepository;
         $this->userAchivementRepository = $userAchivementRepository;
+        $this->hub = $hub;
     }
 
     public function getSubscribedEvents(): array
@@ -65,6 +71,19 @@ class TaskMarkSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // === Отправка уведомления
+        //  о прохождении задания пользователем ===
+        if ($entity->getRating()) {
+            $update = new Update(
+                topics: '/tasks',
+                data: json_encode(['message' => "Пользователь \"" . $entity->getUser()->getFio() . "\" прошёл ваше задание!"]),
+                type: $entity->getTask()->getOwner()->getId()
+            );
+
+            $this->hub->publish($update);
+        }
+
+        // === Получение достижения ===
         $user = $entity->getUser();
 
         // Получаем все возможные достижения, относящиеся к заданиям
