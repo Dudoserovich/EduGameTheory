@@ -1,0 +1,108 @@
+@import "styles/mixins";
+
+.backgroundStyle{
+  overflow-x: hidden;
+  background: var(--light-background-primary2);
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  padding: 0 !important;
+
+}
+
+.ctn {
+  position: relative;
+  z-index: 5;
+  top: -60px;
+  justify-items: center;
+  @include content;
+
+}
+.table{
+  padding: 10px;
+  background: rgb(80, 103, 255, 0.6);
+  backdrop-filter: blur(2px);
+  border-left: 2mm solid rgb(255, 255, 255);
+  border-right: 2mm solid rgb(255, 255, 255);
+  border-top: 26mm solid rgb(255, 255, 255);
+  border-bottom: 16mm solid rgb(255, 255, 255);
+  border-radius: 10px;
+}
+.leader{
+  width: 100%;
+  border-color: #ffeebb;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 8px;
+  margin-top: 10px;
+  justify-content: space-between!important;
+
+}
+.level{
+  width: 40px;
+  margin: 0 10px;
+}
+.star{
+  width: 30px;
+  margin: 0 10px;
+}
+.svg{
+  position: relative;
+  right: 0;
+  width: 200px;
+  margin: 0 auto 0 auto;
+  transform: translateY(128px);
+  z-index: 99;
+}
+.buttons{
+  justify-content: end!important;
+}
+.name{
+  align-items: center;
+  padding: 10px;
+  border-radius: 2px 0  0 2px;
+  text-align: center;
+}
+.fio{
+  margin-top: 10px!important;
+  color: white;
+}
+.topic{
+  margin-top: 10px!important;
+  color: white;
+}
+.more{
+  cursor: pointer;
+  max-width: 30px !important;
+  margin-top: 10px;
+}
+.more:hover {
+  transform: scale(1.2);
+}
+
+.description{
+  padding: 20px!important;
+}
+.button{
+  padding: 20px!important;
+  border-radius: 0 4px 4px 0;
+  background: white;
+  text-align: center;
+}
+
+.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  margin: 0 auto 0 auto;
+  border-radius: 50%;
+  border: 2px solid #aaa;
+
+  .true__icon {
+  }
+
+  .fake__icon {
+    fill: #aaa;
+  }
+}

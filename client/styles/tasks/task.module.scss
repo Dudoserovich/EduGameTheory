@@ -82,8 +82,31 @@
     text-align: left
   }
 }
-
-.col {
+.positionM{
+  width: 100%;
+  justify-content: center!important;
+}
+.col{
   border: 1px solid #8880a4;
-  padding: 14px 20px !important;
+  padding: 10px !important;
+  justify-content: center!important;
+
+}
+
+.buttons{
+  padding: 10px 20px;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: white;
+  color: white;
+  margin: 5px 20px;
+}
+
+.buttons:hover{
+  transform: translateY(-10px) scale(1.1) ;
+  transition-duration: 0.2s;
+}
+.positionButton{
+  justify-content: center!important;
 }

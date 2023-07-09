@@ -10,7 +10,7 @@ export const headerConfig = {
             name: 'Дополнительные материалы',
             submenus: [
                 {
-                    name: 'Глосарий терминов',
+                    name: 'Глоссарий терминов',
                     href: '/materials/terms'
                 },
                 {
@@ -19,7 +19,15 @@ export const headerConfig = {
                 }
             ],
             href: '/materials'
-        }
+        },
+        {
+            name: 'Обучение',
+            href: '/educations'
+        },
+        {
+            name: 'Пользователи',
+            href: '/users'
+        },
     ],
 
     teacher: [
@@ -41,7 +49,7 @@ export const headerConfig = {
             name: 'Дополнительные материалы',
             submenus: [
                 {
-                    name: 'Глосарий терминов',
+                    name: 'Глоссарий терминов',
                     href: '/materials/terms'
                 },
                 {
@@ -50,7 +58,15 @@ export const headerConfig = {
                 }
             ],
             href: '/materials'
-        }
+        },
+        {
+            name: 'Обучение',
+            href: '/educations'
+        },
+        {
+            name: 'Пользователи',
+            href: '/users'
+        },
     ],
 
     admin: [
@@ -88,6 +104,17 @@ export const headerConfig = {
         },
         {
             name: 'Пользователи',
+            submenus: [
+                {
+                    name: 'Пользователи',
+                    href: '/users/allUsers'
+                },
+                {
+                    name: 'Таблица лидеров',
+                    href: '/users/leaders'
+                },
+
+            ],
             href: '/users'
         },
     ]

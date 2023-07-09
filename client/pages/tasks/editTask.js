@@ -98,27 +98,25 @@ export default function tasks() {
         // функция для отображения ячеек матрицы
         function renderCells(row) {
             return matrix[row].map((value, col) => (
-                <Grid item xs={4} sm={4} md={3} lg={2} >
-                    <TextField
-                        value={value}
-                        id="col"
-                        key={col}
-                        type="text"
-                        className={s.matrixInput}
-                        onChange={(event) => updateMatrixValue(row, col, event.target.value)}
-                    />
-                </Grid>
+                <TextField
+                    defaultValue={value}
+                    id="col"
+                    key={col}
+                    type="text"
+                    className={s.matrixInput}
+                    onBlur={(event) => updateMatrixValue(row, col, parseFloat(event.target.value))}
+                />
             ));
         }
+
+
         // функция для отображения строк матрицы
         function renderRows() {
             return matrix.map((row, index) => (
-                <Grid item container spacing={2} xs={12} sm={12} md={12} lg={12} key={index} >
-                    Строка {index+1}
+                <Grid item container spacing={2} xs={12} sm={12} md={12} lg={12} key={index}>
+                    Строка {index + 1}
                     <div className={s.propsRow}>
-                        <Grid container spacing={2} item xs={12} sm={12} md={12} lg={12}>
-                            {renderCells(index)}
-                        </Grid>
+                        {renderCells(index)}
                     </div>
                 </Grid>
             ));
@@ -138,16 +136,9 @@ export default function tasks() {
                     }} dangerouslySetInnerHTML={{__html: minus1}} className={s.propsButton}/>
 
                     {rows}
-                    {/*<TextField
-                        className={s.propsText}
-                        variant="standard"
-                        type="number"
-                        value={rows}
-                        onChange={(event) => resizeMatrix(parseInt(event.target.value), cols)}
-                    />*/}
                     <button onClick={() => {
                         resizeMatrix(parseInt(
-                                (rows === 20) ?
+                                (rows === 12) ?
                                     rows
                                     : (rows + 1)
                             ), cols
@@ -166,7 +157,7 @@ export default function tasks() {
                     {cols}
                     <button onClick={() => {
                         resizeMatrix(rows, parseInt(
-                            (cols === 20) ?
+                            (cols === 12) ?
                                 cols
                                 : cols + 1
                         ))
@@ -174,11 +165,10 @@ export default function tasks() {
 
 
                 </Grid>
-                <Grid container item spacing={0} xs={12} sm={12} md={12} lg={12} style={{justifyContent: ' center'}}>
-                    <div className={s.matrixBack}>
-                        {renderRows()}
-                    </div>
-                </Grid>
+
+                <div className={s.matrixBack}>
+                    {renderRows()}
+                </div>
             </Grid>
         );
     }
@@ -196,9 +186,15 @@ export default function tasks() {
         }
     });
     const onSubmit = (data) => {
-        console.log(data)
-        dispatch(updateTaskInfo({id: task.id, IData: data}));
-        topic = useSelector(state => state.topics.info);
+        const newTask = {
+            name: task.name,
+            description: task.description,
+            matrix: matrix,
+            flag_matrix: task.flag_matrix,
+            topic_id: task.topic_id,
+        }
+
+        dispatch(updateTaskInfo({id: task.id, IData: newTask}));
     }
     return (
         <Page pageTitle={'Конструктор заданий'}>

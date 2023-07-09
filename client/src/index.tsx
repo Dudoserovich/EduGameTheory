@@ -15,6 +15,8 @@ import Literature from "../pages/literature";
 import Users from "../pages/users";
 import Term from "../pages/term";
 import Page404 from "../pages/404";
+// import MyTask from  "../pages/tasks/tasksTeacher";
+import Leaders from "../pages/users/leaders"
 import CreateTask from "../pages/tasks/createTask";
 import Tasks from "../pages/tasks/Tasks";
 import Task from "../pages/tasks/Task";
@@ -26,7 +28,6 @@ import Educations from "../pages/educations"
 import Education from "../pages/educations/[eduId]"
 
 import StatsTask from "../pages/tasks/stats/[taskId]"
-
 import SSE from "../components/SSE/SSE";
 
 const App = () => {
@@ -43,7 +44,10 @@ const App = () => {
                                 <Route path="literature" element={<Literature/>}/>
                                 <Route path="terms" element={<Term/>}/>
                             </Route>
-                            <Route path="users" element={<Users/>}/>
+                            <Route path="users">
+                                <Route path="allUsers" element={<Users/>}/>
+                                <Route path="leaders" element={<Leaders/>}/>
+                            </Route>
                             <Route path="tasks">
                                 <Route path="all" element={<Tasks/>}/>
                                 <Route path="createTask" element={<CreateTask/>}/>

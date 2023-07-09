@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import s from '../../styles/tasks/tasks.module.scss';
 import Page from "../../layout/Page/Page";
-import BoxAnimation from "../../components/BoxAnimation/BoxAnimation";
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from "@material-ui/core";
 
@@ -518,15 +517,6 @@ export default function tasks() {
                         }
                     </div>
                 </div>
-                <ul className={s.boxArea}>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
-                <BoxAnimation/>
 
             </div>
         </Page>
