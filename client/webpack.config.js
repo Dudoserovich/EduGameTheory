@@ -126,9 +126,9 @@ module.exports = (env, argv) => {
         filename: "index.html",
         template: path.resolve(srcDir, "index.html"),
       }),
-      new FaviconsWebpackPlugin({
-        logo: path.resolve(publicDir, "favicon.ico")
-      }),
+      // new FaviconsWebpackPlugin({
+      //   logo: path.resolve(publicDir, "favicon.ico"),
+      // }),
     ].filter(Boolean),
     resolve: {
       mainFiles: ["index"],
