@@ -18,6 +18,11 @@ export const getEducationBlocks = createAsyncThunk<Promise<{ data: ISimpleEdu } 
     async (id) => getRequest(`/education/${id}/blocks`)
 );
 
+export const educationAdd = createAsyncThunk<Promise<{ code: number } | { error: any }>,{id, idBloc} >(
+    '/education/educationAdd',
+    async (data) => putRequest(`/education/${data.id}/${data.idBloc}`)
+);
+
 interface IFullEdu {
     id: number;
     education_tasks: object;
