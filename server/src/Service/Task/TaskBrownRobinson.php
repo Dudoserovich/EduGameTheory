@@ -51,16 +51,16 @@ class TaskBrownRobinson
             $p[$i] = 0;
 
         while ($count <= $N) {
-            for ($i = 0; $i < $col; $i++) {
+            for ($i = 0; $i < $row; $i++) {
                 //
                 $sum1 = 0;
                 //
-                for ($j = 0; $j < $row; $j++)
+                for ($j = 0; $j < $col; $j++)
                     $sum1 = $sum1 + $matrix[$i][$j] * $q[$j];
                 $max_alpha[$i] = $sum1;
             }
             $max = -10000000;
-            for ($i = 0; $i < $col; $i++) {
+            for ($i = 0; $i < $row; $i++) {
                 if ($max < $max_alpha[$i]) {
                     $max = $max_alpha[$i];
                     $A = $i;
@@ -68,15 +68,15 @@ class TaskBrownRobinson
             }
             $alpha = $max;
             //////////////////////////////////////
-            for ($j = 0; $j < $row; $j++) {
+            for ($j = 0; $j < $col; $j++) {
                 $sum2 = 0;
-                for ($i = 0; $i < $col; $i++)
+                for ($i = 0; $i < $row; $i++)
                     $sum2 = $sum2 + $matrix[$i][$j] * $p[$i];
                 $min_betta[$j] = $sum2;
             }
             //
             $min = 100000000;
-            for ($j = 0; $j < $row; $j++) {
+            for ($j = 0; $j < $col; $j++) {
                 if ($min > $min_betta[$j]) {
                     $min = $min_betta[$j];
                     $B = $j;

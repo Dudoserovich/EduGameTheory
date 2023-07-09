@@ -232,7 +232,7 @@ export default function statsTask() {
                                             </div>
                                         </ListItem>)
                                     })}
-                                {!taskStats.isLoading && taskStats?.data?.users ?
+                                {(!taskStats.isLoading && taskStats?.data?.users?.length === 0) ?
                                     <div>Здесь пока пусто :(</div>
                                     : null
                                 }

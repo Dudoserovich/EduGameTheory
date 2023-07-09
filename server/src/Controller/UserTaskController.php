@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\PlayTask;
 use App\Entity\Task;
 use App\Entity\TaskMark;
 use App\Previewer\TaskMarkPreviewer;
 use App\Previewer\TaskPreviewer;
+use App\Repository\PlayTaskRepository;
 use App\Repository\TaskMarkRepository;
 use App\Repository\TaskRepository;
 use App\Repository\TopicRepository;
 use App\Repository\UserRepository;
+use App\Service\Declension;
 use App\Service\Task\TaskBrownRobinson;
 use App\Service\Task\TaskPlay;
 use App\Service\Task\TaskSolver;
@@ -42,17 +45,20 @@ class UserTaskController extends ApiController
     private UserRepository $userRepository;
     private RequestStack $requestStack;
     private TaskMarkRepository $taskMarkRepository;
+    private PlayTaskRepository $playTaskRepository;
 
     public function __construct(
         TaskRepository         $taskRepository,
         UserRepository         $userRepository,
         TaskMarkRepository     $taskMarkRepository,
+        PlayTaskRepository     $playTaskRepository,
         EntityManagerInterface $em,
         RequestStack           $requestStack)
     {
         $this->taskRepository = $taskRepository;
         $this->userRepository = $userRepository;
         $this->taskMarkRepository = $taskMarkRepository;
+        $this->playTaskRepository = $playTaskRepository;
         $this->em = $em;
         $this->requestStack = $requestStack;
     }
@@ -94,12 +100,27 @@ class UserTaskController extends ApiController
         // вычисляем результат хода
         $taskBrownRobinson->BraunRobinson($task->getMatrix());
 
+        $v = $taskBrownRobinson->getV();
+        if ($v >= 0) {
+            $vFour = ceil($taskBrownRobinson->getV()) * 4;
+            $subMess = "более";
+        } else {
+            $vFour = floor($taskBrownRobinson->getV()) * 4;
+            $subMess = "менее";
+        }
+
         $resultArray =
             [
                 "matrix" => $task->getMatrix(),
                 "chance_first" => $taskBrownRobinson->getP(),
                 "chance_second" => $taskBrownRobinson->getQ(),
-                "description" => "Данная игра направлена на попытку сыграть наилучшим образом. За 10 ходов вам нужно попытаться сформировать наилучшую для себя стратегию. Перед вами ваша оптимальная стратегия и противника. Если вы будете играть опрометчиво, то не сможете набрать наилучшее количество очков. Для предоставления информации по вероятностям используется метод Брауна-Робинсона"
+                "description" => "Данная игра направлена на попытку сыграть наилучшим образом. 
+                За минимальное кол-во ходов вам нужно попытаться сформировать наилучшую для себя стратегию, 
+                    набрав $vFour или $subMess очков. 
+                Перед вами ваша оптимальная стратегия и противника. 
+                Если вы будете играть опрометчиво, то не сможете сыграть оптимальным образом. 
+                Для предоставления информации по вероятностям используется метод Брауна-Робинсона.
+                "
             ];
 
         return $this->response($resultArray);
@@ -141,11 +162,9 @@ class UserTaskController extends ApiController
         TaskBrownRobinson $taskBrownRobinson
     ): JsonResponse
     {
-        // TODO: Хранить результаты не в сессии, а в бд
-
         $request = $request->request->all();
-        $session = $this->requestStack->getSession();
 
+        // Валидация задания
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
             return $this->respondNotFound("Задание не найдено");
@@ -154,24 +173,36 @@ class UserTaskController extends ApiController
             return $this->respondValidationError("Задание не содержит платёжную матрицу");
         }
 
-        $moves = $session->get("task_$taskId")["moves"] ?? [];
-        if (count($moves) > 10) {
-            $result = $session->get("task_$taskId");
+        $user = $this->getUserEntity($this->userRepository);
+
+        // Объект игры по заданию
+        $playTask = $this->playTaskRepository->findOneBy([
+            "user" => $user,
+            "task" => $task
+        ]);
+
+        if (!$playTask) {
+            $playTask = new PlayTask();
+            $playTask
+                ->setUser($user)
+                ->setTask($task);
+        }
+
+        // Проверяем прошёл ли пользователь игру по заданию
+        if ($playTask->getSuccess()) {
             $resultMessage = "Вы уже прошли это задание";
-            $result["success"] = $resultMessage;
-            $session->set(
-                "task_$taskId",
-                $result
-            );
-            return $this->response(
-                $result
+
+            return ($this->response(
+                array("success" => $resultMessage))
             );
         }
-        $moves[] = $request['row_number'];
 
         // Проверка на валидность переданного номера строки
         if (!($request['row_number'] < count($task->getMatrix()) and $request['row_number'] >= 0))
             return $this->respondNotFound("Неверный номер строки");
+
+        $playTask->addMove($request['row_number']);
+        $this->em->persist($playTask);
 
         // вычисляем результат хода
         $taskBrownRobinson->BraunRobinson($task->getMatrix());
@@ -184,53 +215,81 @@ class UserTaskController extends ApiController
         if (is_null($resultMove))
             return $this->respondNotFound("Пустая матрица");
 
-        $score = $session->get("task_$taskId")["score"] ?? 0;
-        $score += $resultMove;
+        $playTask->addTotalScore($resultMove);
+        $this->em->persist($playTask);
         // Подсчитываем вероятности пользователя
-        $your_chance = array_count_values($moves);
+        $your_chance = array_count_values($playTask->getMoves());
         ksort($your_chance);
         for ($i = 0; $i < count($task->getMatrix()); $i++) {
             if (!array_key_exists($i, $your_chance))
                 $your_chance[$i] = 0;
             else
-                $your_chance[$i] /= count($moves);
+                $your_chance[$i] /= count($playTask->getMoves());
         }
-        $message = null;
-        $chanceFirst = null;
-        if (count($moves) === 10) {
-            // Вычисление самого максимального числа очков
-            $max = null;
-            foreach ($task->getMatrix() as $row) {
-                if (!$max)
-                    $max = max($row);
-                elseif ($max < max($row))
-                    $max = max($row);
-            }
-            $maxScore = $max * count($moves);
 
+        $message = null;
+
+        // Вычисление признака конца игры
+        $v = $taskBrownRobinson->getV();
+        if ($v >= 0) {
+            $needScore = ceil($v) * 4;
+            $isMore = true;
+        } else {
+            $needScore = floor($v) * 4;
+            $isMore = false;
+        }
+        $queryEndPlay = $isMore
+            ? $playTask->getTotalScores() >= $needScore
+            : $playTask->getTotalScores() <= $needScore;
+
+        // проверка на конец игры
+        if ($queryEndPlay) {
             for ($i = 0; $i < count($taskBrownRobinson->getP()); $i++) {
+                $message = "Задание пройдено. 
+                    Вы играли оптимальным способом и набрали "
+                    . $playTask->getTotalScores()
+                    . " очков за " . count($playTask->getMoves())
+                    . " "
+                    . Declension::doByThreeForms(
+                        count($playTask->getMoves()),
+                        "ход",
+                        "хода",
+                        "ходов"
+                    );
+
                 if (round($taskBrownRobinson->getP()[$i], 1) !== round($your_chance[$i], 1)) {
-                    $message = "Задание пройдено. Вы играли рискованно, поэтому ваша вероятность выбора стратегий сильно расходится с наилучшей. Тем не менее вы набрали $score очков из максимальных $maxScore";
+                    $playTask->setSuccess(true);
+
+                    $message = "Задание пройдено. 
+                    Вы играли не оптимальным способом. 
+                    Тем не менее вы набрали "
+                        . $playTask->getTotalScores()
+                        . " очков за " . count($playTask->getMoves())
+                        . " "
+                        . Declension::doByThreeForms(
+                            count($playTask->getMoves()),
+                            "ход",
+                            "хода",
+                            "ходов"
+                        );
                     break;
                 }
             }
-            $chanceFirst = $taskBrownRobinson->getP();
         }
+
         $resultArray =
             [
-                "moves" => $moves,
+                "moves" => $playTask->getMoves(),
                 "chance_first" => $taskBrownRobinson->getP(),
                 "chance_second" => $taskBrownRobinson->getQ(),
                 "your_chance" => $your_chance,
                 "result_move" => $resultMove,
-                "score" => $score,
+                "min_score" => min($task->getMatrix()[$request['row_number']]),
+                "max_score" => max($task->getMatrix()[$request['row_number']]),
+                "score" => $playTask->getTotalScores(),
                 "success" => $message
             ];
-        // сохраняет результаты задачи в сессии
-        $session->set(
-            "task_$taskId",
-            $resultArray
-        );
+        $this->em->flush();
 
         return $this->response($resultArray);
     }
@@ -258,15 +317,28 @@ class UserTaskController extends ApiController
     )]
     public function restartTask(int $taskId): JsonResponse
     {
-        $session = $this->requestStack->getSession();
+        $user = $this->getUserEntity($this->userRepository);
 
         $task = $this->taskRepository->find($taskId);
         if (!$task) {
             return $this->respondNotFound("Задание не найдено");
         }
 
-        $session->remove("task_$taskId");
-        return $this->respondWithSuccess("Задание '{$task->getName()}' перезапущено!");
+        // Удаление лишних данных
+        $playTask = $this->playTaskRepository->findOneBy([
+            "user" => $user,
+            "task" => $task
+        ]);
+        if (!$playTask || !$playTask->getSuccess()) {
+            return $this->respondWithErrors("Вы ещё не прошли игру по заданию");
+        } else {
+            $playTask
+                ->setTotalScore(0)
+                ->setMoves([])
+                ->setSuccess(false);
+        }
+
+        return $this->respondWithSuccess("Игра по заданию '{$task->getName()}' перезапущена!");
     }
 
     /**
@@ -487,11 +559,10 @@ class UserTaskController extends ApiController
 
             try {
                 $rating = TaskMarkService::get($tries);
+                $taskMark->setRating($rating);
             } catch (Exception $e) {
                 return $this->respondWithErrors($e->getMessage());
             }
-
-            $taskMark->setRating($rating);
 
             // TODO: Получение полного решения при успешном прохождении
 //            try {
@@ -568,8 +639,7 @@ class UserTaskController extends ApiController
                 $resultSolve = TaskSolver::solveRiskMatrix($task->getMatrix());
 
                 if ($resultSolve['min_value'] == $request['min_value']
-                    and $resultSolve["min_index"] == $request["min_index"])
-                {
+                    and $resultSolve["min_index"] == $request["min_index"]) {
                     $resultMessage = "Вы правильно решили задание!";
 
                     $tries = $taskMark->getCountTries();
