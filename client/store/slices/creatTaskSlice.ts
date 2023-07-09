@@ -1,8 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {postRequest, putRequest} from "../../api";
 
-
-
 export const createTask = createAsyncThunk<Promise<{ code: number } | { error: any }>, {ITask}>(
     '/newTask/createTask',
     async (data) => await postRequest('/tasks', data.ITask)

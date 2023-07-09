@@ -22,6 +22,7 @@ import toast, {Toaster} from 'react-hot-toast'
 import SimpleToast, {notify} from "../../components/Toast/SimpleToast";
 import Markdown from "../../components/Markdown/Markdown";
 import MuiCircularProgress from "../../components/Spinner/MuiCircularProgress";
+import Box from "@mui/material/Box";
 
 export default function tasks(userID) {
 //Запрос топиков
@@ -182,10 +183,19 @@ export default function tasks(userID) {
         }
     });
 
-    const [newTask, setNewTask] = React.useState({});
+    const [newTaskData, setNewTask] = React.useState({});
     const onSubmit = (data) => {
-        console.log(data)
-        dispatch(createTask(data));
+
+        console.log(data);
+        handleOpen()
+        setNewTask(data)
+        dispatch(
+            checkMatrixInfo({
+                matrix: data.matrix,
+                flag_matrix: data.flag_matrix
+            })
+        );
+        // dispatch(createTask({ITask: newTask}));
     }
 
     const matrixInfo = useSelector(state => state.newTask.matrixInfo);
@@ -196,7 +206,15 @@ export default function tasks(userID) {
     const handleClose = () => setOpen(false);
     const handleCloseWithAdd = () => {
         setOpen(false);
-        dispatch(createTask(newTask));
+
+        const newTask = {
+            name: newTaskData.name,
+            description: newTaskData.description,
+            matrix: matrix,
+            flag_matrix: newTaskData.flag_matrix,
+            topic_id: newTaskData.topic_id,
+        }
+        dispatch(createTask({ITask: newTask}));
     };
 
     const styleModal = {
