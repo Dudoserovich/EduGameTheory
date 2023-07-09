@@ -44,6 +44,7 @@
     "react-error-boundary": "^4.0.10",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.44.3",
+    "react-hooks-sse": "^2.1.0",
     "react-hot-toast": "^2.1.1",
     "react-icons": "^4.9.0",
     "react-input-autosize": "^3.0.0",
