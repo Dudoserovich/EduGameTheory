@@ -12,6 +12,7 @@ use App\Repository\TaskMarkRepository;
 use App\Repository\TaskRepository;
 use App\Repository\TopicRepository;
 use App\Repository\UserRepository;
+use App\Service\Declension;
 use App\Service\Task\TaskBrownRobinson;
 use App\Service\Task\TaskPlay;
 use App\Service\Task\TaskSolver;
@@ -99,15 +100,25 @@ class UserTaskController extends ApiController
         // вычисляем результат хода
         $taskBrownRobinson->BraunRobinson($task->getMatrix());
 
+        $v = $taskBrownRobinson->getV();
+        if ($v >= 0) {
+            $vFour = ceil($taskBrownRobinson->getV()) * 4;
+            $subMess = "более";
+        } else {
+            $vFour = floor($taskBrownRobinson->getV()) * 4;
+            $subMess = "менее";
+        }
+
         $resultArray =
             [
                 "matrix" => $task->getMatrix(),
                 "chance_first" => $taskBrownRobinson->getP(),
                 "chance_second" => $taskBrownRobinson->getQ(),
                 "description" => "Данная игра направлена на попытку сыграть наилучшим образом. 
-                За 10 ходов вам нужно попытаться сформировать наилучшую для себя стратегию. 
+                За минимальное кол-во ходов вам нужно попытаться сформировать наилучшую для себя стратегию, 
+                    набрав $vFour или $subMess очков. 
                 Перед вами ваша оптимальная стратегия и противника. 
-                Если вы будете играть опрометчиво, то не сможете набрать наилучшее количество очков. 
+                Если вы будете играть опрометчиво, то не сможете сыграть оптимальным образом. 
                 Для предоставления информации по вероятностям используется метод Брауна-Робинсона.
                 "
             ];
@@ -115,7 +126,6 @@ class UserTaskController extends ApiController
         return $this->response($resultArray);
     }
 
-    // TODO: Набирать очки, а не попытки
     /**
      * Игра по ходам
      * @OA\RequestBody(
@@ -218,24 +228,50 @@ class UserTaskController extends ApiController
         }
 
         $message = null;
-        if (count($playTask->getMoves()) === 10) {
-            // Вычисление самого максимального числа очков
-            $max = null;
-            foreach ($task->getMatrix() as $row) {
-                if (!$max)
-                    $max = max($row);
-                elseif ($max < max($row))
-                    $max = max($row);
-            }
-            $maxScore = $max * count($playTask->getMoves());
 
+        // Вычисление признака конца игры
+        $v = $taskBrownRobinson->getV();
+        if ($v >= 0) {
+            $needScore = ceil($v) * 4;
+            $isMore = true;
+        } else {
+            $needScore = floor($v) * 4;
+            $isMore = false;
+        }
+        $queryEndPlay = $isMore
+            ? $playTask->getTotalScores() >= $needScore
+            : $playTask->getTotalScores() <= $needScore;
+
+        // проверка на конец игры
+        if ($queryEndPlay) {
             for ($i = 0; $i < count($taskBrownRobinson->getP()); $i++) {
+                $message = "Задание пройдено. 
+                    Вы играли оптимальным способом и набрали "
+                    . $playTask->getTotalScores()
+                    . " очков за " . count($playTask->getMoves())
+                    . " "
+                    . Declension::doByThreeForms(
+                        count($playTask->getMoves()),
+                        "ход",
+                        "хода",
+                        "ходов"
+                    );
+
                 if (round($taskBrownRobinson->getP()[$i], 1) !== round($your_chance[$i], 1)) {
                     $playTask->setSuccess(true);
 
                     $message = "Задание пройдено. 
-                    Вы играли рискованно. 
-                    Тем не менее вы набрали " . $playTask->getTotalScores() . " очков из максимальных $maxScore";
+                    Вы играли не оптимальным способом. 
+                    Тем не менее вы набрали "
+                        . $playTask->getTotalScores()
+                        . " очков за " . count($playTask->getMoves())
+                        . " "
+                        . Declension::doByThreeForms(
+                            count($playTask->getMoves()),
+                            "ход",
+                            "хода",
+                            "ходов"
+                        );
                     break;
                 }
             }
@@ -494,8 +530,7 @@ class UserTaskController extends ApiController
             $taskMark
                 ->setTask($task)
                 ->setUser($user)
-                ->setCountTries(0)
-            ;
+                ->setCountTries(0);
             $this->em->persist($taskMark);
             $this->em->flush();
         }
@@ -604,8 +639,7 @@ class UserTaskController extends ApiController
                 $resultSolve = TaskSolver::solveRiskMatrix($task->getMatrix());
 
                 if ($resultSolve['min_value'] == $request['min_value']
-                    and $resultSolve["min_index"] == $request["min_index"])
-                {
+                    and $resultSolve["min_index"] == $request["min_index"]) {
                     $resultMessage = "Вы правильно решили задание!";
 
                     $tries = $taskMark->getCountTries();
