@@ -51,8 +51,8 @@ class FileUploader
 
         $newFile = null;
 
-        echo '/app/' . $file->getPath() . PHP_EOL;
-        echo $file->getRealPath();
+//        echo '/app/' . $file->getPath() . PHP_EOL;
+//        echo $file->getRealPath();
         try {
             $newFile = $file->move(
                 $file->getPath(),

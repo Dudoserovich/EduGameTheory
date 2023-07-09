@@ -155,6 +155,16 @@ class TaskController extends ApiController
                 ->setOwner($creatorUser)
                 ->setMatrix($request['matrix'] ?? null)
                 ->setFlagMatrix($request['flag_matrix']);
+
+            if (isset($request['name_first_player']))
+                $task->setNameFirstPlayer($request['name_first_player']);
+            if (isset($request['name_second_player']))
+                $task->setNameFirstPlayer($request['name_first_player']);
+            if (isset($request['name_first_strategies']))
+                $task->setNameFirstPlayer($request['name_first_strategies']);
+            if (isset($request['name_second_strategies']))
+                $task->setNameFirstPlayer($request['name_second_strategies']);
+
             $this->em->persist($task);
 
             $this->em->flush();
@@ -275,6 +285,15 @@ class TaskController extends ApiController
                     $task->setTopic($topic);
                 }
             }
+
+            if (isset($request['name_first_player']))
+                $task->setNameFirstPlayer($request['name_first_player']);
+            if (isset($request['name_second_player']))
+                $task->setNameFirstPlayer($request['name_first_player']);
+            if (isset($request['name_first_strategies']))
+                $task->setNameFirstPlayer($request['name_first_strategies']);
+            if (isset($request['name_second_strategies']))
+                $task->setNameFirstPlayer($request['name_second_strategies']);
 
             $this->em->flush();
 

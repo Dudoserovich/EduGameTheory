@@ -19,6 +19,7 @@ import getAchievementsSlice from "./slices/achivSlice";
 import educationSlice from "./slices/educationSlice";
 import leadersInfoSlice from "./slices/leadersSlice";
 import levelInfoSlice from "./slices/levelSlice";
+import taskStatsSlice from "./slices/taskStats";
 
 export const rootReducer = combineReducers({
     achievements: getAchievementsSlice,
@@ -41,4 +42,5 @@ export const rootReducer = combineReducers({
     education: educationSlice,
     leaders: leadersInfoSlice,
     level: levelInfoSlice,
+    taskStatsSlice: taskStatsSlice
 });

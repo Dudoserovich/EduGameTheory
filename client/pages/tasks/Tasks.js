@@ -3,52 +3,68 @@ import s from '../../styles/tasks/tasks.module.scss';
 import Page from "../../layout/Page/Page";
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from "@material-ui/core";
+
 import down from '../../public/svg/down.svg'
 import up from '../../public/svg/up.svg'
 import edit from '../../public/svg/edit.svg'
 import deleteSVG from '../../public/svg/delete1.svg'
+import closeSvg from "../../public/svg/close.svg";
+
 import {deleteTask, getTasksInfo} from "../../store/slices/tasksSlice";
 import {getUserInfo} from "../../store/slices/userSlice";
 import {useNavigate} from 'react-router-dom';
-import {Button, Chip, Dialog, DialogContent, DialogTitle, Divider} from "@mui/material";
-import closeSvg from "../../public/svg/close.svg";
+import {
+    Autocomplete,
+    Button, Checkbox,
+    Chip,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Divider, FormControlLabel, IconButton, Tooltip
+} from "@mui/material";
+import TextField from "@mui/material/TextField";
 import Markdown from "../../components/Markdown/Markdown";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
+import {getTopicsInfo} from "../../store/slices/topicSlice";
+import {getTeacherUsers} from "../../store/slices/generalSlice";
+import CloseIcon from '@mui/icons-material/Close';
+import TopicIcon from '@mui/icons-material/Topic';
+import Avatar from "@mui/material/Avatar";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import {getTasksTeacherInfo} from "../../store/slices/teacherTasksSlice";
+import {isAdmin, isNotUser} from "../../scripts/rolesConfig";
+import DataArrayIcon from "@mui/icons-material/DataArray";
 
 
 export default function tasks() {
 
     const tasks = useSelector(state => state.tasks.info);
     const user = useSelector(state => state.user.info);
+    const teachers = useSelector(state => state.general.teachers);
+    // const topics = useSelector(state => state.topics.info);
+    const tasksSelf = useSelector(state => state.tasksTeacher.info);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getTasksInfo());
+        // dispatch(getTopicsInfo());
         dispatch(getUserInfo());
+        dispatch(getTeacherUsers());
+        dispatch(getTasksTeacherInfo());
     }, []);
 
     const [filters, setFilters] = useState({
-        tasks: []
+        tasks: [],
+        topics: [],
+        teachers: [],
+        tasksSelf: []
     });
-
-    function filtering(data) {
-        let result = data;
-        let filteredItems = [];
-
-        if (filters.tasks.length !== 0) {
-            for (let i = 0; i < filters.tasks.length; i++) {
-                filteredItems = filteredItems.concat(
-                    result.filter(tasks =>
-                        tasks?.data?.id === filters.tasks[i].id
-                    )
-                );
-            }
-
-            result = filteredItems;
-        }
-
-        return result;
-    }
 
     const navigate = useNavigate();
 
@@ -85,19 +101,51 @@ export default function tasks() {
 
         return (
             <>
-                <button onClick={
-                    (task.flag_matrix === 'платёжная матрица') ?
-                        handleClickOpen
-                        : handleClickTask}>Начать
-                </button>
-                <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title' fullWidth={true}>
+                <Tooltip title="Сыграть или пройти">
+                    <Button
+                        onClick={
+                            (task.flag_matrix === 'платёжная матрица') ?
+                                handleClickOpen
+                                : handleClickTask}
+                    >
+                        Начать
+                    </Button>
+                </Tooltip>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby='form-dialog-title'
+                    fullWidth={true}
+                >
                     <DialogTitle id='form-dialog-title' className={s.back}>
-                        <Button onClick={handleClose}>
-                            <div style={{maxWidth: '30px'}} dangerouslySetInnerHTML={{__html: closeSvg}}/>
-                        </Button>
-                        <div className={s.title}>Выберите режим</div>
+                        <IconButton
+                            aria-label="close"
+                            onClick={handleClose}
+                            sx={{
+                                position: 'absolute',
+                                right: 8,
+                                top: 8,
+                                color: (theme) => theme.palette.grey[500],
+                            }}
+                        >
+                            <CloseIcon/>
+                        </IconButton>
+                        <div
+                            style={{
+                                color: "black",
+                                textAlign: "center"
+                            }}
+                            className={s.title}
+                        >
+                            Выберите режим
+                        </div>
                     </DialogTitle>
-                    <DialogContent className={s.contents}>
+                    <DialogContent
+                        style={{
+                            alignSelf: "center"
+                        }}
+                        className={s.contents}
+                    >
                         <Button onClick={handleClickTask}>
                             Задание
                         </Button>
@@ -123,7 +171,13 @@ export default function tasks() {
         }
 
         return (
-            <div className={s.more} onClick={handleClick} dangerouslySetInnerHTML={{__html: edit}}/>
+            <Tooltip title="Редактировать задание">
+                <IconButton
+                    onClick={handleClick}
+                >
+                    <EditIcon/>
+                </IconButton>
+            </Tooltip>
         );
     }
 
@@ -131,19 +185,60 @@ export default function tasks() {
         const [showDetails, setShowDetails] = useState(false);
         return (
             <div>
-                <Grid container spacing={0} className={s.task}>
-                    <Grid item xs={12} sm={3} md={3} lg={3} className={s.name}>
-                        {task.name}
+                <Grid
+                    container
+                    spacing={0}
+                    className={s.task}
+                    style={{
+                        display: "flex",
+                        background: "white",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                    }}
+                >
+                    <Grid item xs={12} sm={3} md={3} lg={3}
+                          className={s.name}
+                          style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center"
+                          }}
+                    >
+                        <p style={{marginRight: 10}}>{task.name}</p>
+                        <Tooltip title="Подробнее">
+                            <IconButton
+                                // onClick={async () => {
+                                //     console.log("View")
+                                // }}
+                                href={`/tasks/stats/${task.id}`}
+                            >
+                                {(task?.owner?.id === user?.data?.id) ? <VisibilityIcon/> : <></>}
+                            </IconButton>
+                        </Tooltip>
                     </Grid>
                     <Grid item xs={12} sm={4} md={3} lg={3} className={s.fio}>
-                        Создатель<br/>
-                        {(task.owner != null) ?
-                            task.owner.fio
-                            : "Задание кота"}
+                        {/*Создатель<br/>*/}
+                        {/*{(task.owner != null) ?*/}
+                        {/*    task.owner.full_name*/}
+                        {/*    : "Задание кота"}*/}
+                        <Chip
+                            style={{color: "darkgray"}}
+                            avatar={<Avatar/>}
+                            label={task?.owner?.full_name ?? "Кот"}
+                        />
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} lg={2} className={s.topic}>
-                        Тип<br/>
-                        {task.topic.name}
+                        {/*Тип<br/>*/}
+                        {/*{task.topic.name}*/}
+                        <Chip
+                            style={{color: "darkgray", marginBottom: 10}}
+                            icon={<TopicIcon/>}
+                            label={task.topic.name}
+                        />
+                        <Chip
+                            style={{color: "darkgray", marginBottom: 10}}
+                            icon={<DataArrayIcon/>}
+                            label={task?.flag_matrix}/>
                     </Grid>
                     {(task.owner != null && user.data?.full_name) ?
                         (task.owner.id === user.data?.id) ?
@@ -152,12 +247,16 @@ export default function tasks() {
                                     <GoEditTask task={task} navigate={navigate}/>
                                 </Grid>
                                 <Grid item xs={6} sm={6} md={6} lg={6}>
-                                    <div className={s.more}
-                                         onClick={async () => {
-                                             await dispatch(deleteTask(task.id));
-                                             await dispatch(getTasksInfo());
-                                         }}
-                                         dangerouslySetInnerHTML={{__html: deleteSVG}}/>
+                                    <Tooltip title="Удалить задание">
+                                        <IconButton
+                                            onClick={async () => {
+                                                await dispatch(deleteTask(task.id));
+                                                await dispatch(getTasksInfo());
+                                            }}
+                                        >
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                    </Tooltip>
                                 </Grid>
                             </Grid>
                             : <Grid item xs={4} sm={1} md={1} lg={1}>
@@ -167,28 +266,38 @@ export default function tasks() {
                             <div></div>
                         </Grid>
                     }
-                    <Grid item xs={4} sm={1} md={1} lg={1}>
-                        <div className={s.more}
-                             onClick={() => setShowDetails(!showDetails)}
-                             dangerouslySetInnerHTML={{__html: down}}/>
-                    </Grid>
                     <Grid container item spacing={0} xs={8} sm={2} md={2} lg={2} className={s.buttons}>
                         <Grid item xs={3} sm={3} md={3} lg={3}>
                             {showDetails ?
                                 (
-                                    <button className={s.more}
+                                    <Tooltip title="Скрыть описание">
+                                        <IconButton
+                                            aria-label="more"
                                             onClick={() => setShowDetails(!showDetails)}
-                                            dangerouslySetInnerHTML={{__html: up}}/>
+                                        >
+                                            <ExpandLessIcon/>
+                                        </IconButton>
+                                    </Tooltip>
                                 ) :
                                 (
-                                    <button className={s.more} onClick={() => setShowDetails(!showDetails)}
-                                            dangerouslySetInnerHTML={{__html: down}}/>
+                                    <Tooltip title="Показать описание">
+                                        <IconButton
+                                            aria-label="more"
+                                            onClick={() => setShowDetails(!showDetails)}
+                                        >
+                                            <ExpandMoreIcon/>
+                                        </IconButton>
+                                    </Tooltip>
                                 )
                             }
                         </Grid>
-                        <Grid item xs={9} sm={9} md={9} lg={9} className={s.button}>
-                            <MyTask task={task} navigate={navigate}/>
-                        </Grid>
+                        {
+                            !isNotUserSelf || isAdmin(user?.data?.roles) ?
+                                <Grid item xs={9}>
+                                    <MyTask task={task} navigate={navigate}/>
+                                </Grid>
+                                : null
+                        }
                     </Grid>
 
                     {showDetails ?
@@ -204,7 +313,14 @@ export default function tasks() {
                                     <Divider variant="middle">
                                         <Chip label="Описание"/>
                                     </Divider>
-                                    <Markdown value={task?.description.trim()}/>
+                                    <Markdown
+                                        value={task?.description.trim()}
+                                        style={{
+                                            marginLeft: 16,
+                                            marginRight: 16,
+                                            textAlign: "left"
+                                        }}
+                                    />
                                 </div>
 
                             </Grid>
@@ -218,13 +334,178 @@ export default function tasks() {
                     }
                 </Grid>
             </div>
-        );
+        )
+            ;
     }
+
+    function onChangeHandler(options) {
+        setFilters({...filters, ...options})
+    }
+
+    function filtering(items) {
+        let result = items;
+        let filteredItems = [];
+
+        console.log(filters?.tasks)
+
+        if (filters.topics.length !== 0) {
+            for (let i = 0; i < filters.topics.length; i++) {
+                filteredItems = filteredItems.concat(
+                    result.filter(item =>
+                        item?.topic?.id === filters.topics[i].id
+                    )
+                );
+            }
+
+            result = filteredItems;
+        }
+
+        if (filters.tasks.length !== 0) {
+            for (let i = 0; i < filters.tasks.length; i++) {
+                filteredItems = filteredItems.concat(
+                    result.filter(item => item.id === filters.tasks[i].id)
+                );
+            }
+
+            result = filteredItems;
+        }
+
+        if (filters.teachers.length !== 0) {
+            for (let i = 0; i < filters.teachers.length; i++) {
+                filteredItems = filteredItems.concat(
+                    result.filter(item => item?.owner?.full_name === filters.teachers[i].full_name)
+                );
+            }
+
+            result = filteredItems;
+        }
+
+        if (filters.tasksSelf.length !== 0) {
+            for (let i = 0; i < filters.tasksSelf.length; i++) {
+                filteredItems = filteredItems.concat(
+                    result.filter(item => item.id === filters.tasksSelf[i].id)
+                );
+            }
+
+            result = filteredItems;
+        }
+
+        result = new Set(result);
+        result = Array.from(result);
+
+        return result;
+    }
+
+    const [isNotUserSelf, setIsNotUserSelf] = useState(false);
+
+    useEffect(() => {
+        if (user?.data && (isNotUser(user.data.roles))) {
+            setIsNotUserSelf(true)
+        }
+    }, [user]);
 
     return (
         <Page pageTitle={'Задания'}>
             <div className={s.backgroundStyle}>
-                <div className={s.ctn}>
+                <div className={s.ctn}
+                     style={{
+                         textAlign: "center"
+                     }}
+                >
+                    <div
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-start",
+                            marginBottom: 10,
+                            flexWrap: "wrap"
+                        }}
+                    >
+                        <Autocomplete
+                            disabled={filters?.teachers?.length > 0 || filters?.tasksSelf?.length > 0}
+                            multiple
+                            className={s.filter}
+                            limitTags={2}
+                            id="multiple-limit-tags"
+                            size="small"
+                            options={tasks.data ?? []}
+                            getOptionLabel={option => option.name}
+                            renderInput={(params) =>
+                                <TextField sx={{background: "white"}} {...params}
+                                           label={tasks?.data?.length ? tasks?.data?.length + " игр" : "... игр"}
+                                           placeholder="Название"
+                                />
+                            }
+                            onChange={(e, v) => onChangeHandler({tasks: v})}
+                        />
+                        <Autocomplete
+                            disabled={filters?.tasks?.length > 0 || filters?.tasksSelf?.length > 0}
+                            multiple
+                            className={s.filter}
+                            limitTags={2}
+                            id="multiple-limit-tags"
+                            size="small"
+                            options={teachers?.data ?? []}
+                            getOptionLabel={option => option.full_name}
+                            renderInput={(params) =>
+                                <TextField sx={{background: "white"}} {...params}
+                                           label={teachers?.data?.length ? teachers?.data?.length + " преподавателей" : "... преподавателей"}
+                                           placeholder="Создатель"
+                                />
+                            }
+                            onChange={(e, v) => onChangeHandler({teachers: v})}
+                        />
+
+                        {
+                            isNotUserSelf ?
+                                <>
+                                    <FormControlLabel
+                                        disabled={filters?.teachers?.length > 0 || filters?.tasks?.length > 0}
+                                        control={
+                                            <Checkbox
+                                                onChange={(e, v) => {
+                                                    if (v)
+                                                        onChangeHandler({tasksSelf: tasksSelf?.data ?? []})
+                                                    else onChangeHandler({tasksSelf: []})
+                                                }}
+                                            />
+                                        }
+                                        label="Мои задания"
+                                    />
+
+                                    <Tooltip title="Создать задание">
+                                        <IconButton
+                                            aria-label="more"
+                                            label="gg"
+                                            href="/tasks/createTask"
+                                        >
+                                            <AddTaskIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </>
+                                : null
+                        }
+
+                        {/*<CustomSelect*/}
+                        {/*    isMulti*/}
+                        {/*    instanceId={'topic-select'}*/}
+                        {/*    className={s.filter}*/}
+                        {/*    placeholder={'Тип'}*/}
+                        {/*    closeMenuOnSelect={false}*/}
+                        {/*    isClearable={true}*/}
+                        {/*    isSearchable={false}*/}
+                        {/*    isLoading={topics.isLoading}*/}
+                        {/*    loadingMessage={() => 'Загрузка...'}*/}
+                        {/*    noOptionsMessage={() => {*/}
+                        {/*        return (topics.error ? 'Ошибка сервера' : 'Ничего нет :(');*/}
+                        {/*    }}*/}
+                        {/*    options={topics.data}*/}
+                        {/*    getOptionLabel={option => option.name}*/}
+                        {/*    getOptionValue={option => option.id}*/}
+                        {/*    onChange={options => onChangeHandler({topics: options})}*/}
+                        {/*/>*/}
+                    </div>
                     <div>
                         {
                             tasks?.data ?

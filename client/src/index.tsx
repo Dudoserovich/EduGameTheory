@@ -15,17 +15,20 @@ import Literature from "../pages/literature";
 import Users from "../pages/users";
 import Term from "../pages/term";
 import Page404 from "../pages/404";
-import CreateTask from  "../pages/tasks/createTask";
-import Tasks from  "../pages/tasks/Tasks";
-import Task from  "../pages/tasks/Task";
-import EditTask from  "../pages/tasks/editTask";
-import TaskPlay from  "../pages/tasks/TaskGame";
-import MyTask from  "../pages/tasks/tasksTeacher";
+// import MyTask from  "../pages/tasks/tasksTeacher";
 import Leaders from "../pages/users/leaders"
-import ToastSSE from "../components/Toast/ToastSSE";
+import CreateTask from "../pages/tasks/createTask";
+import Tasks from "../pages/tasks/Tasks";
+import Task from "../pages/tasks/Task";
+import EditTask from "../pages/tasks/editTask";
+import TaskPlay from "../pages/tasks/TaskGame";
+import SimpleToast from "../components/Toast/SimpleToast";
+
 import Educations from "../pages/educations"
 import Education from "../pages/educations/[eduId]"
-import SimpleToast from "../components/Toast/SimpleToast";
+
+import StatsTask from "../pages/tasks/stats/[taskId]"
+import SSE from "../components/SSE/SSE";
 
 const App = () => {
     return (
@@ -51,18 +54,21 @@ const App = () => {
                                 <Route path="task" element={<Task/>}/>
                                 <Route path="editTask" element={<EditTask/>}/>
                                 <Route path="taskPlay" element={<TaskPlay/>}/>
-                                <Route path="myTasks" element={<MyTask/>}/>
+
+                                <Route path="stats">
+                                    <Route path=":taskId" element={<StatsTask/>}/>
+                                </Route>
                             </Route>
                             <Route path="educations">
                                 <Route index element={<Educations/>}/>
                                 <Route path=":eduId" element={<Education/>}/>
                             </Route>
                         </Route>
-                        <Route path="*" element={<Page404 />} />
+                        <Route path="*" element={<Page404/>}/>
                     </Routes>
                 </Router>
+                <SSE/>
                 <SimpleToast/>
-                {/*<ToastSSE />*/}
             </Provider>
         </>
     );

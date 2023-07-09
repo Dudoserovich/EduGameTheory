@@ -110,7 +110,7 @@ class UserProgress extends ApiController
                 ['updatedAt' => 'ASC']
             );
             $scores = array_map(
-                fn(TaskMark $taskMark): int => $taskMark->getRating(),
+                fn(TaskMark $taskMark): int|null => $taskMark->getRating(),
                 $taskMarks
             );
 
@@ -191,7 +191,7 @@ class UserProgress extends ApiController
             ['updatedAt' => 'ASC']
         );
         $scores = array_map(
-            fn(TaskMark $taskMark): int => $taskMark->getRating(),
+            fn(TaskMark $taskMark): int|null => $taskMark->getRating(),
             $taskMarks
         );
 

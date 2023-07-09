@@ -27,6 +27,7 @@ export default function TasksPlay() {
     useEffect(() => {
         dispatch(getPlayInfo({id: task.id}));
     }, []);
+    console.log(playGame)
 
     function Matrix() {
         return (
@@ -135,15 +136,23 @@ export default function TasksPlay() {
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Описание
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.descriptionsR}>
-                            <Markdown value={task?.description.trim()}/>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Markdown
+                                className={s.descriptionsR}
+                                value={task?.description.trim()}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Подсказки
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.descriptionsR}>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
                             {taskPlay?.data?.description ?
-                                (<Markdown value={taskPlay?.data?.description}/>)
+                                (
+                                    <Markdown
+                                        className={s.descriptionsR}
+                                        value={taskPlay?.data?.description}
+                                    />
+                                )
                                 : (<div>Загрузка</div>)
                             }
                         </Grid>
@@ -151,13 +160,15 @@ export default function TasksPlay() {
                             Помните что строки матрицы - это стратегии 1-го игрока, а столбцы - это стратегии
                             второго игрока.
                         </Grid>
-                        <Grid container item xs={12} sm={12} md={12} lg={12} className={s.title} style={{
-                            justifyContent: 'center'
-                        }}>
-                            Матрица
-                        </Grid>
-                        <Grid container item xs={12} sm={12} md={12} lg={12} className={s.positionM}>
-                            <Matrix/>
+                        <Grid container item xs={12} sm={6} md={6} lg={6}>
+                            <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
+                                Матрица
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={12} lg={12}
+                                  style={{maxWidth: "fit-content"}}
+                            >
+                                <Matrix matrix={task?.matrix}/>
+                            </Grid>
                         </Grid>
 
 
@@ -245,7 +256,6 @@ export default function TasksPlay() {
                             </Grid>
 
                         </Grid>
-
                         {playGame?.data?.moves ?
                             (<Grid item xs={12} sm={12} md={12} lg={12}>
                                 Ваши ходы:{

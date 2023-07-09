@@ -42,11 +42,6 @@ export const headerConfig = {
                     name: 'Конструктор заданий',
                     href: '/tasks/createTask'
                 },
-                {
-                    name: 'Мои задания',
-                    href: '/tasks/myTasks'
-                },
-
             ],
             href: '/tasks'
         },
@@ -86,11 +81,6 @@ export const headerConfig = {
                     name: 'Конструктор заданий',
                     href: '/tasks/createTask'
                 },
-                {
-                    name: 'Мои задания',
-                    href: '/tasks/myTasks'
-                },
-
             ],
             href: '/tasks'
         },

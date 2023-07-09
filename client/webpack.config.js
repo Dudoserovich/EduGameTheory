@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
@@ -8,6 +9,7 @@ const webpack = require("webpack");
 const srcDir = path.resolve(__dirname, "src");
 const outputDir = path.resolve(__dirname, "dist");
 const polyfillsPath = path.resolve(__dirname, "polyfills")
+const publicDir = path.resolve(__dirname, "public");
 
 module.exports = (env, argv) => {
   process.env.NODE_ENV = argv.mode;
@@ -124,6 +126,9 @@ module.exports = (env, argv) => {
         filename: "index.html",
         template: path.resolve(srcDir, "index.html"),
       }),
+      // new FaviconsWebpackPlugin({
+      //   logo: path.resolve(publicDir, "favicon.ico"),
+      // }),
     ].filter(Boolean),
     resolve: {
       mainFiles: ["index"],

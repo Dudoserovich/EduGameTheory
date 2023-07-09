@@ -38,7 +38,7 @@ class UserAchievementListener
             $update = new Update(
                 topics: '/achievements',
                 data: json_encode(['message' => "Достижение \"$nameAchievement\" получено!"]),
-                type: $entity->getUser()->getUsername()
+                type: $entity->getUser()->getId()
             );
 
             $this->hub->publish($update);
