@@ -104,7 +104,12 @@ class UserTaskController extends ApiController
                 "matrix" => $task->getMatrix(),
                 "chance_first" => $taskBrownRobinson->getP(),
                 "chance_second" => $taskBrownRobinson->getQ(),
-                "description" => "Данная игра направлена на попытку сыграть наилучшим образом. За 10 ходов вам нужно попытаться сформировать наилучшую для себя стратегию. Перед вами ваша оптимальная стратегия и противника. Если вы будете играть опрометчиво, то не сможете набрать наилучшее количество очков. Для предоставления информации по вероятностям используется метод Брауна-Робинсона"
+                "description" => "Данная игра направлена на попытку сыграть наилучшим образом. 
+                За 10 ходов вам нужно попытаться сформировать наилучшую для себя стратегию. 
+                Перед вами ваша оптимальная стратегия и противника. 
+                Если вы будете играть опрометчиво, то не сможете набрать наилучшее количество очков. 
+                Для предоставления информации по вероятностям используется метод Брауна-Робинсона.
+                "
             ];
 
         return $this->response($resultArray);
@@ -173,6 +178,7 @@ class UserTaskController extends ApiController
                 ->setTask($task);
         }
 
+        // Проверяем прошёл ли пользователь игру по заданию
         if ($playTask->getSuccess()) {
             $resultMessage = "Вы уже прошли это задание";
 
@@ -228,7 +234,7 @@ class UserTaskController extends ApiController
                     $playTask->setSuccess(true);
 
                     $message = "Задание пройдено. 
-                    Вы играли рискованно, поэтому ваша вероятность выбора стратегий сильно расходится с наилучшей. 
+                    Вы играли рискованно. 
                     Тем не менее вы набрали " . $playTask->getTotalScores() . " очков из максимальных $maxScore";
                     break;
                 }
@@ -242,6 +248,8 @@ class UserTaskController extends ApiController
                 "chance_second" => $taskBrownRobinson->getQ(),
                 "your_chance" => $your_chance,
                 "result_move" => $resultMove,
+                "min_score" => min($task->getMatrix()[$request['row_number']]),
+                "max_score" => max($task->getMatrix()[$request['row_number']]),
                 "score" => $playTask->getTotalScores(),
                 "success" => $message
             ];
@@ -486,7 +494,8 @@ class UserTaskController extends ApiController
             $taskMark
                 ->setTask($task)
                 ->setUser($user)
-                ->setCountTries(0);
+                ->setCountTries(0)
+            ;
             $this->em->persist($taskMark);
             $this->em->flush();
         }
@@ -515,11 +524,10 @@ class UserTaskController extends ApiController
 
             try {
                 $rating = TaskMarkService::get($tries);
+                $taskMark->setRating($rating);
             } catch (Exception $e) {
                 return $this->respondWithErrors($e->getMessage());
             }
-
-            $taskMark->setRating($rating);
 
             // TODO: Получение полного решения при успешном прохождении
 //            try {
