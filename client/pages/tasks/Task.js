@@ -87,14 +87,14 @@ export default function tasks() {
             }
         });
 
-        return (<Grid item xs={12} sm={12} md={12} lg={12} className={s.name} >
+        return (<Grid item xs={12} sm={12} md={12} lg={12} className={s.name}>
             <form onSubmit={
                 (strate === "смешанные стратегии") ?
                     handleSubmit(onSubmit) :
                     handleSubmit(onSubmitClear)
             }>
                 <Grid container spacing={0}>
-                    <Grid item xs={12} sm={6} md={4} lg={2} className={s.name} >
+                    <Grid item xs={12} sm={6} md={4} lg={2} className={s.name}>
                         <Controller
                             name="strategy"
                             control={control}
@@ -135,7 +135,7 @@ export default function tasks() {
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}
                           className={s.name}
-                    style={{padding: '0 10px'}}>
+                          style={{padding: '0 10px'}}>
                         <Controller
                             name="first_player"
                             control={control}
@@ -388,10 +388,11 @@ export default function tasks() {
                         <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Матрица
                         </Grid>
-                        <Grid container item xs={12} sm={12} md={12} lg={12} style={{overflowX: 'auto', width: '100%', justifyContent: 'center', }}
+                        <Grid container item xs={12} sm={12} md={12} lg={12}
+                              style={{overflowX: 'auto', width: '100%', justifyContent: 'center',}}
                         >
-                                <div style={{maxWidth: "fit-content", overflowX: 'auto', }}>
-                                    <Matrix matrix={task?.matrix}/></div>
+                            <div style={{maxWidth: "fit-content", overflowX: 'auto',}}>
+                                <Matrix matrix={task?.matrix}/></div>
                         </Grid>
                         <Grid container item xs={12} sm={12} md={12} lg={12} className={s.title}>
                             Pешение
@@ -429,9 +430,15 @@ export default function tasks() {
                         </DialogTitle>
                         <DialogContent style={{color: 'black'}}>
                             {taskGame?.data ?
-                                (<div>{taskGame.data}</div>)
-                                : taskPayoff?.data?.message ?
-                                    (<div>{taskPayoff.data.message}</div>)
+                                taskGame?.data?.message ?
+                                    (<div>{taskGame?.data?.message}</div>)
+                                    :
+                                    (<div>{taskGame.data}</div>)
+                                : taskPayoff?.data ?
+                                    taskPayoff?.data?.message ?
+                                        (<div>{taskPayoff.data.message}</div>)
+                                        :
+                                        (<div>{taskPayoff.data}.</div>)
                                     : (<div>Загрузка...</div>)
 
                             }
