@@ -13,19 +13,16 @@ import Input from "../../components/Input/Input";
 import {getToken} from "../../store/slices/authSlice";
 import Spinner from "../../components/Spinner/Spinner";
 import {Button} from "@mui/material";
-import {createTask} from "../../store/slices/creatTaskSlice";
-import plus from "../../public/svg/plus.svg";
-import minus from "../../public/svg/minus.svg";
 import plus1 from "../../public/svg/plus1.svg";
 import minus1 from "../../public/svg/minus1.svg";
-import { useLocation } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import {updateTaskInfo} from "../../store/slices/tasksSlice";
 import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
 import SimpleToast, {notify} from "../../components/Toast/SimpleToast";
 
 
 export default function tasks() {
-    const { state } = useLocation();
+    const {state} = useLocation();
     const task = state.task;
 //Запрос топиков
     const topics = useSelector(state => state.topics.info);
@@ -173,7 +170,6 @@ export default function tasks() {
         );
     }
 
-
 //для запроса
     const {handleSubmit, control, formState: {errors}} = useForm({
         mode: 'onBlur',
@@ -182,20 +178,22 @@ export default function tasks() {
             description: task.description,
             matrix: matrix,
             flag_matrix: task.flag_matrix,
-            topic_id: task.topic_id,
+            topic_id: task?.topic?.id,
         }
     });
+
     const onSubmit = (data) => {
         const newTask = {
-            name: task.name,
-            description: task.description,
+            name: data.name,
+            description: data.description,
             matrix: matrix,
-            flag_matrix: task.flag_matrix,
-            topic_id: task.topic_id,
+            flag_matrix: data.flag_matrix,
+            topic_id: data.topic_id
         }
 
         dispatch(updateTaskInfo({id: task.id, IData: newTask}));
     }
+
     return (
         <Page pageTitle={'Конструктор заданий'}>
             <div className={s.backgroundStyle}>
@@ -246,8 +244,8 @@ export default function tasks() {
                                             }}
                                             id="outlined-select-currency"
                                             select
-                                            label="Тип марицы"
-                                            defaultValue={flag}
+                                            label="Тип матрицы"
+                                            // defaultValue={flag}
                                         >
                                             {
                                                 flagMatrix ?
@@ -319,8 +317,8 @@ export default function tasks() {
                                     rules={{required: false}}
                                     render={(
                                         {
-                                            field: { onChange, onBlur, value, name, ref },
-                                            fieldState: { invalid, isTouched, isDirty, error },
+                                            field: {onChange, onBlur, value, name, ref},
+                                            fieldState: {invalid, isTouched, isDirty, error},
                                             formState,
                                         }) => (
                                         <CustomMDEditor
