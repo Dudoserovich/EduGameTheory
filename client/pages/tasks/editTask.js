@@ -34,31 +34,6 @@ export default function tasks() {
         dispatch(getTopicsInfo());
     }, []);
 
-    const [filters, setFilters] = useState({
-        topics: []
-    });
-
-    function filtering(topics) {
-        let result = topics;
-        let filteredItems = [];
-
-        if (filters.topics.length !== 0) {
-            for (let i = 0; i < filters.topics.length; i++) {
-                filteredItems = filteredItems.concat(
-                    result.filter(topics =>
-                        topics?.data?.id === filters.topics[i].id
-                    )
-                );
-            }
-
-            result = filteredItems;
-        }
-
-        return result;
-    }
-
-    const [topic, setTopics] = useState("");
-
     const flagMatrix = [
         {
             id: '0',
@@ -69,7 +44,6 @@ export default function tasks() {
             name: 'матрица последствий',
         },
     ];
-    const [flag, setFlagMatrix] = useState("");
 
     const [rows, setRows] = useState(2); // начальное количество строк
     const [cols, setCols] = useState(2); // начальное количество столбцов
@@ -318,18 +292,17 @@ export default function tasks() {
                                             id="outlined-select-currency"
                                             select
                                             label="Тип задания"
-                                            value={topic}
+                                            value={!topics.isLoading ? field.value : ""}
                                         >
                                             {
-                                                topics?.data ?
-                                                    filtering(topics?.data).map((topic) => (
-                                                            <MenuItem key={topic.id} value={topic.id}
-                                                                      onClick={() => setTopics(topic.id)}>
-                                                                {topic.name}
-                                                            </MenuItem>
-                                                        )
-                                                    )
-                                                    : "Loading..."
+                                                topics.isLoading ?
+                                                    "Loading..."
+                                                    :
+                                                    topics?.data?.map((topic) => (
+                                                        <MenuItem key={topic?.id} value={topic?.id}>
+                                                            {topic?.name}
+                                                        </MenuItem>
+                                                    ))
                                             }
                                         </TextField>
                                     )}/>
