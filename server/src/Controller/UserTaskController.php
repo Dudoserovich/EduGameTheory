@@ -536,7 +536,12 @@ class UserTaskController extends ApiController
         }
 
         if ($taskMark->getRating()) {
-            return $this->response("Вы уже прошли это задание");
+            return $this->response(
+                array(
+                    "message" => "Вы уже прошли это задание",
+                    "success" => false
+                )
+            );
         }
 
         $result = null;
