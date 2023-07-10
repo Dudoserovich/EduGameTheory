@@ -71,8 +71,9 @@ class TaskController extends ApiController
     #[Route(name: 'get', methods: ['GET'])]
     public function getTasks(TaskPreviewer $taskPreviewer): JsonResponse
     {
+        $user = $this->getUserEntity($this->userRepository);
         $taskPreviewers = array_map(
-            fn(Task $task): array => $taskPreviewer->preview($task),
+            fn(Task $task): array => $taskPreviewer->previewWithRating($task, $user),
             $this->taskRepository->findBy([])
         );
 
