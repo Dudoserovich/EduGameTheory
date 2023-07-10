@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Grid} from "@material-ui/core";
 import Avatar from "@mui/material/Avatar";
 import {getLeadersInfo} from "../../store/slices/leadersSlice";
-import leaderSVG from "../../public/svg/leader.svg";
+import leaderSVG from "../../public/svg/leaders.svg";
 import starSVG from "../../public/svg/star.svg";
 import levelSVG from "../../public/svg/level.svg";
 import {styled} from "@mui/material/styles";
@@ -56,7 +56,7 @@ export default function leaders() {
 
         const generateRandomColor = () => {
             if (id === 0){
-                setRandomColor('#fffb8f');
+                setRandomColor('#FFF496');
                 setPadding('20px');
             } else if(id < 3){
                 setRandomColor('#b5d2ff');

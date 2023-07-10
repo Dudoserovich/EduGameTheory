@@ -12,7 +12,6 @@ import check from "../../public/svg/check.svg";
 import {Button, Dialog, DialogContent, DialogTitle, IconButton} from "@mui/material";
 import {TaskPayoff} from "../../store/slices/taskPayoffSlice";
 import {TaskGame} from "../../store/slices/taskGameSlice";
-import closeSvg from "../../public/svg/close.svg";
 import Markdown from "../../components/Markdown/Markdown";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -43,7 +42,7 @@ export default function tasks() {
 
 
                             (<td>{task.name_first_player} /<br/>{task.name_second_player}</td>)
-                            : (<td></td>)
+                            : (<td>1-ый игрок /<br/>2-ой игрок</td>)
                     }
                     {
                         (task.name_first_strategies !== null) ?
@@ -95,7 +94,7 @@ export default function tasks() {
                     handleSubmit(onSubmitClear)
             }>
                 <Grid container spacing={0}>
-                    <Grid item xs={12} sm={12} md={12} lg={12} className={s.name}>
+                    <Grid item xs={12} sm={6} md={4} lg={2} className={s.name}>
                         <Controller
                             name="strategy"
                             control={control}
@@ -134,8 +133,9 @@ export default function tasks() {
                                 fontSize: "large"
                             }}>Обязательное поле</span>}
                     </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={12}
-                          className={s.name}>
+                    <Grid item xs={12} sm={6} md={4} lg={3}
+                          className={s.name}
+                          style={{padding: '0 10px'}}>
                         <Controller
                             name="first_player"
                             control={control}
@@ -162,7 +162,7 @@ export default function tasks() {
                                 fontSize: "large"
                             }}>Обязательное поле</span>}
                     </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={12}
+                    <Grid item xs={12} sm={6} md={4} lg={3}
                           className={s.name}>
                         <Controller
                             name="second_player"
@@ -190,7 +190,8 @@ export default function tasks() {
                                 fontSize: "large"
                             }}>Обязательное поле</span>}
                     </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={12} className={s.name}>
+                    <Grid item xs={12} sm={6} md={4} lg={3} className={s.name}
+                          style={{padding: '0 10px'}}>
                         <Controller
                             name="game_price"
                             control={control}
@@ -384,26 +385,17 @@ export default function tasks() {
                             второго
                             игрока.
                         </Grid>
-                        <Grid
-                            style={{
-                                marginRight: 10
-                            }}
-                        >
-                            <Grid item xs={6} sm={12} md={12} lg={12} className={s.title}>
-                                Матрица
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}
-                                  style={{maxWidth: "fit-content"}}
-                            >
-                                <Matrix matrix={task?.matrix}/>
-                            </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
+                            Матрица
                         </Grid>
-                        <Grid container item xs={12} sm={9} md={6} lg={4}>
-                            <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}
-                                  style={{maxWidth: "fit-content"}}
-                            >
-                                Решение
-                            </Grid>
+                        <Grid container item xs={12} sm={12} md={12} lg={12}
+                              style={{overflowX: 'auto', width: '100%', justifyContent: 'center',}}
+                        >
+                            <div style={{maxWidth: "fit-content", overflowX: 'auto',}}>
+                                <Matrix matrix={task?.matrix}/></div>
+                        </Grid>
+                        <Grid container item xs={12} sm={12} md={12} lg={12} className={s.title}>
+                            Решение
                             {
                                 (task.flag_matrix === "платёжная матрица") ?
                                     (<GamePayoff/>)
@@ -438,9 +430,15 @@ export default function tasks() {
                         </DialogTitle>
                         <DialogContent style={{color: 'black'}}>
                             {taskGame?.data ?
-                                (<div>{taskGame.data}</div>)
-                                : taskPayoff?.data?.message ?
-                                    (<div>{taskPayoff.data.message}</div>)
+                                taskGame?.data?.message ?
+                                    (<div>{taskGame?.data?.message}</div>)
+                                    :
+                                    (<div>{taskGame.data}</div>)
+                                : taskPayoff?.data ?
+                                    taskPayoff?.data?.message ?
+                                        (<div>{taskPayoff.data.message}</div>)
+                                        :
+                                        (<div>{taskPayoff.data}.</div>)
                                     : (<div>Загрузка...</div>)
 
                             }

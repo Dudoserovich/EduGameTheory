@@ -268,7 +268,7 @@ export default function profile() {
                                                             position: 'relative', display: 'inline-block',
                                                             margin: '0 10px',
                                                             top: '-4px'
-                                                        }}>{level.next_level.need_scores}/{level.scores}</div>
+                                                        }}>{level.scores}/{level.next_level.need_scores}</div>
                                                     <div style={{
                                                         width: '26px',
                                                         display: 'inline-block'
