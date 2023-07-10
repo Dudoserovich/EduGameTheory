@@ -106,7 +106,7 @@ export default function tasks() {
                                     type={"text"}
                                     id="outlined-select-currency"
                                     select
-                                    label="Тип марицы"
+                                    label="Стратегии"
                                     defaultValue={strate}
                                     style={{
                                         minWidth: '200px',
