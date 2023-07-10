@@ -56,6 +56,15 @@ class AchievementFixtures extends BaseFixtureAbstract
             "needTries" => null,
             "rating" => 5
         ],
+        [
+            "name" => "Триумф второго шанса",
+            "description" => "Пройти задание со второго раза",
+            "imageName" => "secondTry.png",
+            "typeOfInteraction" => "прохождение",
+            "needScore" => 1,
+            "needTries" => 2,
+            "rating" => 4
+        ],
     ];
 
     /**
