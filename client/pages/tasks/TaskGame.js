@@ -23,7 +23,7 @@ export default function TasksPlay() {
 
     const {state} = useLocation();
     const task = state.task;
-
+    console.log(playGame)
     useEffect(() => {
         dispatch(getPlayInfo({id: task.id}));
     }, []);
@@ -39,7 +39,9 @@ export default function TasksPlay() {
 
 
                             (<td>{task.name_first_player} /<br/>{task.name_second_player}</td>)
-                            : (<td></td>)
+                            : (<td>
+                                1-ый игрок /<br/>2-ой игрок
+                            </td>)
                     }
                     {
                         (task.name_first_strategies !== null) ?
@@ -104,8 +106,9 @@ export default function TasksPlay() {
         dispatch(TaskPlayPayoff({id: task.id, IData: TasksPayoffClear}));
         if (playGame.data?.max_score) {
             setWin(playGame.data.max_score / 2);
+        } else {
+            setWin(3);
         }
-        console.log(win)
     }
     return (
         <Page pageTitle={'Задания'}>
@@ -160,37 +163,62 @@ export default function TasksPlay() {
                             Помните что строки матрицы - это стратегии 1-го игрока, а столбцы - это стратегии
                             второго игрока.
                         </Grid>
-                        <Grid container item xs={12} sm={6} md={6} lg={6}>
-                            <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
-                                Матрица
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}
-                                  style={{maxWidth: "fit-content"}}
-                            >
-                                <Matrix matrix={task?.matrix}/>
-                            </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
+                            Матрица
+                        </Grid>
+                        <Grid container item xs={12} sm={12} md={12} lg={12}
+                              style={{overflowX: 'auto', width: '100%', justifyContent: 'center',}}
+                        >
+                            <div style={{maxWidth: "fit-content", overflowX: 'auto',}}>
+                                <Matrix matrix={task?.matrix}/></div>
                         </Grid>
 
 
                         <Grid container item xs={12} sm={12} md={12} lg={12} style={{
                             justifyContent: 'center'
                         }}>
-                            <Grid item xs={3} sm={3} md={3} lg={3}>
-                                {
-                                    win === 0 ? (
-                                            <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: cat2}}/>
-                                        ) :
-                                        win > playGame.data?.result_move ? (
-                                            <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: winCat2}}/>
-                                        ) : win < playGame.data?.result_move ? (
-                                                <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: loseCat2}}/>
-                                        ) : (
-                                            <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: winCat2}}/>)
-                                }
-                            </Grid>
-                            <Grid item xs={6} sm={6} md={6} lg={6}>
-                                <Grid item xs={12} sm={12} md={6} lg={6}
+                            <Grid container item xs={12} sm={12} md={6} lg={6}>
+                                <Grid item xs={2} sm={3} md={3} lg={3}>
+                                    {
+                                        win === 0 ? (
+                                                <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: cat2}}/>
+                                            ) :
+                                            win > playGame.data?.result_move ? (
+                                                <div style={{width: '100%'}}
+                                                     dangerouslySetInnerHTML={{__html: winCat2}}/>
+                                            ) : win < playGame.data?.result_move ? (
+                                                <div style={{width: '100%'}}
+                                                     dangerouslySetInnerHTML={{__html: loseCat2}}/>
+                                            ) : (
+                                                <div style={{width: '100%'}}
+                                                     dangerouslySetInnerHTML={{__html: winCat2}}/>)
+                                    }
+                                </Grid>
+                                <Grid item xs={10} sm={9} md={9} lg={9}
                                       style={{maxWidth: "fit-content", margin: '20px 10px 0 10px'}}
+                                >
+                                    {taskPlay?.data?.chance_second ?
+                                        (<table className={s.backgroundMatrix}>
+                                            <caption>
+                                                Вероятности второго игрока:
+                                            </caption>
+                                            <tbody>
+                                            <tr>{
+                                                taskPlay.data.chance_second.map((row) => (
+                                                    <td className={s.col}>{row.toFixed(4)}</td>
+                                                ))}</tr>
+                                            </tbody>
+                                        </table>)
+                                        : (<div>Загрузка</div>)
+                                    }
+                                </Grid>
+                            </Grid>
+                            <Grid container item xs={12} sm={12} md={6} lg={6} style={{
+                                justifyContent: 'end'
+                            }
+                            }>
+                                <Grid item xs={10} sm={9} md={9} lg={9}
+                                      style={{maxWidth: "fit-content",}}
                                 >
                                     {taskPlay?.data?.chance_first ?
                                         (<table className={s.backgroundMatrix}>
@@ -207,22 +235,19 @@ export default function TasksPlay() {
                                         : (<div>Загрузка</div>)
                                     }
                                 </Grid>
-                                <Grid item xs={12} sm={12} md={6} lg={6}
-                                      style={{maxWidth: "fit-content", margin: '20px 10px 0 10px'}}
-                                >
-                                    {taskPlay?.data?.chance_second ?
-                                        (<table className={s.backgroundMatrix}>
-                                            <caption>
-                                                Вероятности второго игрока:
-                                            </caption>
-                                            <tbody>
-                                            <tr>{
-                                                taskPlay.data.chance_second.map((row) => (
-                                                    <td className={s.col}>{row.toFixed(4)}</td>
-                                                ))}</tr>
-                                            </tbody>
-                                        </table>)
-                                        : (<div>Загрузка</div>)
+                                <Grid item xs={2} sm={3} md={3} lg={3}>
+
+                                    {
+                                        win === 0 ? (
+                                                <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: cat}}/>
+                                            ) :
+                                            win > playGame.data?.result_move ? (
+                                                    <div style={{width: '100%'}}
+                                                         dangerouslySetInnerHTML={{__html: loseCat}}/>)
+                                                : (
+                                                    <div style={{width: '100%'}}
+                                                         dangerouslySetInnerHTML={{__html: winCat}}/>
+                                                )
                                     }
                                 </Grid>
                                 <Grid container item xs={12} sm={12} md={12} lg={12} className={s.positionButton}>
@@ -241,37 +266,30 @@ export default function TasksPlay() {
                                         ))}
                                 </Grid>
                             </Grid>
-                            <Grid item xs={3} sm={3} md={3} lg={3}>
-
-                                {
-                                    win === 0 ? (
-                                            <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: cat}}/>
-                                        ) :
-                                    win > playGame.data?.result_move ? (
-                                            <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: loseCat}}/>)
-                                         : (
-                                        <div style={{width: '100%'}} dangerouslySetInnerHTML={{__html: winCat}}/>
-                                    )
-                                }
-                            </Grid>
 
                         </Grid>
-                        {playGame?.data?.moves ?
-                            (<Grid item xs={12} sm={12} md={12} lg={12}>
-                                Ваши ходы:{
-                                playGame.data.moves.map((row) => (
-                                    <div>{row},</div>
-                                ))}
-                            </Grid>)
-                            : (<Grid item xs={12} sm={12} md={12} lg={12}></Grid>)}
-                        {playGame?.data?.result_move ?
-                            (<Grid item xs={12} sm={12} md={12} lg={12}>
-                                Результат:{playGame.data.result_move} {win}
-                            </Grid>)
-                            : (<Grid item xs={12} sm={12} md={12} lg={12}></Grid>)}
 
+                        <Grid container item xs={12} sm={12} md={12} lg={12} className={s.name}>
+                            {playGame?.data?.result_move ?
+                                (<Grid item xs={12} sm={6} md={4} lg={3}>
+                                    Результат: {playGame.data.result_move}
+                                </Grid>)
+                                : (<Grid item xs={12} sm={6} md={4} lg={3}></Grid>)}
+                            {playGame?.data?.score ?
+                                (<Grid item xs={12} sm={6} md={4} lg={3}>
+                                    Очков набрано: {playGame.data.score}
+                                </Grid>)
+                                : (<Grid item xs={12} sm={6} md={4} lg={3}></Grid>)}
+                            {playGame?.data?.moves ?
+                                (<Grid item xs={12} sm={12} md={12} lg={12}>
+                                    Ваши ходы: {
+                                    playGame.data.moves.map((row) => (
+                                        `${row},`
+                                    ))}
+                                </Grid>)
+                                : (<Grid item xs={12} sm={12} md={12} lg={12}></Grid>)}
+                        </Grid>
                     </Grid>
-
                 </div>
             </div>
         </Page>

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import Page from "../../layout/Page/Page";
 import s from "../../styles/pages/profile.module.scss";
 import {useDispatch, useSelector} from "react-redux";
-import {getLiteratures} from "../../store/slices/literatureSlice";
 import {Button, Card, CardActions, CardContent, CardMedia, Chip, Rating} from "@mui/material";
 import {Typography} from "@material-ui/core";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
@@ -68,6 +67,79 @@ export default function educations() {
 
         return truncatedStr;
     }
+    function ListEdu(props) {
+        const {edu} = props;
+    const [randomColor, setRandomColor] = useState('white');
+
+    const generateRandomColor = () => {
+        if (edu?.progress?.passed === edu?.progress?.total) {
+            setRandomColor('rgba(170,255,136,0.6)');
+        } else {
+            setRandomColor('white');
+        }
+    };
+        useEffect(() => {
+            generateRandomColor();
+        }, [])
+        return (
+        <Card key={edu.id}
+              sx={{
+                  marginBottom: "10px",
+                  marginRight: "20px",
+                  minWidth: "-webkit-fill-available",
+                  // minHeight: 200
+              }}
+              style={{backgroundColor: randomColor}}
+        >
+            <CardMedia
+                sx={{height: 350}}
+                component="img"
+                image="https://cataas.com/cat?type=sm"
+            />
+            <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                    {edu.name}
+                </Typography>
+                <Markdown
+                    value={truncateString(edu?.description) + '...'}
+                />
+                <Chip
+                    key={edu?.topic?.id}
+                    label={edu?.topic?.name}
+                    style={{marginTop: "10px"}}
+                />
+                <div style={{marginTop: 10, color: "dimgray"}}>
+                    <Typography component="legend">Прогресс</Typography>
+                    <Rating
+                        name="disabled"
+                        value={edu?.progress?.passed}
+                        max={edu?.progress?.total}
+                        icon={<CheckCircleIcon/>}
+                        emptyIcon={<CheckCircleOutlineIcon/>}
+                        disabled
+                    />
+                </div>
+            </CardContent>
+            <CardActions>
+                {(edu?.progress?.passed === edu?.progress?.total)?
+                    (<div style={{
+                        color: 'green',
+                    }}>Пройдено!</div>):
+
+                    (
+                        <Button
+                            href={`/educations/${edu.id}`}
+                            size="small"
+                        >Перейти к обучению
+                        </Button>
+                    )
+
+                }
+
+            </CardActions>
+        </Card>
+        )
+    }
 
     return (
         <Page pageTitle={'Обучение'}>
@@ -108,51 +180,7 @@ export default function educations() {
                             educations?.data ?
                                 filtering(educations?.data)?.map(education => {
                                     return (
-                                        <Card key={education.id}
-                                              sx={{
-                                                  marginBottom: "10px",
-                                                  marginRight: "20px",
-                                                  minWidth: "-webkit-fill-available",
-                                                  // minHeight: 200
-                                              }}
-                                        >
-                                            <CardMedia
-                                                sx={{height: 350}}
-                                                component="img"
-                                                image="https://cataas.com/cat?type=sm"
-                                            />
-                                            <CardContent>
-                                                <Typography gutterBottom variant="h5" component="div">
-                                                    {education.name}
-                                                </Typography>
-                                                <Markdown
-                                                    value={truncateString(education?.description) + '...'}
-                                                />
-                                                <Chip
-                                                    key={education?.topic?.id}
-                                                    label={education?.topic?.name}
-                                                    style={{marginTop: "10px"}}
-                                                />
-                                                <div style={{marginTop: 10, color: "dimgray"}}>
-                                                    <Typography component="legend">Прогресс</Typography>
-                                                    <Rating
-                                                        name="disabled"
-                                                        value={education?.progress?.passed}
-                                                        max={education?.progress?.total}
-                                                        icon={<CheckCircleIcon/>}
-                                                        emptyIcon={<CheckCircleOutlineIcon/>}
-                                                        disabled
-                                                    />
-                                                </div>
-                                            </CardContent>
-                                            <CardActions>
-                                                <Button
-                                                    href={`/educations/${education.id}`}
-                                                    size="small"
-                                                >Перейти к обучению
-                                                </Button>
-                                            </CardActions>
-                                        </Card>
+                                        <ListEdu edu={education}/>
                                     );
                                 })
                                 :

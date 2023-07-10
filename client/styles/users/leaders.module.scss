@@ -13,29 +13,29 @@
 .ctn {
   position: relative;
   z-index: 5;
-  top: -60px;
+  top: -50px;
   justify-items: center;
   @include content;
 
 }
 .table{
   padding: 10px;
-  background: rgb(80, 103, 255, 0.6);
+  background: white;
   backdrop-filter: blur(2px);
-  border-left: 2mm solid rgb(255, 255, 255);
-  border-right: 2mm solid rgb(255, 255, 255);
-  border-top: 26mm solid rgb(255, 255, 255);
-  border-bottom: 16mm solid rgb(255, 255, 255);
+  border-left: 2mm double #FFE455;
+  border-right: 2mm double #FFE455;
+  border-top: 25mm double #FFE455;
+  border-bottom: 12mm solid #FFE455;
   border-radius: 10px;
+  margin-top: 28px;
 }
 .leader{
   width: 100%;
-  border-color: #ffeebb;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 8px;
+  border-radius: 2ch;
+  border: 1px solid hsl(242, 19%, 68%, 0.4);
   margin-top: 10px;
   justify-content: space-between!important;
+  box-shadow: 0 0.2rem 0.6rem hsla(234, 88%, 17%, 0.2);
 
 }
 .level{
