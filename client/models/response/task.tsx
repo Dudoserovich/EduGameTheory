@@ -4,7 +4,10 @@ export interface Task {
     description: string,
     matrix: number[],
     flag_matrix: string,
-    topic_id: number,
+    topic: {
+        id: number,
+        name: string
+    },
 }
 
 export interface Tasks {
