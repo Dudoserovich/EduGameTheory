@@ -102,10 +102,14 @@ class UserTaskController extends ApiController
 
         $v = $taskBrownRobinson->getV();
         if ($v >= 0) {
-            $vFour = ceil($taskBrownRobinson->getV()) * 4;
+            if ($v < 1) {
+                $vFour = 1;
+            } else
+                $vFour = ceil($v) * 4;
+
             $subMess = "более";
         } else {
-            $vFour = floor($taskBrownRobinson->getV()) * 4;
+            $vFour = floor($v) * 4;
             $subMess = "менее";
         }
 
@@ -130,7 +134,7 @@ class UserTaskController extends ApiController
      * Игра по ходам
      * @OA\RequestBody(
      *     required=true,
-     *     description="Суть задания в том, чтобы за 10 ходов попытаться набрать максимально приближённое к оптимальному решение для первого игрока(т.е. пользователю)<br>Сейчас всё хранится в сессии и поэтому есть ошибки",
+     *     description="Суть задания в том, чтобы за минимальное кол-во ходов набрать необходимое кол-во очков, попытавшись набрать максимально приближённое к оптимальному решение для первого игрока(т.е. пользователю)",
      *     @OA\JsonContent(
      *         example={
      *              "row_number": 1
@@ -232,7 +236,11 @@ class UserTaskController extends ApiController
         // Вычисление признака конца игры
         $v = $taskBrownRobinson->getV();
         if ($v >= 0) {
-            $needScore = ceil($v) * 4;
+            if ($v < 1) {
+                $needScore = 1;
+            } else
+                $needScore = ceil($v) * 4;
+
             $isMore = true;
         } else {
             $needScore = floor($v) * 4;
