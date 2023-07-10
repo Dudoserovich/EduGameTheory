@@ -12,13 +12,16 @@ import {Controller, useForm} from "react-hook-form";
 import Input from "../../components/Input/Input";
 import {getToken} from "../../store/slices/authSlice";
 import Spinner from "../../components/Spinner/Spinner";
-import {Button} from "@mui/material";
+import {Button, Modal} from "@mui/material";
 import plus1 from "../../public/svg/plus1.svg";
 import minus1 from "../../public/svg/minus1.svg";
 import {useLocation} from 'react-router-dom';
 import {updateTaskInfo} from "../../store/slices/tasksSlice";
 import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
 import SimpleToast, {notify} from "../../components/Toast/SimpleToast";
+import MuiCircularProgress from "../../components/Spinner/MuiCircularProgress";
+import Markdown from "../../components/Markdown/Markdown";
+import {checkMatrixInfo, createTask} from "../../store/slices/creatTaskSlice";
 
 
 export default function tasks() {
@@ -182,20 +185,54 @@ export default function tasks() {
         }
     });
 
+    const [newTaskData, setNewTask] = React.useState({});
     const onSubmit = (data) => {
+
+        console.log(data);
+        handleOpen()
+        setNewTask(data)
+        dispatch(
+            checkMatrixInfo({
+                matrix: data.matrix,
+                flag_matrix: data.flag_matrix
+            })
+        );
+    }
+
+    const matrixInfo = useSelector(state => state.newTask.matrixInfo);
+    // console.log(matrixInfo)
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const handleCloseWithUpdate = () => {
+        setOpen(false);
+
         const newTask = {
-            name: data.name,
-            description: data.description,
+            name: newTaskData.name,
+            description: newTaskData.description,
             matrix: matrix,
-            flag_matrix: data.flag_matrix,
-            topic_id: data.topic_id
+            flag_matrix: newTaskData.flag_matrix,
+            topic_id: newTaskData.topic_id,
         }
 
         dispatch(updateTaskInfo({id: task.id, IData: newTask}));
-    }
+    };
+
+    const styleModal = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
 
     return (
-        <Page pageTitle={'Конструктор заданий'}>
+        <Page pageTitle={'Изменение задания'}>
             <div className={s.backgroundStyle}>
                 <div className={s.ctn}>
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -339,6 +376,39 @@ export default function tasks() {
                             <Button type={'submit'} variant="contained">Изменить</Button>
                         </Grid>
                     </form>
+
+                    <div>
+                        <Modal
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                        >
+                            <Box sx={styleModal}>
+                                <Typography style={{color: "black"}} id="modal-modal-title" variant="h6" component="h2">
+                                    Подтвердите изменение
+                                </Typography>
+                                {matrixInfo.isLoading ?
+                                    <MuiCircularProgress/>
+                                    :
+                                    <>
+                                        <Typography id="modal-modal-description" sx={{mt: 2}}>
+                                            <Markdown value={matrixInfo?.data?.message}/>
+                                            <p><br/>Вы уверены, что хотите изменить задание?</p>
+                                        </Typography>
+                                        <div style={{
+                                            paddingTop: 10,
+                                            display: "flex",
+                                            justifyContent: "center"
+                                        }}>
+                                            <Button onClick={handleCloseWithUpdate}>Да</Button>
+                                            <Button onClick={handleClose}>Нет</Button>
+                                        </div>
+                                    </>
+                                }
+                            </Box>
+                        </Modal>
+                    </div>
 
                 </div>
                 <ul className={s.boxArea}>
