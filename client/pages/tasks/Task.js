@@ -384,16 +384,24 @@ export default function tasks() {
                             второго
                             игрока.
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
-                            Матрица
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12}
-                            style={{maxWidth: "fit-content"}}
+                        <Grid
+                            style={{
+                                marginRight: 10
+                            }}
+                        >
+                            <Grid item xs={6} sm={12} md={12} lg={12} className={s.title}>
+                                Матрица
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={12} lg={12}
+                                  style={{maxWidth: "fit-content"}}
                             >
                                 <Matrix matrix={task?.matrix}/>
+                            </Grid>
                         </Grid>
                         <Grid container item xs={12} sm={9} md={6} lg={4}>
-                            <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}>
+                            <Grid item xs={12} sm={12} md={12} lg={12} className={s.title}
+                                  style={{maxWidth: "fit-content"}}
+                            >
                                 Решение
                             </Grid>
                             {
@@ -419,8 +427,8 @@ export default function tasks() {
                             >
                                 <CloseIcon/>
                             </IconButton>
-                            { taskPayoff?.data?.success ?
-                                (taskPayoff.data.success === true)?
+                            {taskPayoff?.data?.success ?
+                                (taskPayoff.data.success === true) ?
                                     (<div style={{color: 'green'}}>Успех</div>)
                                     :
                                     (<div style={{color: 'red'}}>Провал</div>)

@@ -12,7 +12,7 @@ interface IData {
     name: string;
     description: string;
     link: string;
-    topic: {id: string, name: string};
+    topic: {id: number, name: string};
     image_base64: string;
 }
 

@@ -11,7 +11,7 @@ interface IData {
     id: number;
     name: string;
     description: string;
-    topic: {id: string, name: string};
+    topic: {id: number, name: string};
 }
 
 interface ITermsSlice {

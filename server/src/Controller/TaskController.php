@@ -10,10 +10,6 @@ use App\Repository\TaskMarkRepository;
 use App\Repository\TaskRepository;
 use App\Repository\TopicRepository;
 use App\Repository\UserRepository;
-use App\Service\Task\TaskBrownRobinson;
-use App\Service\Task\TaskPlay;
-use App\Service\Task\TaskSolver;
-use App\Service\TaskMarkService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 

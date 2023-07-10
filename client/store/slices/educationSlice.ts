@@ -36,7 +36,7 @@ interface ISimpleEdu {
     id: number;
     name: string;
     description: string;
-    topic: {id: string, name: string};
+    topic: {id: number, name: string};
     conclusion: string;
     progress: {passed: number, total: number};
     // image_base64: string;
