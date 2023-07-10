@@ -433,7 +433,7 @@ export default function tasks() {
                             getOptionLabel={option => option.name}
                             renderInput={(params) =>
                                 <TextField sx={{background: "white"}} {...params}
-                                           label={tasks?.data?.length ? tasks?.data?.length + " игр" : "... игр"}
+                                           label={tasks?.data?.length ? tasks?.data?.length + " заданий" : "... заданий"}
                                            placeholder="Название"
                                 />
                             }
