@@ -94,7 +94,11 @@ class TaskController extends ApiController
      *              "description": "Невероятно крутое задание",
      *              "matrix": {{0, 1, 1}, {1, 0, 1}, {1, 1, 0}},
      *              "flag_matrix": "платёжная матрица",
-     *              "topic_id": 1
+     *              "topic_id": 1,
+     *              "name_first_player": "Игрок 1",
+     *              "name_second_player": "Игрок 2",
+     *              "name_first_strategies": {"1-ая стратегия", "2-ая стратегия", "3-яя стратегия"},
+     *              "name_second_strategies": {"1-ая стратегия", "2-ая стратегия", "3-яя стратегия"}
      *         },
      *         @OA\Property(property="name", ref="#/components/schemas/TaskView/properties/name"),
      *         @OA\Property(property="description", ref="#/components/schemas/TaskView/properties/description"),
@@ -156,11 +160,11 @@ class TaskController extends ApiController
             if (isset($request['name_first_player']))
                 $task->setNameFirstPlayer($request['name_first_player']);
             if (isset($request['name_second_player']))
-                $task->setNameFirstPlayer($request['name_first_player']);
+                $task->setNameSecondPlayer($request['name_second_player']);
             if (isset($request['name_first_strategies']))
-                $task->setNameFirstPlayer($request['name_first_strategies']);
+                $task->setNameFirstStrategies($request['name_first_strategies']);
             if (isset($request['name_second_strategies']))
-                $task->setNameFirstPlayer($request['name_second_strategies']);
+                $task->setNameSecondStrategies($request['name_second_strategies']);
 
             $this->em->persist($task);
 
@@ -214,7 +218,11 @@ class TaskController extends ApiController
      *              "description": "Невероятно крутое задание",
      *              "matrix": {{0, 1, 1}, {1, 0, 1}, {1, 1, 0}},
      *              "flag_matrix": "платёжная матрица",
-     *              "topic_id": 1
+     *              "topic_id": 1,
+     *              "name_first_player": "Игрок 1",
+     *              "name_second_player": "Игрок 2",
+     *              "name_first_strategies": {"1-ая стратегия", "2-ая стратегия", "3-яя стратегия"},
+     *              "name_second_strategies": {"1-ая стратегия", "2-ая стратегия", "3-яя стратегия"}
      *         },
      *         @OA\Property(property="name", ref="#/components/schemas/TaskView/properties/name"),
      *         @OA\Property(property="description", ref="#/components/schemas/TaskView/properties/description"),
@@ -224,7 +232,7 @@ class TaskController extends ApiController
      *         @OA\Property(property="name_second_player", ref="#/components/schemas/TaskView/properties/name_second_player"),
      *         @OA\Property(property="name_first_strategies", ref="#/components/schemas/TaskView/properties/name_first_strategies"),
      *         @OA\Property(property="name_second_strategies", ref="#/components/schemas/TaskView/properties/name_second_strategies"),
-     *         @OA\Property(property="new_topic_id", ref="#/components/schemas/Topic/properties/id")
+     *         @OA\Property(property="topic_id", ref="#/components/schemas/Topic/properties/id")
      *     )
      * )
      * @OA\Response(
@@ -273,8 +281,8 @@ class TaskController extends ApiController
                 $task->setFlagMatrix($request['flag_matrix']);
             }
 
-            if (isset($request['new_topic_id'])) {
-                $topic = $topicRepository->find($request['new_topic_id']);
+            if (isset($request['topic_id'])) {
+                $topic = $topicRepository->find($request['topic_id']);
 
                 if (!$topic)
                     return $this->respondNotFound("Тип задания не найден");
@@ -286,11 +294,11 @@ class TaskController extends ApiController
             if (isset($request['name_first_player']))
                 $task->setNameFirstPlayer($request['name_first_player']);
             if (isset($request['name_second_player']))
-                $task->setNameFirstPlayer($request['name_first_player']);
+                $task->setNameSecondPlayer($request['name_second_player']);
             if (isset($request['name_first_strategies']))
-                $task->setNameFirstPlayer($request['name_first_strategies']);
+                $task->setNameFirstStrategies($request['name_first_strategies']);
             if (isset($request['name_second_strategies']))
-                $task->setNameFirstPlayer($request['name_second_strategies']);
+                $task->setNameSecondStrategies($request['name_second_strategies']);
 
             $this->em->flush();
 
