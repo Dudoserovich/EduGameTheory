@@ -66,7 +66,6 @@ export default function tasks() {
             name: 'матрица последствий',
         },
     ];
-    const [flag, setFlagMatrix] = useState("");
 
     const [rows, setRows] = useState(task?.matrix ? task?.matrix?.length : 2); // начальное количество строк
     const [cols, setCols] = useState(task?.matrix ? task?.matrix[0]?.length : 2); // начальное количество столбцов
@@ -235,13 +234,17 @@ export default function tasks() {
     const handleClose = () => setOpen(false);
     const handleCloseWithUpdate = () => {
         setOpen(false);
-
+        console.log(newTaskData)
         const newTask = {
             name: newTaskData.name,
             description: newTaskData.description,
             matrix: matrix,
             flag_matrix: newTaskData.flag_matrix,
             topic_id: newTaskData.topic_id,
+            name_first_player: newTaskData.name_first_player ?? null,
+            name_second_player: newTaskData.name_second_player ?? null,
+            name_first_strategies: newTaskData.name_first_strategies ?? null,
+            name_second_strategies: newTaskData.name_second_strategies ?? null,
         }
 
         dispatch(updateTaskInfo({id: task.id, IData: newTask}));
@@ -293,12 +296,11 @@ export default function tasks() {
                                 <Controller
                                     name={`name_player_${index}`}
                                     control={control}
-                                    rules={{required: true}}
                                     render={({field}) => (
                                         <TextField
                                             {...field}
                                             defaultValue={value}
-                                            required
+                                            // required
                                             type="text"
                                             color="info"
                                             style={{
@@ -348,7 +350,7 @@ export default function tasks() {
             <Grid container item xs={12} sm={12} md={12} lg={12} className={s.name}>
                 <Grid item xs={12} sm={12} md={12} lg={12}
                       style={{marginBottom: `10px`, color: ' white', fontSize: '20px'}}>
-                    Стратегии 2-го игрока (строки):
+                    Стратегии 2-го игрока (столбцы):
                 </Grid>
                 <form onSubmit={handleSubmit} style={{
                     width: '100%'
@@ -359,12 +361,11 @@ export default function tasks() {
                                 <Controller
                                     name={`name_player_${index}`}
                                     control={control}
-                                    rules={{required: true}}
                                     render={({field}) => (
                                         <TextField
                                             {...field}
                                             defaultValue={value}
-                                            required
+                                            // required
                                             type="text"
                                             color="info"
                                             style={{
@@ -480,8 +481,7 @@ export default function tasks() {
                                             {
                                                 !topics.isLoading ?
                                                     topics?.data?.map((topic) => (
-                                                            <MenuItem key={topic.id} value={topic.id}
-                                                                      onClick={() => setTopics(topic.id)}>
+                                                            <MenuItem key={topic.id} value={topic.id}>
                                                                 {topic.name}
                                                             </MenuItem>
                                                         )
@@ -525,11 +525,11 @@ export default function tasks() {
                                 <Controller
                                     name="name_first_player"
                                     control={control}
-                                    rules={{required: true}}
+                                    // rules={{required: true}}
                                     render={({field}) => (
                                         <TextField
                                             {...field}
-                                            required
+                                            // required
                                             type={"text"}
                                             color="info"
                                             style={{
@@ -551,11 +551,11 @@ export default function tasks() {
                                 <Controller
                                     name="name_second_player"
                                     control={control}
-                                    rules={{required: true}}
+                                    // rules={{required: true}}
                                     render={({field}) => (
                                         <TextField
                                             {...field}
-                                            required
+                                            // required
                                             type={"text"}
                                             color="info"
                                             style={{
