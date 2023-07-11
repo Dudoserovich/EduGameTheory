@@ -26,25 +26,21 @@ export const headerConfig = {
         },
         {
             name: 'Пользователи',
-            href: '/users'
+            submenus: [
+                {
+                    name: 'Пользователи',
+                    href: '/users/allUsers'
+                },
+                {
+                    name: 'Таблица лидеров',
+                    href: '/users/leaders'
+                },
+
+            ],
         },
     ],
 
     teacher: [
-        {
-            name: 'Задания',
-            submenus: [
-                {
-                    name: 'Задания',
-                    href: '/tasks/all'
-                },
-                {
-                    name: 'Конструктор заданий',
-                    href: '/tasks/createTask'
-                },
-            ],
-            href: '/tasks'
-        },
         {
             name: 'Дополнительные материалы',
             submenus: [
@@ -60,12 +56,18 @@ export const headerConfig = {
             href: '/materials'
         },
         {
-            name: 'Обучение',
-            href: '/educations'
-        },
-        {
             name: 'Пользователи',
-            href: '/users'
+            submenus: [
+                {
+                    name: 'Пользователи',
+                    href: '/users/allUsers'
+                },
+                {
+                    name: 'Таблица лидеров',
+                    href: '/users/leaders'
+                },
+
+            ],
         },
     ],
 
