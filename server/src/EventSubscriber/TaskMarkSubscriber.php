@@ -73,14 +73,16 @@ class TaskMarkSubscriber implements EventSubscriberInterface
 
         // === Отправка уведомления
         //  о прохождении задания пользователем ===
-        if ($entity->getRating()) {
-            $update = new Update(
-                topics: '/tasks',
-                data: json_encode(['message' => "Пользователь \"" . $entity->getUser()->getFio() . "\" прошёл ваше задание!"]),
-                type: $entity->getTask()->getOwner()->getId()
-            );
+        if ($entity->getTask()->getOwner()) {
+            if ($entity->getRating()) {
+                $update = new Update(
+                    topics: '/tasks',
+                    data: json_encode(['message' => "Пользователь \"" . $entity->getUser()->getFio() . "\" прошёл ваше задание!"]),
+                    type: $entity->getTask()->getOwner()->getId()
+                );
 
-            $this->hub->publish($update);
+                $this->hub->publish($update);
+            }
         }
 
         // === Получение достижения ===
