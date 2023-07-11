@@ -44,8 +44,6 @@ export default function statsTask() {
         taskId && dispatch(getTaskStats(taskId))
     }, [taskId]);
 
-    console.log(taskStats)
-
     // Если задание не найдено, выкинуть 404
     useEffect(() => {
         if (taskStats?.error?.status) {
@@ -98,7 +96,7 @@ export default function statsTask() {
                         >
                             <Typography variant="h6">Матрица</Typography>
                             {taskStats.isLoading ? <div>Загрузка матрицы...</div> :
-                                <Matrix matrix={taskStats?.data?.task?.matrix}/>}
+                                <Matrix task={taskStats?.data?.task}/>}
                         </div>
                         <Grid item xs={12} sm={12} md={12} lg={12}
                         >
