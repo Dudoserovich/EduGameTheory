@@ -157,14 +157,45 @@ class TaskController extends ApiController
                 ->setMatrix($request['matrix'] ?? null)
                 ->setFlagMatrix($request['flag_matrix']);
 
-            if (isset($request['name_first_player']))
-                $task->setNameFirstPlayer($request['name_first_player']);
-            if (isset($request['name_second_player']))
-                $task->setNameSecondPlayer($request['name_second_player']);
-            if (isset($request['name_first_strategies']))
-                $task->setNameFirstStrategies($request['name_first_strategies']);
-            if (isset($request['name_second_strategies']))
-                $task->setNameSecondStrategies($request['name_second_strategies']);
+            if (isset($request['name_first_player'])) {
+                if ($request['name_first_player'] === '') {
+                    $task->setNameFirstPlayer("Игрок 1");
+                } else
+                    $task->setNameFirstPlayer($request['name_first_player']);
+            }
+
+            if (isset($request['name_second_player'])) {
+                if ($request['name_second_player'] === '') {
+                    $task->setNameSecondPlayer("Игрок 2");
+                } else
+                    $task->setNameSecondPlayer($request['name_second_player']);
+            }
+
+            if (isset($request['name_first_strategies'])) {
+                if (empty(array_filter($request['name_first_strategies']))) {
+                    // заполняем названия стратегий 1-го игрока (это строки)
+                    $strategiesFirst = [];
+                    for ($i = 0; $i < count($request['matrix']); $i++) {
+                        $strategiesFirst[] = "Стратегия " . ($i + 1);
+                    }
+                    $task->setNameFirstStrategies($strategiesFirst);
+                } else {
+                    $task->setNameFirstStrategies($request['name_first_strategies']);
+                }
+            }
+
+            if (isset($request['name_second_strategies'])) {
+                if (empty(array_filter($request['name_second_strategies']))) {
+                    // заполняем названия стратегий 1-го игрока (это строки)
+                    $strategiesSecond = [];
+                    for ($i = 0; $i < count($request['matrix']); $i++) {
+                        $strategiesSecond[] = "Стратегия " . ($i + 1);
+                    }
+                    $task->setNameSecondStrategies($strategiesSecond);
+                } else {
+                    $task->setNameFirstStrategies($request['name_second_strategies']);
+                }
+            }
 
             $this->em->persist($task);
 

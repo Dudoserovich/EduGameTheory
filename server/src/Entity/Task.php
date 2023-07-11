@@ -85,14 +85,14 @@ class Task
      * @OA\Property()
      * @Groups({"default"})
      */
-    private ?string $nameFirstPlayer = null;
+    private ?string $nameFirstPlayer = "Игрок 1";
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @OA\Property()
      * @Groups({"default"})
      */
-    private ?string $nameSecondPlayer = null;
+    private ?string $nameSecondPlayer = "Игрок 2";
 
     /**
      * @ORM\Column(type="json", nullable=true)
