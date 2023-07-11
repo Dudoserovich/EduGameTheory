@@ -7,15 +7,8 @@ import {Grid, Typography} from "@material-ui/core";
 import {getTopicsInfo} from "../../store/slices/topicSlice";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import Box from '@mui/material/Box';
 import {Controller, useForm} from "react-hook-form";
-import Input from "../../components/Input/Input";
-import {getToken} from "../../store/slices/authSlice";
-import Spinner from "../../components/Spinner/Spinner";
 import {Button} from "@mui/material";
-import {createTask} from "../../store/slices/creatTaskSlice";
-import plus from "../../public/svg/plus.svg";
-import minus from "../../public/svg/minus.svg";
 import plus1 from "../../public/svg/plus1.svg";
 import minus1 from "../../public/svg/minus1.svg";
 import { useLocation } from 'react-router-dom';
@@ -73,6 +66,9 @@ export default function tasks() {
 
     const [rows, setRows] = useState(2); // начальное количество строк
     const [cols, setCols] = useState(2); // начальное количество столбцов
+
+    const [fields, setFields] = useState(Array.from({length: rows}, () => Array.from(1, () => '')));
+    const [fields2, setFields2] = useState(Array.from({length: cols}, () => Array.from(1, () => '')));
     const [matrix, setMatrix] = useState(
         Array.from({length: rows}, () => Array.from({length: cols}, () => 0))
     );
@@ -132,7 +128,10 @@ export default function tasks() {
                                     rows
                                     : (rows - 1)
                             ), cols
-                        )
+                        );
+                        (rows !== 2) ?
+                            handleRemoveField()
+                            : null
                     }} dangerouslySetInnerHTML={{__html: minus1}} className={s.propsButton}/>
 
                     {rows}
@@ -142,7 +141,11 @@ export default function tasks() {
                                     rows
                                     : (rows + 1)
                             ), cols
-                        )
+                        );
+                        (rows !== 12) ?
+                            handleAddField()
+                            : null
+
                     }} dangerouslySetInnerHTML={{__html: plus1}} className={s.propsButton}/>
                 </Grid>
                 <Grid item container xs={12} sm={12} md={6} lg={6} className={s.propsBack}>
@@ -152,7 +155,10 @@ export default function tasks() {
                             (cols === 2) ?
                                 cols
                                 : cols - 1
-                        ))
+                        ));
+                        (cols !== 2) ?
+                            handleRemoveField2()
+                            : null
                     }} dangerouslySetInnerHTML={{__html: minus1}} className={s.propsButton}/>
                     {cols}
                     <button onClick={() => {
@@ -160,11 +166,16 @@ export default function tasks() {
                             (cols === 12) ?
                                 cols
                                 : cols + 1
-                        ))
+                        ));
+                        (cols !== 12) ?
+                            handleAddField2()
+                            : null
                     }} dangerouslySetInnerHTML={{__html: plus1}} className={s.propsButton}/>
 
 
                 </Grid>
+                <YourComponent/>
+                <YourComponent2/>
 
                 <div className={s.matrixBack}>
                     {renderRows()}
@@ -183,6 +194,8 @@ export default function tasks() {
             matrix: matrix,
             flag_matrix: task.flag_matrix,
             topic_id: task.topic_id,
+            name_first_player: task.name_first_player,
+            name_second_player: task.name_second_player,
         }
     });
     const onSubmit = (data) => {
@@ -192,10 +205,144 @@ export default function tasks() {
             matrix: matrix,
             flag_matrix: task.flag_matrix,
             topic_id: task.topic_id,
+            name_first_player: task.name_first_player,
+            name_second_player: task.name_second_player,
+            name_first_strategies: fields,
+            name_second_strategies: fields2,
         }
 
         dispatch(updateTaskInfo({id: task.id, IData: newTask}));
     }
+    const handleAddField = () => {
+        setFields([...fields, '']);
+    };
+    const handleRemoveField = () => {
+        const updatedFields = [...fields];
+        updatedFields.splice(fields.length - 1, 1);
+        setFields(updatedFields);
+    };
+
+    function YourComponent() {
+        const handleChange = (value, index) => {
+            const updatedFields = [...fields];
+            updatedFields[index] = value;
+            setFields(updatedFields);
+        };
+
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            console.log(fields);
+        };
+
+        return (
+            <Grid container item xs={12} sm={12} md={12} lg={12} className={s.name} style={{wight: '100%',}}>
+                <Grid item xs={12} sm={12} md={12} lg={12}
+                      style={{marginBottom: `10px`, color: ' white', fontSize: '20px'}}>
+                    Стратегии 1-го игрока (строки):
+                </Grid>
+                <form onSubmit={handleSubmit} style={{width: '100%'}}>
+                    <Grid container item xs={12} sm={12} md={12} lg={12} className={s.name} style={{wight: '100%',}}>
+                        {fields.map((value, index) => (
+                            <Grid key={index} item xs={12} sm={6} md={4} lg={3} style={{paddingBottom: '10px', paddingRight: "10px"}}>
+                                <Controller
+                                    name={`name_player_${index}`}
+                                    control={control}
+                                    rules={{required: true}}
+                                    render={({field}) => (
+                                        <TextField
+                                            {...field}
+                                            defaultValue={value}
+                                            required
+                                            type="text"
+                                            color="info"
+                                            style={{
+                                                borderRadius: '4px',
+                                                backgroundColor: 'white',
+                                                width: '100%',
+                                            }}
+                                            id={`name_player_${index}`}
+                                            label={`Название ${index + 1}-ой стратегии`}
+                                            value={field[index]}
+                                            onBlur={(e) => handleChange(e.target.value, index)}
+                                        />
+                                    )}
+                                />
+                                {errors[`name_player_${index}`] && (
+                                    <span style={{color: 'var(--main-brand-color)'}}>Обязательное поле</span>
+                                )}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </form>
+            </Grid>
+        );
+    };
+    const handleAddField2 = () => {
+        setFields2([...fields2, '']);
+    };
+    const handleRemoveField2 = () => {
+        const updatedFields = [...fields2];
+        updatedFields.splice(fields2.length - 1, 1);
+        setFields2(updatedFields);
+    };
+
+    function YourComponent2() {
+        const handleChange = (value, index) => {
+            const updatedFields = [...fields2];
+            updatedFields[index] = value;
+            setFields2(updatedFields);
+        };
+
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            console.log(fields2);
+        };
+
+        return (
+            <Grid container item xs={12} sm={12} md={12} lg={12} className={s.name}>
+                <Grid item xs={12} sm={12} md={12} lg={12}
+                      style={{marginBottom: `10px`, color: ' white', fontSize: '20px'}}>
+                    Стратегии 2-го игрока (строки):
+                </Grid>
+                <form onSubmit={handleSubmit} style={{
+                    width: '100%'
+                }}>
+                    <Grid container item xs={12} sm={12} md={12} lg={12} className={s.name} style={{wight: '100%',}}>
+                        {fields2.map((value, index) => (
+                            <Grid key={index} item xs={12} sm={6} md={4} lg={3} style={{paddingBottom: '10px', paddingRight: "10px"}}>
+                                <Controller
+                                    name={`name_player_${index}`}
+                                    control={control}
+                                    rules={{required: true}}
+                                    render={({field}) => (
+                                        <TextField
+                                            {...field}
+                                            defaultValue={value}
+                                            required
+                                            type="text"
+                                            color="info"
+                                            style={{
+                                                borderRadius: '4px',
+                                                backgroundColor: 'white',
+                                                width: '100%',
+                                            }}
+                                            id={`name_player_${index}`}
+                                            label={`Название ${index + 1}-ой стратегии`}
+                                            value={field[index]}
+                                            onBlur={(e) => handleChange(e.target.value, index)}
+                                        />
+                                    )}
+                                />
+                                {errors[`name_player_${index}`] && (
+                                    <span style={{color: 'var(--main-brand-color)'}}>Обязательное поле</span>
+                                )}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </form>
+            </Grid>
+        );
+    };
     return (
         <Page pageTitle={'Конструктор заданий'}>
             <div className={s.backgroundStyle}>
@@ -329,7 +476,58 @@ export default function tasks() {
                                         />
                                     )}/>
                             </Grid>
-
+                            <Grid item xs={12} sm={6} md={4} lg={4} className={s.name}>
+                                <Controller
+                                    name="name_first_player"
+                                    control={control}
+                                    rules={{required: true}}
+                                    render={({field}) => (
+                                        <TextField
+                                            {...field}
+                                            required
+                                            type={"text"}
+                                            color="info"
+                                            style={{
+                                                borderRadius: '4px',
+                                                backgroundColor: "white",
+                                                width: '100%',
+                                            }}
+                                            id="outlined-helperText"
+                                            label="Имя 1-го игрока"
+                                            defaultValue=""
+                                        />
+                                    )}/>
+                                {errors.name_first_player &&
+                                    <span style={{
+                                        color: 'var(--main-brand-color)'
+                                    }}>Обязательное поле</span>}
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={4} className={s.name}>
+                                <Controller
+                                    name="name_second_player"
+                                    control={control}
+                                    rules={{required: true}}
+                                    render={({field}) => (
+                                        <TextField
+                                            {...field}
+                                            required
+                                            type={"text"}
+                                            color="info"
+                                            style={{
+                                                borderRadius: '4px',
+                                                backgroundColor: "white",
+                                                width: '100%',
+                                            }}
+                                            id="outlined-helperText"
+                                            label="Имя 2-го игрока"
+                                            defaultValue=""
+                                        />
+                                    )}/>
+                                {errors.name_first_player &&
+                                    <span style={{
+                                        color: 'var(--main-brand-color)'
+                                    }}>Обязательное поле</span>}
+                            </Grid>
                             <Grid item xs={12} sm={12} md={12} lg={12} className={s.name} style={{
                                 color: "white",
                                 fontSize: '28px'
