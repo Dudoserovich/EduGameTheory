@@ -8,23 +8,21 @@ import {getTopicsInfo} from "../../store/slices/topicSlice";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import {Controller, useForm} from "react-hook-form";
-import Input from "../../components/Input/Input";
-import {getToken} from "../../store/slices/authSlice";
-import Spinner from "../../components/Spinner/Spinner";
 import {Button, Modal} from "@mui/material";
 import plus1 from "../../public/svg/plus1.svg";
 import minus1 from "../../public/svg/minus1.svg";
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {updateTaskInfo} from "../../store/slices/tasksSlice";
 import CustomMDEditor from "../../components/CustomMDEditor/CustomMDEditor";
 import SimpleToast, {notify} from "../../components/Toast/SimpleToast";
+import {checkMatrixInfo} from "../../store/slices/creatTaskSlice";
+import Box from "@mui/material/Box";
 import MuiCircularProgress from "../../components/Spinner/MuiCircularProgress";
 import Markdown from "../../components/Markdown/Markdown";
-import {checkMatrixInfo, createTask} from "../../store/slices/creatTaskSlice";
 
 
 export default function tasks() {
-    const {state} = useLocation();
+    const { state } = useLocation();
     const task = state.task;
 //Запрос топиков
     const topics = useSelector(state => state.topics.info);
@@ -32,6 +30,31 @@ export default function tasks() {
     useEffect(() => {
         dispatch(getTopicsInfo());
     }, []);
+
+    const [filters, setFilters] = useState({
+        topics: []
+    });
+
+    function filtering(topics) {
+        let result = topics;
+        let filteredItems = [];
+
+        if (filters.topics.length !== 0) {
+            for (let i = 0; i < filters.topics.length; i++) {
+                filteredItems = filteredItems.concat(
+                    result.filter(topics =>
+                        topics?.data?.id === filters.topics[i].id
+                    )
+                );
+            }
+
+            result = filteredItems;
+        }
+
+        return result;
+    }
+
+    const [topic, setTopics] = useState("");
 
     const flagMatrix = [
         {
@@ -43,14 +66,25 @@ export default function tasks() {
             name: 'матрица последствий',
         },
     ];
+    const [flag, setFlagMatrix] = useState("");
 
-    const [rows, setRows] = useState(2); // начальное количество строк
-    const [cols, setCols] = useState(2); // начальное количество столбцов
+    const [rows, setRows] = useState(task?.matrix ? task?.matrix?.length : 2); // начальное количество строк
+    const [cols, setCols] = useState(task?.matrix ? task?.matrix[0]?.length : 2); // начальное количество столбцов
 
-    const [fields, setFields] = useState(Array.from({length: rows}, () => Array.from(1, () => '')));
-    const [fields2, setFields2] = useState(Array.from({length: cols}, () => Array.from(1, () => '')));
+    const [fields, setFields] = useState(
+        task?.name_first_strategies
+            ? task?.name_first_strategies
+            : Array.from({length: rows}, () => Array.from(1, () => ''))
+    );
+    const [fields2, setFields2] = useState(
+        task?.name_second_strategies
+            ? task?.name_second_strategies
+            :
+        Array.from({length: cols}, () => Array.from(1, () => ''))
+    );
+
     const [matrix, setMatrix] = useState(
-        Array.from({length: rows}, () => Array.from({length: cols}, () => 0))
+        task?.matrix ? task?.matrix : Array.from({length: rows}, () => Array.from({length: cols}, () => 0))
     );
 
     function Matrix() { // начальное значение матрицы
@@ -164,6 +198,7 @@ export default function tasks() {
         );
     }
 
+
 //для запроса
     const {handleSubmit, control, formState: {errors}} = useForm({
         mode: 'onBlur',
@@ -175,13 +210,13 @@ export default function tasks() {
             topic_id: task?.topic?.id,
             name_first_player: task.name_first_player,
             name_second_player: task.name_second_player,
+            name_first_strategies: fields,
+            name_second_strategies: fields2,
         }
     });
 
     const [newTaskData, setNewTask] = React.useState({});
     const onSubmit = (data) => {
-
-        console.log(data);
         handleOpen()
         setNewTask(data)
         dispatch(
@@ -190,10 +225,10 @@ export default function tasks() {
                 flag_matrix: data.flag_matrix
             })
         );
+
     }
 
     const matrixInfo = useSelector(state => state.newTask.matrixInfo);
-    // console.log(matrixInfo)
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -207,10 +242,6 @@ export default function tasks() {
             matrix: matrix,
             flag_matrix: newTaskData.flag_matrix,
             topic_id: newTaskData.topic_id,
-            name_first_player: task.name_first_player,
-            name_second_player: task.name_second_player,
-            name_first_strategies: fields,
-            name_second_strategies: fields2,
         }
 
         dispatch(updateTaskInfo({id: task.id, IData: newTask}));
@@ -228,7 +259,6 @@ export default function tasks() {
         p: 4,
     };
 
-    }
     const handleAddField = () => {
         setFields([...fields, '']);
     };
@@ -409,8 +439,7 @@ export default function tasks() {
                                             }}
                                             id="outlined-select-currency"
                                             select
-                                            label="Тип матрицы"
-                                            // defaultValue={flag}
+                                            label="Тип марицы"
                                         >
                                             {
                                                 flagMatrix ?
@@ -449,14 +478,15 @@ export default function tasks() {
                                             value={!topics.isLoading ? field.value : ""}
                                         >
                                             {
-                                                topics.isLoading ?
-                                                    "Loading..."
-                                                    :
+                                                !topics.isLoading ?
                                                     topics?.data?.map((topic) => (
-                                                        <MenuItem key={topic?.id} value={topic?.id}>
-                                                            {topic?.name}
-                                                        </MenuItem>
-                                                    ))
+                                                            <MenuItem key={topic.id} value={topic.id}
+                                                                      onClick={() => setTopics(topic.id)}>
+                                                                {topic.name}
+                                                            </MenuItem>
+                                                        )
+                                                    )
+                                                    : "Loading..."
                                             }
                                         </TextField>
                                     )}/>
@@ -481,8 +511,8 @@ export default function tasks() {
                                     rules={{required: false}}
                                     render={(
                                         {
-                                            field: {onChange, onBlur, value, name, ref},
-                                            fieldState: {invalid, isTouched, isDirty, error},
+                                            field: { onChange, onBlur, value, name, ref },
+                                            fieldState: { invalid, isTouched, isDirty, error },
                                             formState,
                                         }) => (
                                         <CustomMDEditor
